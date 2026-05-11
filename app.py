@@ -53,15 +53,77 @@ with col1:
     customer_name = st.text_input("Customer Name")
     number_of_sites = st.text_input("Number of Sites")
 
-    # ✅ Site Name with guidance
     site_name = st.text_input(
         "Site Name",
         placeholder="e.g. Coventry, London and Warrington"
     )
-    st.caption("If multiple sites, use this example format: Coventry, London and Warrington")
+    st.caption("If multiple sites, use this format: Coventry, London and Warrington")
 
 with col2:
     project_name = st.text_input("Project Name")
+
+# ==========================
+# 📄 FILE NAMING SECTION
+# ==========================
+st.markdown("---")
+st.subheader("📄 File Naming")
+
+document_type_options = {
+    "Cost Sheet": "CST",
+    "Quote": "QTE",
+    "Calculation": "CLC",
+    "Data Collection Form": "DCF",
+    "Document": "DOC",
+    "Drawing": "DRG",
+    "Functional Design Specification": "FDS",
+    "Risk Assessment / Method Statement": "RMS",
+    "Report": "RPT",
+    "Schedule": "SCH",
+    "Specification": "SPC"
+}
+
+subject_options = {
+    "Audit (EcoConsult Audit for Power)": "ADT",
+    "Block": "BLK",
+    "Cabling": "CBL",
+    "Design": "DES",
+    "Data Centre Audit": "DTC",
+    "Equipment": "EQP",
+    "Earthing": "ETH",
+    "Factory Acceptance Test": "FAT",
+    "Feasibility": "FSY",
+    "General Arrangement or Layout": "GAR",
+    "Energy Audit": "NRG",
+    "Microgrid Feasibility": "MGF",
+    "Microgrid Design": "MGD",
+    "Metering Survey": "MTR",
+    "Protection": "PRT",
+    "Power Quality": "PQT",
+    "Pressure Rise Study": "PRS",
+    "Power System Study": "PSS"
+}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    project_number = st.text_input("Project Number")
+
+    document_type_label = st.selectbox("Document Type", list(document_type_options.keys()))
+    document_type = document_type_options[document_type_label]
+
+    subject_label = st.selectbox("Subject", list(subject_options.keys()))
+    subject = subject_options[subject_label]
+
+with col2:
+    unique_id = st.selectbox("Unique Identifier", [f"{i:02d}" for i in range(1, 21)])
+
+    revision_code_label = st.selectbox(
+        "Revision Code",
+        ["Contractual (External)", "Preliminary (Internal)"]
+    )
+    revision_code = "C" if "Contractual" in revision_code_label else "P"
+
+    revision_number = st.selectbox("Revision Number", [f"{i:02d}" for i in range(1, 21)])
 
 # ==========================
 # TRANSPORT SECTION
@@ -81,7 +143,7 @@ if "Transport" in quote_type:
             "Transport Type",
             placeholder="e.g. HGV and Grey Fleet"
         )
-        st.caption("If multiple types, use the example format: HGV and Grey Fleet")
+        st.caption("If multiple types, use: HGV and Grey Fleet")
 
 else:
     number_of_transport = ""
@@ -114,7 +176,6 @@ if st.button("➕ Add Work"):
         except:
             st.error("Enter a valid price")
 
-# Display current works
 if st.session_state.works_list:
     st.markdown("### Current Works")
     for i, work in enumerate(st.session_state.works_list):
@@ -123,7 +184,7 @@ if st.session_state.works_list:
 st.markdown("---")
 
 # ==========================
-# PLACEHOLDER REPLACEMENT
+# ✅ SAFE PLACEHOLDER FUNCTION
 # ==========================
 def replace_placeholders(doc, data):
 
@@ -161,20 +222,12 @@ def replace_placeholders(doc, data):
 
     return doc
 
-# ==========================
-# TABLE POPULATION
-# ==========================
+
 def fill_works_table(doc, works_list):
-
-    if not doc.tables:
-        st.error("❌ No tables found in document")
-        return doc
-
     table = doc.tables[0]
     start_row = 1
 
     for i, work in enumerate(works_list):
-
         if start_row + i >= len(table.rows) - 1:
             row_cells = table.add_row().cells
         else:
@@ -185,8 +238,7 @@ def fill_works_table(doc, works_list):
         row_cells[2].text = f"£{work['price']:,.2f}"
 
     total = sum(work["price"] for work in works_list)
-    last_row = table.rows[-1].cells
-    last_row[2].text = f"£{total:,.2f}"
+    table.rows[-1].cells[2].text = f"£{total:,.2f}"
 
     return doc
 
@@ -198,44 +250,36 @@ if st.button("📄 Generate Word Document"):
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
     else:
-        todays_date = datetime.now().strftime("%d %B %Y")
-
         template_path = TEMPLATE_MAP.get(quote_type)
 
-        if not template_path:
-            st.error("Template not found.")
-        else:
-            doc = Document(template_path)
+        doc = Document(template_path)
 
-            data = {
-                "CustomerName": customer_name,
-                "NumberOfSites": number_of_sites,
-                "SiteName": site_name,
-                "NumberOfTransport": number_of_transport,
-                "TransportType": transport_type,
-                "ProjectName": project_name,
-                "TodaysDate": todays_date
-            }
+        data = {
+            "CustomerName": customer_name,
+            "NumberOfSites": number_of_sites,
+            "SiteName": site_name,
+            "NumberOfTransport": number_of_transport,
+            "TransportType": transport_type,
+            "ProjectName": project_name,
+            "TodaysDate": datetime.now().strftime("%d %B %Y")
+        }
 
-            doc = replace_placeholders(doc, data)
+        doc = replace_placeholders(doc, data)
 
-            if st.session_state.works_list:
-                doc = fill_works_table(doc, st.session_state.works_list)
+        if st.session_state.works_list:
+            doc = fill_works_table(doc, st.session_state.works_list)
 
-            output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
-            doc.save(output.name)
+        # ✅ Filename generation
+        file_name = f"{project_number}-{document_type}-{subject}-{unique_id}-{revision_code}{revision_number}"
 
-            st.success("✅ Document generated successfully!")
+        output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
+        doc.save(output.name)
 
-            with open(output.name, "rb") as f:
-                st.download_button(
-                    "⬇ Download Quote",
-                    f,
-                    file_name=f"{customer_name}_quote.docx"
-                )
+        st.success("✅ Document generated successfully!")
 
-# ==========================
-# INFO SECTION
-# ==========================
-with st.expander("📘 App Info"):
-    st.write("Templates are automatically selected based on the chosen quote type.")
+        with open(output.name, "rb") as f:
+            st.download_button(
+                "⬇ Download Quote",
+                f,
+                file_name=f"{file_name}.docx"
+            )
