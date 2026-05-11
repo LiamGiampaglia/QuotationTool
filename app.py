@@ -53,15 +53,91 @@ with col1:
     customer_name = st.text_input("Customer Name")
     number_of_sites = st.text_input("Number of Sites")
 
-    # ✅ Site Name with guidance
     site_name = st.text_input(
         "Site Name",
         placeholder="e.g. Coventry, London and Warrington"
     )
-    st.caption("If multiple sites, use this example format: Coventry, London and Warrington")
+    st.caption("If multiple sites, use: Coventry, London and Warrington")
 
 with col2:
     project_name = st.text_input("Project Name")
+
+# ==========================
+# 📄 FILE NAMING SECTION
+# ==========================
+st.markdown("---")
+st.subheader("📄 File Naming")
+
+# Document Type options
+document_type_options = {
+    "Cost Sheet": "CST",
+    "Quote": "QTE",
+    "Calculation": "CLC",
+    "Data Collection Form": "DCF",
+    "Document": "DOC",
+    "Drawing": "DRG",
+    "Functional Design Specification": "FDS",
+    "Risk Assessment / Method Statement": "RMS",
+    "Report": "RPT",
+    "Schedule": "SCH",
+    "Specification": "SPC"
+}
+
+# Subject options
+subject_options = {
+    "Audit (EcoConsult Audit for Power)": "ADT",
+    "Block": "BLK",
+    "Cabling": "CBL",
+    "Design": "DES",
+    "Data Centre Audit": "DTC",
+    "Equipment": "EQP",
+    "Earthing": "ETH",
+    "Factory Acceptance Test": "FAT",
+    "Feasibility": "FSY",
+    "General Arrangement or Layout": "GAR",
+    "Energy Audit": "NRG",
+    "Microgrid Feasibility": "MGF",
+    "Microgrid Design": "MGD",
+    "Metering Survey": "MTR",
+    "Protection": "PRT",
+    "Power Quality": "PQT",
+    "Pressure Rise Study": "PRS",
+    "Power System Study": "PSS"
+}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    project_number = st.text_input("Project Number")
+
+    document_type_label = st.selectbox(
+        "Document Type",
+        list(document_type_options.keys())
+    )
+    document_type = document_type_options[document_type_label]
+
+    subject_label = st.selectbox(
+        "Subject",
+        list(subject_options.keys())
+    )
+    subject = subject_options[subject_label]
+
+with col2:
+    unique_id = st.selectbox(
+        "Unique Identifier",
+        [f"{i:02d}" for i in range(1, 21)]
+    )
+
+    revision_code_label = st.selectbox(
+        "Revision Code",
+        ["Contractual (External)", "Preliminary (Internal)"]
+    )
+    revision_code = "C" if "Contractual" in revision_code_label else "P"
+
+    revision_number = st.selectbox(
+        "Revision Number",
+        [f"{i:02d}" for i in range(1, 21)]
+    )
 
 # ==========================
 # TRANSPORT SECTION
@@ -81,7 +157,7 @@ if "Transport" in quote_type:
             "Transport Type",
             placeholder="e.g. HGV and Grey Fleet"
         )
-        st.caption("If multiple types, use the example format: HGV and Grey Fleet")
+        st.caption("If multiple types, use: HGV and Grey Fleet")
 
 else:
     number_of_transport = ""
@@ -114,7 +190,6 @@ if st.button("➕ Add Work"):
         except:
             st.error("Enter a valid price")
 
-# Display current works
 if st.session_state.works_list:
     st.markdown("### Current Works")
     for i, work in enumerate(st.session_state.works_list):
@@ -123,58 +198,27 @@ if st.session_state.works_list:
 st.markdown("---")
 
 # ==========================
-# PLACEHOLDER REPLACEMENT
+# FUNCTIONS
 # ==========================
 def replace_placeholders(doc, data):
-
-    def replace_in_runs(paragraph):
-        for run in paragraph.runs:
-            for key, value in data.items():
-                placeholder = f"{{{{{key}}}}}"
-                if placeholder in run.text:
-                    run.text = run.text.replace(placeholder, str(value))
-
-    def replace_split_placeholder(paragraph):
-        full_text = "".join(run.text for run in paragraph.runs)
-
-        updated_text = full_text
-        for key, value in data.items():
-            placeholder = f"{{{{{key}}}}}"
-            updated_text = updated_text.replace(placeholder, str(value))
-
-        if updated_text != full_text:
-            if len(paragraph.text) < 300:
-                paragraph.runs[0].text = updated_text
-                for i in range(1, len(paragraph.runs)):
-                    paragraph.runs[i].text = ""
-
     for paragraph in doc.paragraphs:
-        replace_in_runs(paragraph)
-        replace_split_placeholder(paragraph)
+        for key, value in data.items():
+            paragraph.text = paragraph.text.replace(f"{{{{{key}}}}}", str(value))
 
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    replace_in_runs(paragraph)
-                    replace_split_placeholder(paragraph)
+                for key, value in data.items():
+                    cell.text = cell.text.replace(f"{{{{{key}}}}}", str(value))
 
     return doc
 
-# ==========================
-# TABLE POPULATION
-# ==========================
+
 def fill_works_table(doc, works_list):
-
-    if not doc.tables:
-        st.error("❌ No tables found in document")
-        return doc
-
     table = doc.tables[0]
     start_row = 1
 
     for i, work in enumerate(works_list):
-
         if start_row + i >= len(table.rows) - 1:
             row_cells = table.add_row().cells
         else:
@@ -185,8 +229,7 @@ def fill_works_table(doc, works_list):
         row_cells[2].text = f"£{work['price']:,.2f}"
 
     total = sum(work["price"] for work in works_list)
-    last_row = table.rows[-1].cells
-    last_row[2].text = f"£{total:,.2f}"
+    table.rows[-1].cells[2].text = f"£{total:,.2f}"
 
     return doc
 
@@ -198,13 +241,13 @@ if st.button("📄 Generate Word Document"):
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
     else:
-        todays_date = datetime.now().strftime("%d %B %Y")
 
         template_path = TEMPLATE_MAP.get(quote_type)
 
         if not template_path:
             st.error("Template not found.")
         else:
+
             doc = Document(template_path)
 
             data = {
@@ -214,13 +257,16 @@ if st.button("📄 Generate Word Document"):
                 "NumberOfTransport": number_of_transport,
                 "TransportType": transport_type,
                 "ProjectName": project_name,
-                "TodaysDate": todays_date
+                "TodaysDate": datetime.now().strftime("%d %B %Y")
             }
 
             doc = replace_placeholders(doc, data)
 
             if st.session_state.works_list:
                 doc = fill_works_table(doc, st.session_state.works_list)
+
+            # ✅ Filename generation
+            file_name = f"{project_number}-{document_type}-{subject}-{unique_id}-{revision_code}{revision_number}"
 
             output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
             doc.save(output.name)
@@ -231,11 +277,5 @@ if st.button("📄 Generate Word Document"):
                 st.download_button(
                     "⬇ Download Quote",
                     f,
-                    file_name=f"{customer_name}_quote.docx"
+                    file_name=f"{file_name}.docx"
                 )
-
-# ==========================
-# INFO SECTION
-# ==========================
-with st.expander("📘 App Info"):
-    st.write("Templates are automatically selected based on the chosen quote type.")
