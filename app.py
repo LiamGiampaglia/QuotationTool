@@ -31,7 +31,7 @@ quote_type = st.selectbox(
 )
 
 # ==========================
-# ✅ TEMPLATE MAPPING
+# TEMPLATE MAPPING
 # ==========================
 TEMPLATE_MAP = {
     "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
@@ -52,7 +52,13 @@ col1, col2 = st.columns(2)
 with col1:
     customer_name = st.text_input("Customer Name")
     number_of_sites = st.text_input("Number of Sites")
-    site_name = st.text_input("Site Name")
+
+    # ✅ Site Name with guidance
+    site_name = st.text_input(
+        "Site Name",
+        placeholder="e.g. Coventry, London and Warrington"
+    )
+    st.caption("If multiple sites, use format: Coventry, London and Warrington")
 
 with col2:
     project_name = st.text_input("Project Name")
@@ -71,7 +77,11 @@ if "Transport" in quote_type:
         number_of_transport = st.text_input("Number of Transports")
 
     with col2:
-        transport_type = st.text_input("Transport Type")
+        transport_type = st.text_input(
+            "Transport Type",
+            placeholder="e.g. HGV and Grey Fleet"
+        )
+        st.caption("If multiple types, use format: HGV and Grey Fleet")
 
 else:
     number_of_transport = ""
@@ -104,7 +114,7 @@ if st.button("➕ Add Work"):
         except:
             st.error("Enter a valid price")
 
-# Display works
+# Display current works
 if st.session_state.works_list:
     st.markdown("### Current Works")
     for i, work in enumerate(st.session_state.works_list):
@@ -225,15 +235,7 @@ if st.button("📄 Generate Word Document"):
                 )
 
 # ==========================
-# HELP
+# INFO SECTION
 # ==========================
-with st.expander("📘 Template Info"):
-    st.write("""
-Templates are now automatically selected based on Quote Type ✅
-
-Ensure files exist in:
-
-/templates/
-
-And match exact names in code.
-""")
+with st.expander("📘 App Info"):
+    st.write("Templates are automatically selected based on the chosen quote type.")
