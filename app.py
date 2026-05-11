@@ -58,7 +58,7 @@ with col1:
         "Site Name",
         placeholder="e.g. Coventry, London and Warrington"
     )
-    st.caption("If multiple sites, use format: Coventry, London and Warrington")
+    st.caption("If multiple sites, use this example format: Coventry, London and Warrington")
 
 with col2:
     project_name = st.text_input("Project Name")
@@ -81,7 +81,7 @@ if "Transport" in quote_type:
             "Transport Type",
             placeholder="e.g. HGV and Grey Fleet"
         )
-        st.caption("If multiple types, use format: HGV and Grey Fleet")
+        st.caption("If multiple types, use the example format: HGV and Grey Fleet")
 
 else:
     number_of_transport = ""
