@@ -30,14 +30,17 @@ quote_type = st.selectbox(
     ]
 )
 
-st.markdown("---")
-
 # ==========================
-# TEMPLATE UPLOAD
+# ✅ TEMPLATE MAPPING
 # ==========================
-uploaded_file = st.file_uploader(
-    "Upload Template (.docx)", type=["docx"]
-)
+TEMPLATE_MAP = {
+    "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
+    "Metering Assessment": "templates/Metering Assessment Template.docx",
+    "EE and Metering": "templates/EE Audit and Metering Template.docx",
+    "ESOS P4": "templates/ESOS P4 Template.docx",
+    "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
+    "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+}
 
 st.markdown("---")
 
@@ -55,7 +58,7 @@ with col2:
     project_name = st.text_input("Project Name")
 
 # ==========================
-# ✅ TRANSPORT SECTION
+# TRANSPORT SECTION
 # ==========================
 st.markdown("---")
 
@@ -158,7 +161,6 @@ def fill_works_table(doc, works_list):
         return doc
 
     table = doc.tables[0]
-
     start_row = 1
 
     for i, work in enumerate(works_list):
@@ -172,7 +174,6 @@ def fill_works_table(doc, works_list):
         row_cells[1].text = work["description"]
         row_cells[2].text = f"£{work['price']:,.2f}"
 
-    # Total row
     total = sum(work["price"] for work in works_list)
     last_row = table.rows[-1].cells
     last_row[2].text = f"£{total:,.2f}"
@@ -184,70 +185,55 @@ def fill_works_table(doc, works_list):
 # ==========================
 if st.button("📄 Generate Word Document"):
 
-    if uploaded_file is None:
-        st.error("Please upload a template.")
-    elif not customer_name or not project_name:
+    if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
     else:
         todays_date = datetime.now().strftime("%d %B %Y")
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
-            tmp.write(uploaded_file.read())
-            template_path = tmp.name
+        template_path = TEMPLATE_MAP.get(quote_type)
 
-        doc = Document(template_path)
+        if not template_path:
+            st.error("Template not found.")
+        else:
+            doc = Document(template_path)
 
-        data = {
-            "CustomerName": customer_name,
-            "NumberOfSites": number_of_sites,
-            "SiteName": site_name,
-            "NumberOfTransport": number_of_transport,
-            "TransportType": transport_type,
-            "ProjectName": project_name,
-            "TodaysDate": todays_date
-        }
+            data = {
+                "CustomerName": customer_name,
+                "NumberOfSites": number_of_sites,
+                "SiteName": site_name,
+                "NumberOfTransport": number_of_transport,
+                "TransportType": transport_type,
+                "ProjectName": project_name,
+                "TodaysDate": todays_date
+            }
 
-        doc = replace_placeholders(doc, data)
+            doc = replace_placeholders(doc, data)
 
-        if st.session_state.works_list:
-            doc = fill_works_table(doc, st.session_state.works_list)
+            if st.session_state.works_list:
+                doc = fill_works_table(doc, st.session_state.works_list)
 
-        output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
-        doc.save(output.name)
+            output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
+            doc.save(output.name)
 
-        st.success("✅ Document generated successfully!")
+            st.success("✅ Document generated successfully!")
 
-        with open(output.name, "rb") as f:
-            st.download_button(
-                "⬇ Download Quote",
-                f,
-                file_name=f"{customer_name}_quote.docx"
-            )
+            with open(output.name, "rb") as f:
+                st.download_button(
+                    "⬇ Download Quote",
+                    f,
+                    file_name=f"{customer_name}_quote.docx"
+                )
 
 # ==========================
 # HELP
 # ==========================
-with st.expander("📘 Template Help"):
+with st.expander("📘 Template Info"):
     st.write("""
-✅ PLACEHOLDERS:
-{{CustomerName}}
-{{NumberOfSites}}
-{{SiteName}}
-{{NumberOfTransport}}
-{{TransportType}}
-{{ProjectName}}
-{{TodaysDate}}
+Templates are now automatically selected based on Quote Type ✅
 
-✅ TABLE STRUCTURE:
+Ensure files exist in:
 
-| Item | Work Description | Price |
-|------|-----------------|------|
-| 1    | Placeholder     | Placeholder |
-| ...  |                 |      |
-|      | Total (ex. VAT) |      |
+/templates/
 
-✅ NOTES:
-- Table must be a normal Word table
-- Not inside shapes/textboxes
-- Blue shapes must be "Behind Text"
+And match exact names in code.
 """)
