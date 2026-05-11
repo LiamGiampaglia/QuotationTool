@@ -1,5 +1,5 @@
 import streamlit as st
-from docx import Document
+from python-docx import Document
 import tempfile
 from datetime import datetime
 
