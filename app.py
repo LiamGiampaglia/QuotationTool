@@ -294,28 +294,27 @@ def insert_payment_terms(doc, payment_terms):
     for paragraph in doc.paragraphs:
         if "{{PaymentTerms}}" in paragraph.text:
 
-            # Get parent XML element
-            parent = paragraph._element.getparent()
-            index = parent.index(paragraph._element)
+            # ✅ Clear the placeholder text
+            paragraph.text = ""
 
-            # Remove the placeholder paragraph
-            parent.remove(paragraph._element)
+            # ✅ Fill the FIRST line into existing bullet
+            first = True
 
-            # Insert new paragraphs
-            for i, term in enumerate(payment_terms):
+            for term in payment_terms:
+
                 if term["percent"] > 0 and term["description"]:
 
-                    new_p = OxmlElement("w:p")
-                    parent.insert(index + i, new_p)
+                    text = f"{term['percent']}% {term['description']}"
 
-                    new_para = Paragraph(new_p, paragraph._parent)
+                    if first:
+                        paragraph.text = text
+                        first = False
+                    else:
+                        # ✅ Add new paragraph below
+                        new_para = doc.add_paragraph(text)
 
-                    # ✅ Insert text (NO bullet symbol here)
-                    new_para.add_run(f"{term['percent']}% {term['description']}")
-
-                    # ✅ Keep original style (this is what keeps the green bullet)
-                    new_para.style = paragraph.style
-                    new_para.paragraph_format.left_indent = paragraph.paragraph_format.left_indent
+                        # ✅ Copy style (this keeps your green bullet)
+                        new_para.style = paragraph.style
 
             break
 
