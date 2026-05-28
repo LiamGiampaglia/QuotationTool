@@ -302,6 +302,7 @@ def fill_works_table(doc, works_list):
 
     return doc
 
+
 def insert_payment_terms(doc, payment_terms):
 
     payment_lines = []
@@ -312,11 +313,21 @@ def insert_payment_terms(doc, payment_terms):
 
     payment_text = "\n".join(payment_lines)
 
+    # ✅ 1. Normal paragraphs
     for paragraph in doc.paragraphs:
         if "{{PaymentTerms}}" in paragraph.text:
             paragraph.text = paragraph.text.replace("{{PaymentTerms}}", payment_text)
 
+    # ✅ 2. TABLE CELLS (THIS IS THE MISSING PIECE)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    if "{{PaymentTerms}}" in paragraph.text:
+                        paragraph.text = paragraph.text.replace("{{PaymentTerms}}", payment_text)
+
     return doc
+
 
 
 # ==========================
