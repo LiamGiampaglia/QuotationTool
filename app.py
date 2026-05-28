@@ -286,6 +286,38 @@ def fill_works_table(doc, works_list):
 
     return doc
 
+def insert_payment_terms(doc, payment_terms):
+
+    for paragraph in doc.paragraphs:
+        if "{{PaymentTerms}}" in paragraph.text:
+
+            # Get parent XML element
+            parent = paragraph._element.getparent()
+            index = parent.index(paragraph._element)
+
+            # Remove the placeholder paragraph
+            parent.remove(paragraph._element)
+
+            # Insert new paragraphs
+            for i, term in enumerate(payment_terms):
+                if term["percent"] > 0 and term["description"]:
+
+                    new_p = paragraph._element.__class__()
+                    parent.insert(index + i, new_p)
+
+                    new_para = paragraph.__class__(new_p, paragraph._parent)
+
+                    # ✅ Insert text (NO bullet symbol here)
+                    new_para.add_run(f"{term['percent']}% {term['description']}")
+
+                    # ✅ Keep original style (this is what keeps the green bullet)
+                    new_para.style = paragraph.style
+                    new_para.paragraph_format.left_indent = paragraph.paragraph_format.left_indent
+
+            break
+
+    return doc
+
 
 # ==========================
 # GENERATE DOCUMENT
@@ -299,13 +331,6 @@ if st.button("📄 Generate Word Document"):
 
         doc = Document(template_path)
 
-        # ✅ BUILD PAYMENT TERMS FIRST
-        payment_lines = []
-        for term in st.session_state.payment_terms:
-            if term["percent"] > 0 and term["description"]:
-                payment_lines.append(f"{term['percent']}% {term['description']}")
-
-        payment_text = "\n\n".join(payment_lines)
 
         # ✅ NOW USE IT
         data = {
@@ -315,11 +340,11 @@ if st.button("📄 Generate Word Document"):
             "NumberOfTransport": number_of_transport,
             "TransportType": transport_type,
             "ProjectName": project_name,
-            "TodaysDate": datetime.now().strftime("%d %B %Y"),
-            "PaymentTerms": payment_text
+            "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
         doc = replace_placeholders(doc, data)
+        doc = insert_payment_terms(doc, st.session_state.payment_terms)
 
         if st.session_state.works_list:
             doc = fill_works_table(doc, st.session_state.works_list)
