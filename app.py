@@ -305,7 +305,7 @@ if st.button("📄 Generate Word Document"):
             if term["percent"] > 0 and term["description"]:
                 payment_lines.append(f"{term['percent']}% {term['description']}")
 
-        payment_text = "\n".join(payment_lines)
+        payment_text = "\n\n".join(payment_lines)
 
         # ✅ NOW USE IT
         data = {
