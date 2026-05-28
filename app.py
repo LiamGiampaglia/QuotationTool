@@ -184,6 +184,50 @@ if st.session_state.works_list:
 st.markdown("---")
 
 # ==========================
+# 💰 PAYMENT TERMS
+# ==========================
+st.markdown("---")
+st.subheader("💰 Payment Terms")
+
+if "payment_terms" not in st.session_state:
+    st.session_state.payment_terms = [
+        {"percent": 100, "description": "upon submittal of the report"}
+    ]
+
+# Display inputs
+for i, term in enumerate(st.session_state.payment_terms):
+    col1, col2 = st.columns([1, 3])
+
+    with col1:
+        st.session_state.payment_terms[i]["percent"] = st.number_input(
+            f"% {i+1}",
+            min_value=0,
+            max_value=100,
+            value=term["percent"],
+            key=f"percent_{i}"
+        )
+
+    with col2:
+        st.session_state.payment_terms[i]["description"] = st.text_input(
+            f"Condition {i+1}",
+            value=term["description"],
+            key=f"desc_{i}"
+        )
+
+# Add new row
+if st.button("➕ Add Payment Split"):
+    st.session_state.payment_terms.append({"percent": 0, "description": ""})
+
+# Calculate total
+total_percent = sum(term["percent"] for term in st.session_state.payment_terms)
+
+if total_percent != 100:
+    st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
+else:
+    st.success("✅ Payment terms total = 100%")
+
+
+# ==========================
 # ✅ SAFE PLACEHOLDER FUNCTION
 # ==========================
 def replace_placeholders(doc, data):
@@ -261,8 +305,16 @@ if st.button("📄 Generate Word Document"):
             "NumberOfTransport": number_of_transport,
             "TransportType": transport_type,
             "ProjectName": project_name,
-            "TodaysDate": datetime.now().strftime("%d %B %Y")
+            "TodaysDate": datetime.now().strftime("%d %B %Y"),
+            "PaymentTerms": payment_text
         }
+        
+        payment_lines = []
+        for term in st.session_state.payment_terms:
+            if term["percent"] > 0 and term["description"]:
+                payment_lines.append(f"• {term['percent']}% {term['description']}")
+        
+        payment_text = "\n".join(payment_lines)
 
         doc = replace_placeholders(doc, data)
 
