@@ -306,30 +306,25 @@ def insert_payment_terms(doc, payment_terms):
 
     for paragraph in doc.paragraphs:
 
-        # ✅ Look inside runs (more reliable)
         if any("{{PaymentTerms}}" in run.text for run in paragraph.runs):
 
-            # ✅ Remove placeholder safely
-            for run in paragraph.runs:
-                run.text = run.text.replace("{{PaymentTerms}}", "")
+            # Clear placeholder
+            paragraph.text = ""
 
-            first = True
+            # Keep original style (bullet style)
+            style = paragraph.style
 
-            for term in payment_terms:
+            for i, term in enumerate(payment_terms):
 
                 if term["percent"] > 0 and term["description"]:
 
                     text = f"{term['percent']}% {term['description']}"
 
-                    if first:
+                    if i == 0:
                         paragraph.text = text
-                        first = False
                     else:
-                        # ✅ Add new paragraph directly after
-                        new_para = paragraph.insert_paragraph_after(text)
-
-                        # ✅ Copy style (keeps green bullet)
-                        new_para.style = paragraph.style
+                        new_para = doc.add_paragraph(text)
+                        new_para.style = style
 
             break
 
