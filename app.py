@@ -347,8 +347,8 @@ if st.button("📄 Generate Word Document"):
             "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
-        doc = replace_placeholders(doc, data)
         doc = insert_payment_terms(doc, st.session_state.payment_terms)
+        doc = replace_placeholders(doc, data)
 
         if st.session_state.works_list:
             doc = fill_works_table(doc, st.session_state.works_list)
