@@ -283,24 +283,43 @@ def replace_placeholders(doc, data):
     return doc
 
 
+
 def fill_works_table(doc, works_list):
-    table = doc.tables[0]
+
+    target_table = None
+
+    # ✅ Find the table with "Work Description" header
+    for table in doc.tables:
+        first_row = table.rows[0].cells
+
+        if "Work Description" in first_row[1].text:
+            target_table = table
+            break
+
+    if target_table is None:
+        print("❌ Pricing table not found")
+        return doc
+
     start_row = 1
 
+    # ✅ Fill rows
     for i, work in enumerate(works_list):
-        if start_row + i >= len(table.rows) - 1:
-            row_cells = table.add_row().cells
+
+        if start_row + i >= len(target_table.rows) - 1:
+            row_cells = target_table.add_row().cells
         else:
-            row_cells = table.rows[start_row + i].cells
+            row_cells = target_table.rows[start_row + i].cells
 
         row_cells[0].text = str(i + 1)
         row_cells[1].text = work["description"]
         row_cells[2].text = f"£{work['price']:,.2f}"
 
+    # ✅ Total row
     total = sum(work["price"] for work in works_list)
-    table.rows[-1].cells[2].text = f"£{total:,.2f}"
+    target_table.rows[-1].cells[2].text = f"£{total:,.2f}"
 
     return doc
+
 
 
 def insert_payment_terms(doc, payment_terms):
