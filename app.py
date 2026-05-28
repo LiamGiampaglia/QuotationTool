@@ -304,29 +304,17 @@ def fill_works_table(doc, works_list):
 
 def insert_payment_terms(doc, payment_terms):
 
+    payment_lines = []
+
+    for term in payment_terms:
+        if term["percent"] > 0 and term["description"]:
+            payment_lines.append(f"• {term['percent']}% {term['description']}")
+
+    payment_text = "\n".join(payment_lines)
+
     for paragraph in doc.paragraphs:
-
-        if any("{{PaymentTerms}}" in run.text for run in paragraph.runs):
-
-            # Clear placeholder
-            paragraph.text = ""
-
-            # Keep original style (bullet style)
-            style = paragraph.style
-
-            for i, term in enumerate(payment_terms):
-
-                if term["percent"] > 0 and term["description"]:
-
-                    text = f"{term['percent']}% {term['description']}"
-
-                    if i == 0:
-                        paragraph.text = text
-                    else:
-                        new_para = doc.add_paragraph(text)
-                        new_para.style = style
-
-            break
+        if "{{PaymentTerms}}" in paragraph.text:
+            paragraph.text = paragraph.text.replace("{{PaymentTerms}}", payment_text)
 
     return doc
 
