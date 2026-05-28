@@ -1,3 +1,6 @@
+
+from docx.oxml import OxmlElement
+from docx.text.paragraph import Paragraph
 import streamlit as st
 from docx import Document
 import tempfile
@@ -302,10 +305,10 @@ def insert_payment_terms(doc, payment_terms):
             for i, term in enumerate(payment_terms):
                 if term["percent"] > 0 and term["description"]:
 
-                    new_p = paragraph._element.__class__()
+                    new_p = OxmlElement("w:p")
                     parent.insert(index + i, new_p)
 
-                    new_para = paragraph.__class__(new_p, paragraph._parent)
+                    new_para = Paragraph(new_p, paragraph._parent)
 
                     # ✅ Insert text (NO bullet symbol here)
                     new_para.add_run(f"{term['percent']}% {term['description']}")
