@@ -286,6 +286,7 @@ def fill_works_table(doc, works_list):
 
     return doc
 
+
 # ==========================
 # GENERATE DOCUMENT
 # ==========================
@@ -298,6 +299,15 @@ if st.button("📄 Generate Word Document"):
 
         doc = Document(template_path)
 
+        # ✅ BUILD PAYMENT TERMS FIRST
+        payment_lines = []
+        for term in st.session_state.payment_terms:
+            if term["percent"] > 0 and term["description"]:
+                payment_lines.append(f"• {term['percent']}% {term['description']}")
+
+        payment_text = "\n".join(payment_lines)
+
+        # ✅ NOW USE IT
         data = {
             "CustomerName": customer_name,
             "NumberOfSites": number_of_sites,
@@ -308,13 +318,6 @@ if st.button("📄 Generate Word Document"):
             "TodaysDate": datetime.now().strftime("%d %B %Y"),
             "PaymentTerms": payment_text
         }
-        
-        payment_lines = []
-        for term in st.session_state.payment_terms:
-            if term["percent"] > 0 and term["description"]:
-                payment_lines.append(f"• {term['percent']}% {term['description']}")
-        
-        payment_text = "\n".join(payment_lines)
 
         doc = replace_placeholders(doc, data)
 
