@@ -292,12 +292,14 @@ def fill_works_table(doc, works_list):
 def insert_payment_terms(doc, payment_terms):
 
     for paragraph in doc.paragraphs:
-        if "{{PaymentTerms}}" in paragraph.text:
 
-            # ✅ Clear the placeholder text
-            paragraph.text = ""
+        # ✅ Look inside runs (more reliable)
+        if any("{{PaymentTerms}}" in run.text for run in paragraph.runs):
 
-            # ✅ Fill the FIRST line into existing bullet
+            # ✅ Remove placeholder safely
+            for run in paragraph.runs:
+                run.text = run.text.replace("{{PaymentTerms}}", "")
+
             first = True
 
             for term in payment_terms:
@@ -310,10 +312,10 @@ def insert_payment_terms(doc, payment_terms):
                         paragraph.text = text
                         first = False
                     else:
-                        # ✅ Add new paragraph below
-                        new_para = doc.add_paragraph(text)
+                        # ✅ Add new paragraph directly after
+                        new_para = paragraph.insert_paragraph_after(text)
 
-                        # ✅ Copy style (this keeps your green bullet)
+                        # ✅ Copy style (keeps green bullet)
                         new_para.style = paragraph.style
 
             break
