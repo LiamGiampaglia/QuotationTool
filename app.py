@@ -309,7 +309,7 @@ def insert_payment_terms(doc, payment_terms):
 
     for term in payment_terms:
         if term["percent"] > 0 and term["description"]:
-            payment_lines.append(f"• {term['percent']}% {term['description']}")
+            payment_lines.append(f" {term['percent']}% {term['description']}")
 
     payment_text = "\n".join(payment_lines)
 
