@@ -303,7 +303,7 @@ if st.button("📄 Generate Word Document"):
         payment_lines = []
         for term in st.session_state.payment_terms:
             if term["percent"] > 0 and term["description"]:
-                payment_lines.append(f"• {term['percent']}% {term['description']}")
+                payment_lines.append(f"{term['percent']}% {term['description']}")
 
         payment_text = "\n".join(payment_lines)
 
