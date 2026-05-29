@@ -22,13 +22,14 @@ st.title("⚡ Energy Quote Generator")
 # ==========================
 
 quote_options = {
-    "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
-    "Metering Assessment": "templates/Metering Assessment Template.docx",
-    "EE and Metering": "templates/EE Audit and Metering Template.docx",
-    "ESOS P4": "templates/ESOS P4 Template.docx",
-    "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
-    "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+    "Energy Efficiency Audit": "Energy Efficiency Audit Template.docx",
+    "Metering Assessment": "Metering Assessment Template.docx",
+    "EE and Metering": "EE Audit and Metering Template.docx",
+    "ESOS P4": "ESOS P4 Template.docx",
+    "ESOS P4 and Transport": "ESOS P4 and Transport Template.docx",
+    "ESOS P4 Transport": "ESOS P4 Transport Template.docx"
 }
+
 
 quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
 st.session_state.selected_quote_type = quote_type
