@@ -31,6 +31,7 @@ quote_options = {
 }
 
 quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
+st.session_state.selected_quote_type = quote_type
 
 
 # ==========================
@@ -386,7 +387,7 @@ if st.button("📄 Generate Word Document"):
         st.error("Please add at least one work item before generating the document.")
 
     else:
-        template_path = quote_options[quote_type]
+        template_path = quote_options[st.session_state.selected_quote_type]
         doc = Document(template_path)
 
         # ✅ Fix contact name logic
