@@ -305,7 +305,7 @@ def fill_works_table(doc, works_list):
     for table in doc.tables:
         first_row = table.rows[0].cells
 
-        if "Work Description" in first_row[1].text:
+        if "Description" in first_row[1].text:
             target_table = table
             break
 
