@@ -382,6 +382,9 @@ if st.button("📄 Generate Word Document"):
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
 
+    elif not st.session_state.works_list:
+        st.error("Please add at least one work item before generating the document.")
+
     else:
         template_path = TEMPLATE_MAP.get(quote_type)
         doc = Document(template_path)
