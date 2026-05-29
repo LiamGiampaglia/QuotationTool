@@ -394,22 +394,23 @@ if st.button("📄 Generate Word Document"):
         else:
             contact_name_final = contact_name
 
+        # ✅ Build address properly (FIXED INDENT)
         address_lines = []
 
-    if address_line_1:
-        address_lines.append(address_line_1)
-    
-    if address_line_2:
-        address_lines.append(address_line_2)
-    
-    if city:
-        address_lines.append(city)
-    
-    if postcode:
-        address_lines.append(postcode)
-    
-    full_address = "\n".join(address_lines)
-        
+        if address_line_1:
+            address_lines.append(address_line_1)
+
+        if address_line_2:
+            address_lines.append(address_line_2)
+
+        if city:
+            address_lines.append(city)
+
+        if postcode:
+            address_lines.append(postcode)
+
+        full_address = "\n".join(address_lines)
+
         # ✅ Build data dictionary
         data = {
             "CustomerName": customer_name,
