@@ -64,6 +64,13 @@ with col1:
 
 with col2:
     project_name = st.text_input("Project Name")
+    number_of_consultants = st.number_input(
+        "Number of Consultants",
+        min_value=1,
+        max_value=50,
+        value=1
+    )
+
 
 # ==========================
 # 📄 FILE NAMING SECTION
@@ -371,6 +378,7 @@ if st.button("📄 Generate Word Document"):
             "TransportType": transport_type,
             "ProjectName": project_name,
             "TodaysDate": datetime.now().strftime("%d %B %Y")
+            "NumberOfConsultants": number_of_consultants
         }
 
         doc = insert_payment_terms(doc, st.session_state.payment_terms)
