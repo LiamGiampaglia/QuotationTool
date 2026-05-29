@@ -1,4 +1,3 @@
-
 from docx.oxml import OxmlElement
 from docx.text.paragraph import Paragraph
 import streamlit as st
@@ -395,6 +394,22 @@ if st.button("📄 Generate Word Document"):
         else:
             contact_name_final = contact_name
 
+        address_lines = []
+
+    if address_line_1:
+        address_lines.append(address_line_1)
+    
+    if address_line_2:
+        address_lines.append(address_line_2)
+    
+    if city:
+        address_lines.append(city)
+    
+    if postcode:
+        address_lines.append(postcode)
+    
+    full_address = "\n".join(address_lines)
+        
         # ✅ Build data dictionary
         data = {
             "CustomerName": customer_name,
@@ -405,10 +420,7 @@ if st.button("📄 Generate Word Document"):
             "ProjectName": project_name,
             "NumberOfConsultants": number_of_consultants,
 
-            "AddressLine_1": address_line_1,
-            "AddressLine_2": address_line_2,
-            "City": city,
-            "Postcode": postcode,
+            "FullAddress": full_address,
             "ContactName": contact_name_final,
 
             "TodaysDate": datetime.now().strftime("%d %B %Y")
