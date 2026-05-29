@@ -381,14 +381,18 @@ if st.button("📄 Generate Word Document"):
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
+
     else:
         template_path = TEMPLATE_MAP.get(quote_type)
-
         doc = Document(template_path)
 
-    if not contact_name.strip():
-        contact_name = "To whom it may concern"
+        # ✅ Fix contact name logic
+        if not contact_name.strip():
+            contact_name_final = "To whom it may concern"
+        else:
+            contact_name_final = contact_name
 
+        # ✅ Build data dictionary
         data = {
             "CustomerName": customer_name,
             "NumberOfSites": number_of_sites,
@@ -397,21 +401,24 @@ if st.button("📄 Generate Word Document"):
             "TransportType": transport_type,
             "ProjectName": project_name,
             "NumberOfConsultants": number_of_consultants,
+
             "AddressLine_1": address_line_1,
             "AddressLine_2": address_line_2,
             "City": city,
             "Postcode": postcode,
-            "ContactName": contact_name,
+            "ContactName": contact_name_final,
+
             "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
+        # ✅ Apply transformations
         doc = insert_payment_terms(doc, st.session_state.payment_terms)
         doc = replace_placeholders(doc, data)
 
         if st.session_state.works_list:
             doc = fill_works_table(doc, st.session_state.works_list)
 
-        # ✅ Filename generation
+        # ✅ Filename
         file_name = f"{project_number}-{document_type}-{subject}-{unique_id}-{revision_code}{revision_number}"
 
         output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
