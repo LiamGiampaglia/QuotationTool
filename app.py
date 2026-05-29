@@ -70,6 +70,24 @@ with col2:
         max_value=50,
         value=1
     )
+# ==========================
+# 🏢 CUSTOMER DETAILS
+# ==========================
+st.markdown("---")
+st.subheader("🏢 Customer Details")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    address_line_1 = st.text_input("Address Line 1")
+    address_line_2 = st.text_input("Address Line 2")
+
+with col2:
+    city = st.text_input("City")
+    postcode = st.text_input("Postcode")
+
+# Contact name (optional)
+contact_name = st.text_input("Contact Name (leave blank for default)")
 
 
 # ==========================
@@ -368,8 +386,9 @@ if st.button("📄 Generate Word Document"):
 
         doc = Document(template_path)
 
+    if not contact_name.strip():
+        contact_name = "To whom it may concern"
 
-        # ✅ NOW USE IT
         data = {
             "CustomerName": customer_name,
             "NumberOfSites": number_of_sites,
@@ -377,8 +396,13 @@ if st.button("📄 Generate Word Document"):
             "NumberOfTransport": number_of_transport,
             "TransportType": transport_type,
             "ProjectName": project_name,
-            "TodaysDate": datetime.now().strftime("%d %B %Y"),
-            "NumberOfConsultants": number_of_consultants
+            "NumberOfConsultants": number_of_consultants,
+            "AddressLine_1": address_line_1,
+            "AddressLine_2": address_line_2,
+            "City": city,
+            "Postcode": postcode,
+            "ContactName": contact_name,
+            "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
         doc = insert_payment_terms(doc, st.session_state.payment_terms)
