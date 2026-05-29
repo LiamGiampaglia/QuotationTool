@@ -388,7 +388,7 @@ if st.button("📄 Generate Word Document"):
 
         # ✅ Fix contact name logic
         if not contact_name.strip():
-            contact_name_final = "To whom it may concern"
+            contact_name_final = "whom it may concern"
         else:
             contact_name_final = contact_name
 
