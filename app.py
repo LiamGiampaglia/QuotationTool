@@ -377,7 +377,7 @@ if st.button("📄 Generate Word Document"):
             "NumberOfTransport": number_of_transport,
             "TransportType": transport_type,
             "ProjectName": project_name,
-            "TodaysDate": datetime.now().strftime("%d %B %Y")
+            "TodaysDate": datetime.now().strftime("%d %B %Y"),
             "NumberOfConsultants": number_of_consultants
         }
 
