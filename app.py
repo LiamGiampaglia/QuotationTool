@@ -20,17 +20,18 @@ st.title("⚡ Energy Quote Generator")
 # ==========================
 # QUOTE TYPE
 # ==========================
-quote_type = st.selectbox(
-    "Select Quote Type",
-    [
-        "Energy Efficiency Audit",
-        "Metering Assessment",
-        "EE and Metering",
-        "ESOS P4",
-        "ESOS P4 and Transport",
-        "ESOS P4 Transport",
-    ]
-)
+
+quote_options = {
+    "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
+    "Metering Assessment": "templates/Metering Assessment Template.docx",
+    "EE and Metering": "templates/EE Audit and Metering Template.docx",
+    "ESOS P4": "templates/ESOS P4 Template.docx",
+    "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
+    "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+}
+
+quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
+
 
 # ==========================
 # TEMPLATE MAPPING
@@ -385,7 +386,7 @@ if st.button("📄 Generate Word Document"):
         st.error("Please add at least one work item before generating the document.")
 
     else:
-        template_path = TEMPLATE_MAP.get(quote_type)
+        template_path = quote_options[quote_type]
         doc = Document(template_path)
 
         # ✅ Fix contact name logic
