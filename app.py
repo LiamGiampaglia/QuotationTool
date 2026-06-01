@@ -253,24 +253,32 @@ def replace_placeholders(doc, data):
         for key, value in data.items():
             placeholder = f"{{{{{key}}}}}"
 
-            # ✅ Join full text
+            # ✅ Check full text
             full_text = "".join(run.text for run in paragraph.runs)
 
             if placeholder in full_text:
 
-                new_text = full_text.replace(placeholder, str(value))
+                # ✅ Replace across runs carefully
+                remaining_text = full_text.replace(placeholder, str(value))
 
-                # ✅ Only update FIRST run, clear others
-                paragraph.runs[0].text = new_text
+                # ✅ Write back character by character across runs
+                i = 0
+                for run in paragraph.runs:
+                    run_len = len(run.text)
 
-                for i in range(1, len(paragraph.runs)):
-                    paragraph.runs[i].text = ""
+                    run.text = remaining_text[i:i+run_len]
 
-    # ✅ Normal paragraphs
+                    i += run_len
+
+                # ✅ If any text left, append to last run
+                if i < len(remaining_text):
+                    paragraph.runs[-1].text += remaining_text[i:]
+
+    # ✅ Process paragraphs
     for paragraph in doc.paragraphs:
         process_paragraph(paragraph)
 
-    # ✅ Tables
+    # ✅ Process tables
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
