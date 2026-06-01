@@ -261,37 +261,28 @@ def replace_placeholders(doc, data):
 
 
 
-    def replace_split_placeholder(paragraph):
+    def replace_placeholders(doc, data):
+
+    def process_paragraph(paragraph):
         full_text = "".join(run.text for run in paragraph.runs)
-    
-        updated_text = full_text
-    
+
         for key, value in data.items():
             placeholder = f"{{{{{key}}}}}"
-    
-            # ✅ Skip PaymentTerms
-            if placeholder == "{{PaymentTerms}}":
-                continue
-    
-            updated_text = updated_text.replace(placeholder, str(value))
-    
-        if updated_text != full_text:
-            if len(paragraph.text) < 300:
-                paragraph.runs[0].text = updated_text
-                for i in range(1, len(paragraph.runs)):
-                    paragraph.runs[i].text = ""
+            full_text = full_text.replace(placeholder, str(value).strip())
 
+        if paragraph.runs:
+            paragraph.runs[0].text = full_text
+            for i in range(1, len(paragraph.runs)):
+                paragraph.runs[i].text = ""
 
     for paragraph in doc.paragraphs:
-        replace_in_runs(paragraph)
-        replace_split_placeholder(paragraph)
+        process_paragraph(paragraph)
 
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
-                    replace_in_runs(paragraph)
-                    replace_split_placeholder(paragraph)
+                    process_paragraph(paragraph)
 
     return doc
 
