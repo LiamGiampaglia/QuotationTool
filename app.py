@@ -6,6 +6,40 @@ import tempfile
 from datetime import datetime
 import openpyxl
 
+def extract_rates(uploaded_file):
+
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    ws = wb["PRICING SHEET"]
+
+    rates = {}
+
+    for row in ws.iter_rows(values_only=True):
+
+        for i, cell in enumerate(row):
+
+            if cell == "Office (GBP)" and i+1 < len(row):
+                rates["office_cost"] = row[i+1]
+
+            if cell == "Site (GBP)" and i+1 < len(row):
+                rates["site_cost"] = row[i+1]
+
+            if cell == "Mileage cost (GBP)" and i+1 < len(row):
+                rates["mileage"] = row[i+1]
+
+            if cell == "Outside M25 (GBP)" and i+1 < len(row):
+                rates["outside_m25"] = row[i+1]
+
+            if cell == "Inside M25 (GBP)" and i+1 < len(row):
+                rates["inside_m25"] = row[i+1]
+
+            if cell == "Margin In Office" and i+1 < len(row):
+                rates["office_margin"] = row[i+1]
+
+            if cell == "Margin On-Site" and i+1 < len(row):
+                rates["site_margin"] = row[i+1]
+
+    return rates
+
 # ==========================
 # SESSION STATE
 # ==========================
@@ -334,40 +368,7 @@ else:
 # ==========================
 # ✅ SAFE PLACEHOLDER FUNCTION
 # ==========================
-def extract_rates(uploaded_file):
-
-    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
-    ws = wb["PRICING SHEET"]
-
-    rates = {}
-
-    for row in ws.iter_rows(values_only=True):
-
-        for i, cell in enumerate(row):
-
-            if cell == "Office (GBP)" and i+1 < len(row):
-                rates["office_cost"] = row[i+1]
-
-            if cell == "Site (GBP)" and i+1 < len(row):
-                rates["site_cost"] = row[i+1]
-
-            if cell == "Mileage cost (GBP)" and i+1 < len(row):
-                rates["mileage"] = row[i+1]
-
-            if cell == "Outside M25 (GBP)" and i+1 < len(row):
-                rates["outside_m25"] = row[i+1]
-
-            if cell == "Inside M25 (GBP)" and i+1 < len(row):
-                rates["inside_m25"] = row[i+1]
-
-            if cell == "Margin In Office" and i+1 < len(row):
-                rates["office_margin"] = row[i+1]
-
-            if cell == "Margin On-Site" and i+1 < len(row):
-                rates["site_margin"] = row[i+1]
-
-    return rates
-    
+   
 def replace_placeholders(doc, data):
 
     def process_paragraph(paragraph):
@@ -480,13 +481,13 @@ def insert_payment_terms(doc, payment_terms):
 # ==========================
 if st.button("📄 Generate Word Document"):
     
-    if uploaded_file is not None:
+    
+    if uploaded_file is not None and "office_hours" in locals():
         wb = openpyxl.load_workbook(uploaded_file)
         ws = wb["PRICING SHEET"]
     
         ws["B10"] = office_hours
         ws["C10"] = site_hours
-
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
