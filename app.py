@@ -4,6 +4,7 @@ import streamlit as st
 from docx import Document
 import tempfile
 from datetime import datetime
+import openpyxl
 
 # ==========================
 # SESSION STATE
@@ -16,6 +17,18 @@ if "works_list" not in st.session_state:
 # ==========================
 st.set_page_config(page_title="Energy Quote Tool", layout="centered")
 st.title("Consultancy Quote Generator")
+
+
+# ==========================
+# 📊 COST SHEET UPLOAD
+# ==========================
+st.markdown("---")
+st.subheader("📊 Cost Sheet")
+
+uploaded_file = st.file_uploader(
+    "Upload Pricing Template",
+    type=["xlsx"]
+)
 
 
 # ==========================
@@ -194,6 +207,55 @@ else:
 st.markdown("---")
 
 # ==========================
+# 💰 LIVE COST CALCULATOR
+# ==========================
+
+if uploaded_file is not None:
+
+    rates = extract_rates(uploaded_file)
+
+    st.markdown("---")
+    st.subheader("💰 Live Cost Calculator")
+
+    # Inputs
+    office_hours = st.number_input("Office Hours", 0.0)
+    site_hours = st.number_input("Site Hours", 0.0)
+
+    overnight_outside = st.number_input("Overnight Stays (Outside M25)", 0)
+    miles = st.number_input("Mileage (miles)", 0)
+
+    # Ensure required data exists
+    if "office_cost" in rates and "office_margin" in rates:
+
+        # Convert cost → selling using margin
+        office_rate = rates["office_cost"] / (1 - rates["office_margin"])
+        site_rate = rates["site_cost"] / (1 - rates["site_margin"])
+
+        # Labour calculation
+        labour_total = (office_hours * office_rate) + (site_hours * site_rate)
+
+        # Expenses
+        expenses_total = (
+            overnight_outside * rates.get("outside_m25", 0)
+            + miles * rates.get("mileage", 0)
+        )
+
+        total_price = labour_total + expenses_total
+
+        # Display
+        st.markdown("### Breakdown")
+
+        st.write(f"Labour: £{labour_total:,.2f}")
+        st.write(f"Expenses: £{expenses_total:,.2f}")
+
+        st.markdown("---")
+
+        st.metric("Total Price", f"£{total_price:,.2f}")
+
+    else:
+        st.error("⚠️ Could not extract rates from template")
+
+# ==========================
 # WORKS INPUT
 # ==========================
 st.subheader("🛠️ Works & Pricing")
@@ -314,6 +376,40 @@ def replace_placeholders(doc, data):
     return doc
 
 
+def extract_rates(uploaded_file):
+
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    ws = wb["PRICING SHEET"]
+
+    rates = {}
+
+    for row in ws.iter_rows(values_only=True):
+
+        for i, cell in enumerate(row):
+
+            if cell == "Office (GBP)" and i+1 < len(row):
+                rates["office_cost"] = row[i+1]
+
+            if cell == "Site (GBP)" and i+1 < len(row):
+                rates["site_cost"] = row[i+1]
+
+            if cell == "Mileage cost (GBP)" and i+1 < len(row):
+                rates["mileage"] = row[i+1]
+
+            if cell == "Outside M25 (GBP)" and i+1 < len(row):
+                rates["outside_m25"] = row[i+1]
+
+            if cell == "Inside M25 (GBP)" and i+1 < len(row):
+                rates["inside_m25"] = row[i+1]
+
+            if cell == "Margin In Office" and i+1 < len(row):
+                rates["office_margin"] = row[i+1]
+
+            if cell == "Margin On-Site" and i+1 < len(row):
+                rates["site_margin"] = row[i+1]
+
+    return rates
+
 
 
 def fill_works_table(doc, works_list):
@@ -385,6 +481,14 @@ def insert_payment_terms(doc, payment_terms):
 # GENERATE DOCUMENT
 # ==========================
 if st.button("📄 Generate Word Document"):
+    
+    if uploaded_file is not None:
+        wb = openpyxl.load_workbook(uploaded_file)
+        ws = wb["PRICING SHEET"]
+    
+        ws["B10"] = office_hours
+        ws["C10"] = site_hours
+
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
