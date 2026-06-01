@@ -249,22 +249,28 @@ else:
 def replace_placeholders(doc, data):
 
     def process_paragraph(paragraph):
-        full_text = "".join(run.text for run in paragraph.runs)
 
         for key, value in data.items():
             placeholder = f"{{{{{key}}}}}"
-            full_text = full_text.replace(placeholder, str(value).strip())
 
-        if paragraph.runs:
-            paragraph.runs[0].text = full_text
-            for i in range(1, len(paragraph.runs)):
-                paragraph.runs[i].text = ""
+            # ✅ Join full text
+            full_text = "".join(run.text for run in paragraph.runs)
+
+            if placeholder in full_text:
+
+                new_text = full_text.replace(placeholder, str(value))
+
+                # ✅ Only update FIRST run, clear others
+                paragraph.runs[0].text = new_text
+
+                for i in range(1, len(paragraph.runs)):
+                    paragraph.runs[i].text = ""
 
     # ✅ Normal paragraphs
     for paragraph in doc.paragraphs:
         process_paragraph(paragraph)
 
-    # ✅ Table paragraphs
+    # ✅ Tables
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -272,6 +278,7 @@ def replace_placeholders(doc, data):
                     process_paragraph(paragraph)
 
     return doc
+
 
 
 
