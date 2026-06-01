@@ -17,21 +17,47 @@ if "works_list" not in st.session_state:
 st.set_page_config(page_title="Energy Quote Tool", layout="centered")
 st.title("⚡ Energy Quote Generator")
 
+
 # ==========================
-# QUOTE TYPE
+# DISCIPLINE SELECTION
 # ==========================
 
-quote_options = {
-    "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
-    "Metering Assessment": "templates/Metering Assessment Template.docx",
-    "EE and Metering": "templates/EE Audit and Metering Template.docx",
-    "ESOS P4": "templates/ESOS P4 Template.docx",
-    "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
-    "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
+discipline = st.selectbox("Select Discipline", discipline_options)
+
+st.markdown("---")
+
+
+# ==========================
+# QUOTE TYPE BY DISCIPLINE
+# ==========================
+
+quote_options_by_discipline = {
+
+    "Energy": {
+        "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
+        "Metering Assessment": "templates/Metering Assessment Template.docx",
+        "EE and Metering": "templates/EE Audit and Metering Template.docx",
+        "ESOS P4": "templates/ESOS P4 Template.docx",
+        "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
+        "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+    },
+
+    "Power": {},       # ✅ ready for future
+    "Microgrid": {},   # ✅ ready for future
+    "Data Centre": {}  # ✅ ready for future
 }
 
-quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
-st.session_state.selected_quote_type = quote_type
+
+quote_options = quote_options_by_discipline.get(discipline, {})
+
+if quote_options:
+    quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
+    st.session_state.selected_quote_type = quote_type
+else:
+    st.warning("No quote types available for this discipline yet.")
+    quote_type = None
+
 
 st.markdown("---")
 
@@ -367,7 +393,7 @@ if st.button("📄 Generate Word Document"):
         st.error("Please add at least one work item before generating the document.")
 
     else:
-        template_path = quote_options[st.session_state.selected_quote_type]
+        template_path = quote_options[quote_type]
         doc = Document(template_path)
 
         # ✅ Fix contact name logic
