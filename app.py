@@ -15,7 +15,7 @@ if "works_list" not in st.session_state:
 # PAGE SETUP
 # ==========================
 st.set_page_config(page_title="Energy Quote Tool", layout="centered")
-st.title("⚡ Energy Quote Generator")
+st.title("Consultancy Quote Generator")
 
 
 # ==========================
