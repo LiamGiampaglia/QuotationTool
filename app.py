@@ -248,21 +248,6 @@ else:
 # ==========================
 def replace_placeholders(doc, data):
 
-    def replace_in_runs(paragraph):
-        for run in paragraph.runs:
-            for key, value in data.items():
-                placeholder = f"{{{{{key}}}}}"
-                
-                if placeholder == "{{PaymentTerms}}":
-                    continue  # skip payment placeholder
-
-                if placeholder in run.text:
-                    run.text = run.text.replace(placeholder, str(value))
-
-
-
-    def replace_placeholders(doc, data):
-
     def process_paragraph(paragraph):
         full_text = "".join(run.text for run in paragraph.runs)
 
@@ -275,9 +260,11 @@ def replace_placeholders(doc, data):
             for i in range(1, len(paragraph.runs)):
                 paragraph.runs[i].text = ""
 
+    # ✅ Normal paragraphs
     for paragraph in doc.paragraphs:
         process_paragraph(paragraph)
 
+    # ✅ Table paragraphs
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
