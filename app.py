@@ -395,10 +395,10 @@ if uploaded_file is not None:
     else:
         margin_pct = 0
 
-if total_price > 0:
-    actual_margin_pct = (total_price - total_cost) / total_price * 100
-else:
-    actual_margin_pct = 0
+    if total_price > 0:
+        actual_margin_pct = (total_price - total_cost) / total_price * 100
+    else:
+        actual_margin_pct = 0
 
 
 # ✅ Display (NOW OUTSIDE the if/else)
