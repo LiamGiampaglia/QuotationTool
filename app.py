@@ -412,6 +412,7 @@ if uploaded_file is not None:
         flights_cost = st.number_input("Flights / Rail (£)", 0.0)
         other_cost = st.number_input("Other Costs (£)", 0.0)
         discount_pct = st.number_input("Discount (%)", 0.0, 100.0, 0.0)
+        discount_factor = 1 - (discount_pct / 100)
 
     # ✅ EXPENSES (SELLING)
     expenses_total = (
@@ -580,13 +581,13 @@ for i, work in enumerate(st.session_state.works_list):
                     lr["site_evening"] * rates["site_evening"] +
                     lr["office_weekend"] * rates["office_weekend"] +
                     lr["site_weekend"] * rates["site_weekend"]
-                )
+                ) * discount_factor
 
             elif item["type"] == "other":
-                price = item["data"]["selling"]
+                price = item["data"]["selling"] * discount_factor
 
             elif item["type"] == "expenses":
-                price = expenses_total
+                price = expenses_total * discount_factor
 
         else:
             work["description"] = ""
