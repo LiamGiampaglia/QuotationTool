@@ -571,25 +571,30 @@ for i, work in enumerate(st.session_state.works_list):
         if i < len(combined_items):
             item = combined_items[i]
             work["description"] = item["description"]
-
+        
             if item["type"] == "labour":
                 lr = item["data"]
+        
+                price = (
+                    # ✅ Normal labour
+                    lr["office_day"] * rates["office_day"] +
+                    lr["site_day"] * rates["site_day"] +
+                    lr["office_evening"] * rates["office_evening"] +
+                    lr["site_evening"] * rates["site_evening"] +
+                    lr["office_weekend"] * rates["office_weekend"] +
+                    lr["site_weekend"] * rates["site_weekend"]
+        
+                    # ✅ Peer review (correctly included ✅)
+                    + (lr["office_day"] * rates["office_day"] * 0.1)
+        
+                ) * discount_factor
 
-               
-            price = (
-            
-                # ✅ Normal labour
-                lr["office_day"] * rates["office_day"] +
-                lr["site_day"] * rates["site_day"] +
-                lr["office_evening"] * rates["office_evening"] +
-                lr["site_evening"] * rates["site_evening"] +
-                lr["office_weekend"] * rates["office_weekend"] +
-                lr["site_weekend"] * rates["site_weekend"]
-            
-                # ✅ ADD PEER REVIEW ONLY ON OFFICE DAY
-                + (lr["office_day"] * rates["office_day"] * 0.1)
-            
-            ) * discount_factor
+    elif item["type"] == "other":
+        price = item["data"]["selling"] * discount_factor
+
+    elif item["type"] == "expenses":
+        price = expenses_total * discount_factor
+
 
 
             elif item["type"] == "other":
