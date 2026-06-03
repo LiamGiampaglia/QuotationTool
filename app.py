@@ -356,22 +356,33 @@ if uploaded_file is not None:
         
 # ✅ COST CALCULATION (from Excel logic)
 
-    labour_cost = (
-                    (total_office_day * rates["office_cost"]) +
-                    (total_site_day * rates["site_cost"]) +
-                
-                    (total_office_evening * rates["office_cost"]) +
-                    (total_site_evening * rates["site_cost"]) +
-                
-                    (total_office_weekend * rates["office_cost"]) +
-                    (total_site_weekend * rates["site_cost"])
-                )
-                
-                peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
-                
-                labour_cost += peer_review_cost
+labour_cost = (
+    (total_office_day * rates["office_cost"]) +
+    (total_site_day * rates["site_cost"]) +
 
-        
+    (total_office_evening * rates["office_cost"]) +
+    (total_site_evening * rates["site_cost"]) +
+
+    (total_office_weekend * rates["office_cost"]) +
+    (total_site_weekend * rates["site_cost"])
+)
+
+peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
+
+labour_cost += peer_review_cost
+
+
+# ✅ Expense COST (not selling)
+expenses_cost = (
+    overnight_outside * (rates.get("outside_m25", 0) / 1.15 if rates.get("outside_m25", 0) else 0)
+    + overnight_inside * (rates.get("inside_m25", 0) / 1.15 if rates.get("inside_m25", 0) else 0)
+    + miles * (rates.get("mileage", 0) / 1.675 if rates.get("mileage", 0) else 0)
+    + flights_cost
+)
+
+# ✅ FINAL COST
+total_cost = labour_cost + expenses_cost + other_cost
+
         
         # ✅ Expense COST (not selling)
         
