@@ -340,10 +340,12 @@ else:
     fx_rate = 1
     currency_symbol = "£"
 
-    consultant_name = st.text_input("Consultant Name")
-    customer_contact_name = st.text_input("Customer Contact Name")
-    contact_tel = st.text_input("Contact Tel No")
-    contact_email = st.text_input("Contact Email")
+# ✅ ALWAYS define inputs (FIX)
+consultant_name = st.text_input("Consultant Name")
+customer_contact_name = st.text_input("Customer Contact Name")
+contact_tel = st.text_input("Contact Tel No")
+contact_email = st.text_input("Contact Email")
+
 
 with col2:
     bfo_opp_no = st.text_input("bFO Opportunity No")
