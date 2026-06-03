@@ -269,8 +269,14 @@ if uploaded_file is not None:
     miles = st.number_input("Mileage (miles)", 0)
     overnight_inside = st.number_input("Overnight Stays (Inside M25)", 0)
     flights_cost = st.number_input("Flights / Rail (£)", 0.0)
-    other_cost = st.number_input("Other Costs (£)", 0.0)
-    discount = st.number_input("Discount (£)", 0.0)
+    other_cost = st.number_input("Other Costs (£)", 0.0)  
+    discount_pct = st.number_input(
+        "Discount (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=0.0
+    )
+
 
     # Ensure required data exists
     if "office_day" in rates and "site_day" in rates:
@@ -314,8 +320,13 @@ if uploaded_file is not None:
         # Final Total
         # ==========================
         
+        
         subtotal = labour_total + expenses_total + other_cost_selling
-        total_price = subtotal - discount
+        
+        discount_value = subtotal * (discount_pct / 100)
+        
+        total_price = subtotal - discount_value
+
 
         # Display
         st.markdown("### Breakdown")
@@ -324,7 +335,7 @@ if uploaded_file is not None:
         st.write(f"Labour: £{labour_total:,.2f}")
         st.write(f"Expenses: £{expenses_total:,.2f}")
         st.write(f"Other Costs: £{other_cost_selling:,.2f}")
-        st.write(f"Discount: -£{discount:,.2f}")
+        st.write(f"Discount ({discount_pct}%): -£{discount_value:,.2f}")
         
         st.markdown("---")
         st.metric("Total Price", f"£{total_price:,.2f}")
