@@ -5,6 +5,7 @@ from docx import Document
 import tempfile
 from datetime import datetime
 import openpyxl
+import io
 
 def extract_rates(uploaded_file):
 
@@ -33,10 +34,13 @@ def extract_rates(uploaded_file):
     return rates
 
 
+
 def generate_pricing_excel(uploaded_file):
 
-    wb = openpyxl.load_workbook(uploaded_file)
+    file_bytes = uploaded_file.read()
+    wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=False)
     ws = wb["PRICING SHEET"]
+
 
     # ==========================
     # ✅ LABOUR ITEMS (ROWS 15–24)
@@ -871,7 +875,9 @@ if st.button("📄 Generate Word Document"):
     
     
     if uploaded_file is not None and "office_hours" in locals():
-        wb = openpyxl.load_workbook(uploaded_file)
+        
+        file_bytes = uploaded_file.read()
+        wb = openpyxl.load_workbook(io.BytesIO(file_bytes))
         ws = wb["PRICING SHEET"]
     
         ws["B10"] = office_hours
