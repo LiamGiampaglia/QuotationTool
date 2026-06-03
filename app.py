@@ -11,25 +11,24 @@ def extract_rates(uploaded_file):
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
 
+    
     rates = {
-        # ✅ COSTS
-        "office_cost": ws["E97"].value,
-        "site_cost": ws["E98"].value,
-
-        # ✅ SELLING RATES (match Excel exactly)
-        "office_day": ws["E101"].value,
-        "office_evening": ws["F101"].value,
-        "office_weekend": ws["G101"].value,
-
-        "site_day": ws["E102"].value,
-        "site_evening": ws["F102"].value,
-        "site_weekend": ws["G102"].value,
-
-        # ✅ EXPENSES
-        "outside_m25": ws["E109"].value,
-        "inside_m25": ws["E110"].value,
-        "mileage": ws["E111"].value
+        "office_cost": ws["E97"].value or 0,
+        "site_cost": ws["E98"].value or 0,
+    
+        "office_day": ws["E101"].value or 0,
+        "office_evening": ws["F101"].value or 0,
+        "office_weekend": ws["G101"].value or 0,
+    
+        "site_day": ws["E102"].value or 0,
+        "site_evening": ws["F102"].value or 0,
+        "site_weekend": ws["G102"].value or 0,
+    
+        "outside_m25": ws["E109"].value or 0,
+        "inside_m25": ws["E110"].value or 0,
+        "mileage": ws["E111"].value or 0
     }
+
 
     return rates
 
@@ -274,14 +273,8 @@ if uploaded_file is not None:
     discount = st.number_input("Discount (£)", 0.0)
 
     # Ensure required data exists
-    if "office_selling" in rates and "site_selling" in rates:
+    if "office_day" in rates and "site_day" in rates:
 
-            # ✅ Use selling rates (NOT margin formula)
-        office_rate = rates.get("office_selling", 0)
-        site_rate = rates.get("site_selling", 0)
-        
-       
-        
         labour_total = (
             (office_day * rates["office_day"]) +
             (site_day * rates["site_day"]) +
