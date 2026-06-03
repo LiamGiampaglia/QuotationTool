@@ -299,19 +299,15 @@ if uploaded_file is not None:
             (office_day * office_rate) +
             (site_day * site_rate) +
         
-            
-            (office_evening * office_rate)
-            (site_evening * site_rate)
-            
-            (office_weekend * office_rate)
+            (office_evening * office_rate) +
+            (site_evening * site_rate) +
+        
+            (office_weekend * office_rate) +
             (site_weekend * site_rate)
-
-        )
+)
     
         # ✅ Peer review (10% of office hours)
-        peer_review = 0.1 * (
-            office_day + office_evening + office_weekend
-        ) * office_rate
+        peer_review = 0.1 * office_day * office_rate
         
         labour_total += peer_review
 
