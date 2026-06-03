@@ -117,6 +117,11 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["D19"] = material_code_1
     sap_ws["D20"] = material_code_2
     sap_ws["D21"] = material_code_3
+    
+    sap_ws["E19"] = material_price_1
+    sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
+    sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
+
 
     # ✅ Existing logic continues...
 
@@ -1059,9 +1064,7 @@ if st.button("📄 Generate Word Document"):
         sap_ws["D19"] = material_code_1
         sap_ws["D20"] = material_code_2
         sap_ws["D21"] = material_code_3
-        sap_ws["E19"] = material_price_1
-        sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
-        sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
+
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
