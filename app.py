@@ -37,6 +37,7 @@ def extract_rates(uploaded_file):
 
 def generate_pricing_excel(uploaded_file):
 
+    uploaded_file.seek(0)
     file_bytes = uploaded_file.read()
     wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=False)
     ws = wb["PRICING SHEET"]
@@ -876,6 +877,7 @@ if st.button("📄 Generate Word Document"):
     
     if uploaded_file is not None and "office_hours" in locals():
         
+        uploaded_file.seek(0)
         file_bytes = uploaded_file.read()
         wb = openpyxl.load_workbook(io.BytesIO(file_bytes))
         ws = wb["PRICING SHEET"]
