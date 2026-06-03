@@ -926,7 +926,9 @@ for i, work in enumerate(st.session_state.works_list):
 
     # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
     work["price"] = price
-    st.write(f"Price: £{price:,.2f}")
+    
+    price_fx = price * fx_rate
+    st.write(f"Price: {currency_symbol}{price_fx:,.2f}")
 
     total_works_price += price
 
@@ -934,7 +936,9 @@ for i, work in enumerate(st.session_state.works_list):
 
 
 st.write("### Works Total")
-st.write(f"Total Works Price: £{total_works_price:,.2f}")
+total_works_price_fx = total_works_price * fx_rate
+st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
+
 
 
 # ==========================
