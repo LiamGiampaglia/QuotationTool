@@ -424,7 +424,10 @@ if uploaded_file is not None:
     # Other Costs
     # ==========================
         
-    other_cost_selling = other_cost * 1.2
+    
+    other_cost = total_other_cost
+    other_cost_selling = total_other_selling
+
         
     # ==========================
     # Final Total
