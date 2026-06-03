@@ -538,79 +538,66 @@ for i, work in enumerate(st.session_state.works_list):
     )
 
     if work["mode"] == "Auto":
-    
-        # ✅ Select what this work item represents
-        category = st.selectbox(
-            "Auto Category",
-            ["Energy Consultancy", "Other Costs", "Expenses"],
-            key=f"cat_{i}"
-        )
-    
-        # ✅ Set description + price automatically
-        if category == "Energy Consultancy":
-            work["description"] = "Energy Consultancy"
-            price = labour_total
-    
-        elif category == "Other Costs":
-            work["description"] = "Other Costs"
-            price = other_cost_selling
-    
-        elif category == "Expenses":
-            work["description"] = "Expenses"
+
+    price = 0
+
+    # ✅ Combine all sources into one ordered list
+    combined_items = []
+
+    # Labour rows
+    for lr in st.session_state.labour_rows:
+        if lr["description"]:
+            combined_items.append({
+                "description": lr["description"],
+                "type": "labour"
+            })
+
+    # Other cost rows
+    for oc in st.session_state.other_cost_rows:
+        if oc["description"]:
+            combined_items.append({
+                "description": oc["description"],
+                "type": "other"
+            })
+
+    # Expenses (only once)
+    if expenses_total > 0:
+        combined_items.append({
+            "description": "Expenses",
+            "type": "expenses"
+        })
+
+    # ✅ Assign based on index (THIS IS THE KEY BIT)
+    if i < len(combined_items):
+        item = combined_items[i]
+
+        work["description"] = item["description"]
+
+        if item["type"] == "labour":
+            # Calculate individual labour price per row
+            # (simplified: proportional split)
+            count = len(st.session_state.labour_rows)
+            price = labour_total / count if count > 0 else 0
+
+        elif item["type"] == "other":
+            count = len(st.session_state.other_cost_rows)
+            price = other_cost_selling / count if count > 0 else 0
+
+        elif item["type"] == "expenses":
             price = expenses_total
-    
-        # ✅ Show locked description
-        st.text_input(
-            "Description",
-            value=work["description"],
-            key=f"auto_desc_locked_{i}",
-            disabled=True
-        )
-
-
-
-        # ✅ Reset
-        description_lines = []
-        price = 0
-        
-        # ✅ Labour → "Energy Consultancy"
-        if work["include_labour"] and labour_total > 0:
-            description_lines.append(f"Energy Consultancy – £{labour_total:,.2f}")
-            price += labour_total
-        
-        # ✅ Other Costs
-        if work["include_other"] and other_cost_selling > 0:
-            description_lines.append(f"Other Costs – £{other_cost_selling:,.2f}")
-            price += other_cost_selling
-        
-        # ✅ Expenses
-        if work["include_expenses"] and expenses_total > 0:
-            description_lines.append(f"Expenses – £{expenses_total:,.2f}")
-            price += expenses_total
-
-
-        # ✅ Build description text
-        auto_description = "\n".join(description_lines)
-
-        st.text_area(
-            "Auto Description",
-            value=auto_description,
-            key=f"auto_desc_{i}",
-            height=150
-        )
 
     else:
-        work["description"] = st.text_input(
-            "Description",
-            value=work["description"],
-            key=f"work_desc_{i}"
-        )
+        work["description"] = "Unused Item"
+        price = 0
 
-        work["manual_price"] = st.number_input(
-        "Manual Price (£)",
-        0.0,
-        key=f"manual_{i}"
+    # ✅ Display locked description
+    st.text_input(
+        "Description",
+        value=work["description"],
+        key=f"auto_desc_locked_{i}",
+        disabled=True
     )
+
 
     price = work["manual_price"]
 
