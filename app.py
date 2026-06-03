@@ -387,7 +387,7 @@ if uploaded_file is not None:
         
     discount_value = subtotal * (discount_pct / 100)
         
-total_price = subtotal - discount_value
+    total_price = subtotal - discount_value
 
 
     if subtotal > 0:
