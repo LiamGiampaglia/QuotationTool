@@ -89,7 +89,8 @@ quote_options_by_discipline = {
         "EE and Metering": "templates/EE Audit and Metering Template.docx",
         "ESOS P4": "templates/ESOS P4 Template.docx",
         "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
-        "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx"
+        "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx",
+        "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
     },
 
     "Power": {},       # ✅ ready for future
