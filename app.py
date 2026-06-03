@@ -343,34 +343,33 @@ if uploaded_file is not None:
     )
 
         
-        # ==========================
-        # Other Costs
-        # ==========================
+    # ==========================
+    # Other Costs
+    # ==========================
         
-        other_cost_selling = other_cost * 1.2
+    other_cost_selling = other_cost * 1.2
         
-        # ==========================
-        # Final Total
-        # ==========================
+    # ==========================
+    # Final Total
+    # ==========================
 
         
 # ✅ COST CALCULATION (from Excel logic)
 
-
-        labour_cost = (
-            (total_office_day * rates["office_cost"]) +
-            (total_site_day * rates["site_cost"]) +
-        
-            (total_office_evening * rates["office_cost"]) +
-            (total_site_evening * rates["site_cost"]) +
-        
-            (total_office_weekend * rates["office_cost"]) +
-            (total_site_weekend * rates["site_cost"])
-        )
-        
-        peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
-        
-        labour_cost += peer_review_cost
+    labour_cost = (
+                    (total_office_day * rates["office_cost"]) +
+                    (total_site_day * rates["site_cost"]) +
+                
+                    (total_office_evening * rates["office_cost"]) +
+                    (total_site_evening * rates["site_cost"]) +
+                
+                    (total_office_weekend * rates["office_cost"]) +
+                    (total_site_weekend * rates["site_cost"])
+                )
+                
+                peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
+                
+                labour_cost += peer_review_cost
 
         
         
