@@ -328,8 +328,11 @@ col1, col2 = st.columns(2)
 
 with col1:
     sap_description = st.text_input("SAP Description Name")
+    currency = st.selectbox(
+        "Currency",
+        ["GBP", "EUR"]
+    )
     consultant_name = st.text_input("Consultant Name")
-
     customer_contact_name = st.text_input("Customer Contact Name")
     contact_tel = st.text_input("Contact Tel No")
     contact_email = st.text_input("Contact Email")
@@ -1086,7 +1089,7 @@ if st.button("📄 Generate Word Document"):
         
         ws["C5"] = sap_description
         ws["C8"] = consultant_name
-
+        ws["J5"] = currency
         ws["B10"] = office_hours
         ws["C10"] = site_hours
         # ==========================
