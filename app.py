@@ -37,16 +37,9 @@ def extract_rates(uploaded_file):
 # SESSION STATE
 # ==========================
 
-if st.button("➕ Add Work"):
-    st.session_state.works_list.append({
-        "description": "",
-        "mode": "Auto",
-        "include_labour": True,
-        "include_other": True,
-        "include_expenses": True,
-        "manual_price": 0.0
-    })
 
+if "works_list" not in st.session_state:
+    st.session_state.works_list = []
 
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
@@ -515,6 +508,16 @@ if uploaded_file is not None:
 # WORKS INPUT
 # ==========================
 st.subheader("🛠️ Works & Pricing")
+
+if st.button("➕ Add Work"):
+    st.session_state.works_list.append({
+        "description": "",
+        "mode": "Auto",
+        "include_labour": True,
+        "include_other": True,
+        "include_expenses": True,
+        "manual_price": 0.0
+    })
 
 total_works_price = 0
 
