@@ -420,8 +420,7 @@ st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
 
 st.markdown("---")
 st.metric("Total Price", f"£{total_price:,.2f}")
-    else:
-        st.error("⚠️ Could not extract rates from template")
+
 
 # ==========================
 # WORKS INPUT
