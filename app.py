@@ -589,14 +589,6 @@ for i, work in enumerate(st.session_state.works_list):
         
                 ) * discount_factor
 
-    elif item["type"] == "other":
-        price = item["data"]["selling"] * discount_factor
-
-    elif item["type"] == "expenses":
-        price = expenses_total * discount_factor
-
-
-
             elif item["type"] == "other":
                 price = item["data"]["selling"] * discount_factor
 
