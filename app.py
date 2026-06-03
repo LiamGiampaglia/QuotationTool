@@ -396,6 +396,7 @@ if uploaded_file is not None:
     
     # ✅ Peer review
     peer_review = 0.1 * total_office_day * rates["office_day"]
+    peer_review_factor = 0.1
     
     labour_total += peer_review
 
@@ -574,14 +575,22 @@ for i, work in enumerate(st.session_state.works_list):
             if item["type"] == "labour":
                 lr = item["data"]
 
-                price = (
-                    lr["office_day"] * rates["office_day"] +
-                    lr["site_day"] * rates["site_day"] +
-                    lr["office_evening"] * rates["office_evening"] +
-                    lr["site_evening"] * rates["site_evening"] +
-                    lr["office_weekend"] * rates["office_weekend"] +
-                    lr["site_weekend"] * rates["site_weekend"]
-                ) * discount_factor
+               
+            price = (
+            
+                # ✅ Normal labour
+                lr["office_day"] * rates["office_day"] +
+                lr["site_day"] * rates["site_day"] +
+                lr["office_evening"] * rates["office_evening"] +
+                lr["site_evening"] * rates["site_evening"] +
+                lr["office_weekend"] * rates["office_weekend"] +
+                lr["site_weekend"] * rates["site_weekend"]
+            
+                # ✅ ADD PEER REVIEW ONLY ON OFFICE DAY
+                + (lr["office_day"] * rates["office_day"] * 0.1)
+            
+            ) * discount_factor
+
 
             elif item["type"] == "other":
                 price = item["data"]["selling"] * discount_factor
