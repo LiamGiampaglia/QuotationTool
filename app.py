@@ -525,7 +525,17 @@ total_works_price = 0
 
 for i, work in enumerate(st.session_state.works_list):
 
-    st.markdown(f"#### Work Item {i+1}")
+    
+    col1, col2 = st.columns([6, 1])
+    
+    with col1:
+        st.markdown(f"#### Work Item {i+1}")
+    
+    with col2:
+        if st.button("❌", key=f"delete_{i}"):
+            st.session_state.works_list.pop(i)
+            st.rerun()
+
 
     work["mode"] = st.selectbox(
         "Pricing Mode",
