@@ -812,6 +812,15 @@ if st.button("📄 Generate Word Document"):
     elif not st.session_state.works_list:
         st.error("Please add at least one work item before generating the document.")
 
+    elif not st.session_state.works_list:
+        st.error("Please add at least one work item before generating the document.")
+    
+    elif any(
+        not work.get("description") or work.get("price", 0) == 0
+        for work in st.session_state.works_list
+    ):
+        st.error("❌ All work items must have a description and non-zero price before generating the document.")
+
     else:
         template_path = quote_options[quote_type]
         doc = Document(template_path)
