@@ -324,23 +324,52 @@ with col2:
         value=1
     )
 
+    # ✅ Material Code 1
     material_code_1 = st.selectbox(
         "Material Code No.1",
         material_code_options,
         key="mc1"
     )
-    
-    material_code_2 = st.selectbox(
-        "Material Code No.2",
-        [""] + material_code_options,
-        key="mc2"
+
+    material_price_1 = st.number_input(
+        "Price for Material Code 1 (£)",
+        min_value=0.0,
+        key="price1"
     )
-    
-    material_code_3 = st.selectbox(
-        "Material Code No.3",
-        [""] + material_code_options,
-        key="mc3"
-    )
+
+    # ✅ Material Code 2
+    material_code_2 = ""
+    material_price_2 = 0.0
+
+    if material_code_count >= 2:
+        material_code_2 = st.selectbox(
+            "Material Code No.2",
+            material_code_options,
+            key="mc2"
+        )
+
+        material_price_2 = st.number_input(
+            "Price for Material Code 2 (£)",
+            min_value=0.0,
+            key="price2"
+        )
+
+    # ✅ Material Code 3
+    material_code_3 = ""
+    material_price_3 = 0.0
+
+    if material_code_count == 3:
+        material_code_3 = st.selectbox(
+            "Material Code No.3",
+            material_code_options,
+            key="mc3"
+        )
+
+        material_price_3 = st.number_input(
+            "Price for Material Code 3 (£)",
+            min_value=0.0,
+            key="price3"
+        )
 
 
 # ==========================
@@ -1030,6 +1059,9 @@ if st.button("📄 Generate Word Document"):
         sap_ws["D19"] = material_code_1
         sap_ws["D20"] = material_code_2
         sap_ws["D21"] = material_code_3
+        sap_ws["E19"] = material_price_1
+        sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
+        sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
