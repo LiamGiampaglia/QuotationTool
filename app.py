@@ -334,6 +334,20 @@ if uploaded_file is not None:
     
     labour_total += peer_review
 
+    st.markdown("### Expenses & Costs")
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        overnight_outside = st.number_input("Overnight Stays (Outside M25)", 0)
+        overnight_inside = st.number_input("Overnight Stays (Inside M25)", 0)
+        miles = st.number_input("Mileage (miles)", 0)
+    
+    with col2:
+        flights_cost = st.number_input("Flights / Rail (£)", 0.0)
+        other_cost = st.number_input("Other Costs (£)", 0.0)
+        discount_pct = st.number_input("Discount (%)", 0.0, 100.0, 0.0)
+
     # ✅ EXPENSES (SELLING)
     expenses_total = (
         overnight_outside * rates.get("outside_m25", 0)
