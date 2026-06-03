@@ -294,18 +294,18 @@ if uploaded_file is not None:
         office_rate = rates.get("office_selling", 0)
         site_rate = rates.get("site_selling", 0)
         
-        evening_multiplier = 1.5
-        weekend_multiplier = 2.0
-        
+       
         labour_total = (
             (office_day * office_rate) +
             (site_day * site_rate) +
         
-            (office_evening * office_rate * evening_multiplier) +
-            (site_evening * site_rate * evening_multiplier) +
-        
-            (office_weekend * office_rate * weekend_multiplier) +
-            (site_weekend * site_rate * weekend_multiplier)
+            
+            (office_evening * office_rate)
+            (site_evening * site_rate)
+            
+            (office_weekend * office_rate)
+            (site_weekend * site_rate)
+
         )
     
         # ✅ Peer review (10% of office hours)
