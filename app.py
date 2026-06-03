@@ -70,7 +70,11 @@ def generate_pricing_excel(uploaded_file):
 
         ws[f"C{row}"] = oc["description"]
         ws[f"D{row}"] = oc["cost"]
-        ws[f"E{row}"] = "GBP"
+        
+        cell = ws[f"E{row}"]
+        cell.value = None   # clear properly first
+        cell.value = "GBP"
+
         ws[f"G{row}"] = oc["margin"] / 100
 
     # ==========================
