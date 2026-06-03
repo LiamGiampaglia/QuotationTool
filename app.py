@@ -383,11 +383,11 @@ if uploaded_file is not None:
     total_cost = labour_cost + expenses_cost + other_cost
 
         
-        subtotal = labour_total + expenses_total + other_cost_selling
+    subtotal = labour_total + expenses_total + other_cost_selling
         
-        discount_value = subtotal * (discount_pct / 100)
+    discount_value = subtotal * (discount_pct / 100)
         
-        total_price = subtotal - discount_value
+    total_price = subtotal - discount_value
 
 
         if subtotal > 0:
