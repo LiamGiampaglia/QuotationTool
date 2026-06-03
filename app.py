@@ -246,69 +246,71 @@ if uploaded_file is not None:
     st.subheader("💰 Live Cost Calculator")
 
     # Inputs
-    st.markdown("### Labour Hours (Match Excel)")
+    st.markdown("### Labour Hours (Detailed)")
 
-    col1, col2 = st.columns(2)
+# ✅ Add row button
+    if st.button("➕ Add Labour Row"):
+        st.session_state.labour_rows.append({
+            "description": "",
+            "office_day": 0.0,
+            "site_day": 0.0,
+            "office_evening": 0.0,
+            "site_evening": 0.0,
+            "office_weekend": 0.0,
+            "site_weekend": 0.0
+        })
     
-    with col1:
-        st.write("**Mon–Fri 08:00–17:00**")
-        office_day = st.number_input("Office (Day)", 0.0)
-        site_day = st.number_input("Site (Day)", 0.0)
+    # ✅ Display rows
+    total_office_day = 0
+    total_site_day = 0
+    total_office_evening = 0
+    total_site_evening = 0
+    total_office_weekend = 0
+    total_site_weekend = 0
     
-        st.write("**Mon–Fri 17:00–24:00**")
-        office_evening = st.number_input("Office (Evening)", 0.0)
-        site_evening = st.number_input("Site (Evening)", 0.0)
+    for i, row in enumerate(st.session_state.labour_rows):
     
-    with col2:
-        st.write("**Weekend**")
-        office_weekend = st.number_input("Office (Weekend)", 0.0)
-        site_weekend = st.number_input("Site (Weekend)", 0.0)
-
-
-    overnight_outside = st.number_input("Overnight Stays (Outside M25)", 0)
-    miles = st.number_input("Mileage (miles)", 0)
-    overnight_inside = st.number_input("Overnight Stays (Inside M25)", 0)
-    flights_cost = st.number_input("Flights / Rail (£)", 0.0)
-    other_cost = st.number_input("Other Costs (£)", 0.0)  
-    discount_pct = st.number_input(
-        "Discount (%)",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0
-    )
-
-
-    # Ensure required data exists
-    if "office_day" in rates and "site_day" in rates:
-
-        labour_total = (
-            (office_day * rates["office_day"]) +
-            (site_day * rates["site_day"]) +
-        
-            (office_evening * rates["office_evening"]) +
-            (site_evening * rates["site_evening"]) +
-        
-            (office_weekend * rates["office_weekend"]) +
-            (site_weekend * rates["site_weekend"])
+        st.markdown(f"#### Work Item {i+1}")
+    
+        row["description"] = st.text_input(
+            "Description",
+            value=row["description"],
+            key=f"desc_{i}"
         )
-
     
-        # ✅ Peer review (10% of office hours)
-        peer_review = 0.1 * office_day * rates["office_day"]
-        
-        labour_total += peer_review
+        col1, col2, col3 = st.columns(3)
+    
+        with col1:
+            row["office_day"] = st.number_input("Office Day", 0.0, key=f"od_{i}")
+            row["site_day"] = st.number_input("Site Day", 0.0, key=f"sd_{i}")
+    
+        with col2:
+            row["office_evening"] = st.number_input("Office Evening", 0.0, key=f"oe_{i}")
+            row["site_evening"] = st.number_input("Site Evening", 0.0, key=f"se_{i}")
+    
+        with col3:
+            row["office_weekend"] = st.number_input("Office Weekend", 0.0, key=f"ow_{i}")
+            row["site_weekend"] = st.number_input("Site Weekend", 0.0, key=f"sw_{i}")
+    
+        # ✅ Accumulate totals
+        total_office_day += row["office_day"]
+        total_site_day += row["site_day"]
+        total_office_evening += row["office_evening"]
+        total_site_evening += row["site_evening"]
+        total_office_weekend += row["office_weekend"]
+        total_site_weekend += row["site_weekend"]
+    
+        st.markdown("---")
+    
+    # ✅ Totals (like Excel bottom row)
+    st.write("### Totals")
+    st.write(f"Office Day: {total_office_day}")
+    st.write(f"Site Day: {total_site_day}")
+    st.write(f"Office Evening: {total_office_evening}")
+    st.write(f"Site Evening: {total_site_evening}")
+    st.write(f"Office Weekend: {total_office_weekend}")
+    st.write(f"Site Weekend: {total_site_weekend}")
 
-        # Expenses
-        # ==========================
-        # Expenses
-        # ==========================
-        
-        expenses_total = (
-            overnight_outside * rates.get("outside_m25", 0)
-            + overnight_inside * rates.get("inside_m25", 0)
-            + miles * rates.get("mileage", 0)
-            + flights_cost * 1.15
-        )
         
         # ==========================
         # Other Costs
@@ -323,19 +325,22 @@ if uploaded_file is not None:
         
 # ✅ COST CALCULATION (from Excel logic)
 
+
         labour_cost = (
-            (office_day * rates["office_cost"]) +
-            (site_day * rates["site_cost"]) +
-            (office_evening * rates["office_cost"]) +
-            (site_evening * rates["site_cost"]) +
-            (office_weekend * rates["office_cost"]) +
-            (site_weekend * rates["site_cost"])
+            (total_office_day * rates["office_cost"]) +
+            (total_site_day * rates["site_cost"]) +
+        
+            (total_office_evening * rates["office_cost"]) +
+            (total_site_evening * rates["site_cost"]) +
+        
+            (total_office_weekend * rates["office_cost"]) +
+            (total_site_weekend * rates["site_cost"])
         )
         
-        # Peer review cost (same logic as selling but using cost)
-        peer_review_cost = 0.1 * office_day * rates["office_cost"]
+        peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
         
         labour_cost += peer_review_cost
+
         
         
         # ✅ Expense COST (not selling)
