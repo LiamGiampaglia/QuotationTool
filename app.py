@@ -538,24 +538,35 @@ for i, work in enumerate(st.session_state.works_list):
     )
 
     if work["mode"] == "Auto":
-
-        work["include_labour"] = st.checkbox(
-            "Include Labour",
-            value=work["include_labour"],
-            key=f"lab_{i}"
+    
+        # ✅ Select what this work item represents
+        category = st.selectbox(
+            "Auto Category",
+            ["Energy Consultancy", "Other Costs", "Expenses"],
+            key=f"cat_{i}"
+        )
+    
+        # ✅ Set description + price automatically
+        if category == "Energy Consultancy":
+            work["description"] = "Energy Consultancy"
+            price = labour_total
+    
+        elif category == "Other Costs":
+            work["description"] = "Other Costs"
+            price = other_cost_selling
+    
+        elif category == "Expenses":
+            work["description"] = "Expenses"
+            price = expenses_total
+    
+        # ✅ Show locked description
+        st.text_input(
+            "Description",
+            value=work["description"],
+            key=f"auto_desc_locked_{i}",
+            disabled=True
         )
 
-        work["include_other"] = st.checkbox(
-            "Include Other Costs",
-            value=work["include_other"],
-            key=f"other_{i}"
-        )
-
-        work["include_expenses"] = st.checkbox(
-            "Include Expenses",
-            value=work["include_expenses"],
-            key=f"exp_{i}"
-        )
 
 
         # ✅ Reset
@@ -589,14 +600,19 @@ for i, work in enumerate(st.session_state.works_list):
         )
 
     else:
-        # ✅ Manual price
-        work["manual_price"] = st.number_input(
-            "Manual Price (£)",
-            0.0,
-            key=f"manual_{i}"
-        )
+    work["description"] = st.text_input(
+        "Description",
+        value=work["description"],
+        key=f"work_desc_{i}"
+    )
 
-        price = work["manual_price"]
+    work["manual_price"] = st.number_input(
+        "Manual Price (£)",
+        0.0,
+        key=f"manual_{i}"
+    )
+
+    price = work["manual_price"]
 
     st.write(f"Price: £{price:,.2f}")
 
