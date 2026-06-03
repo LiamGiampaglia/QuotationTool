@@ -280,7 +280,7 @@ if uploaded_file is not None:
         row["description"] = st.text_input(
             "Description",
             value=row["description"],
-            key=f"desc_{i}"
+            key=f"payment_desc_{i}"
         )
     
         col1, col2, col3 = st.columns(3)
