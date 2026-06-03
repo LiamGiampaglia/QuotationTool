@@ -123,7 +123,22 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
 
 
-    # ✅ Existing logic continues...
+    # ==========================
+    # ✅ BILLING MILESTONES
+    # ==========================
+    
+    sap_ws["D37"] = billing_milestone_count
+    
+    for i in range(billing_milestone_count):
+        
+        value_cell = 38 + (i * 2)
+        date_cell = 39 + (i * 2)
+    
+        sap_ws[f"D{value_cell}"] = billing_values[i]
+        
+        # Convert date to Excel format (string safe)
+        sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
+
 
 
 
@@ -375,6 +390,32 @@ with col2:
             min_value=0.0,
             key="price3"
         )
+st.markdown("### Billing Milestones")
+
+billing_milestone_count = st.selectbox(
+    "No. of Billing Milestones",
+    [1, 2, 3, 4, 5]
+)
+
+billing_values = []
+billing_dates = []
+
+for i in range(billing_milestone_count):
+    st.markdown(f"#### Billing Milestone {i+1}")
+
+    value = st.number_input(
+        f"Milestone {i+1} Value (£)",
+        min_value=0.0,
+        key=f"bm_value_{i}"
+    )
+
+    date = st.date_input(
+        f"Milestone {i+1} Planned Billing Date",
+        key=f"bm_date_{i}"
+    )
+
+    billing_values.append(value)
+    billing_dates.append(date)
 
 
 # ==========================
