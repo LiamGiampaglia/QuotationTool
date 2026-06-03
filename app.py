@@ -7,6 +7,63 @@ from datetime import datetime
 import openpyxl
 import io
 
+
+material_code_options = [
+    # POWER CONSULTANCY
+    "FSC11 EcoConsult Essential / MPS Walkthrough",
+    "FSC719 Eco Audit Advanced Plus / MPS Enterprise",
+    "FSC9002 Electrical Digital Twin",
+    "FSC830 Re-Assessment Audit",
+    "FSC612 EcoConsult Advanced",
+    "FSC9007 Arc Flash_ETAP",
+    "FSC9006 Protection Study_ETAP",
+    "CON594 Fault Level Study",
+    "CON607 Protection System Desig",
+    "CON602 Earthing Design",
+    "FSC5099 Relay Programming",
+    "FSC5099 Pressure Rise Studies",
+    "FSC5099 Network Design",
+    "FSC5099 Substation Design",
+    "FSC5099 Equipment Design",
+    "SRV_ETAP_PQ_MOD Harmonic Surveys / Temp Monitoring",
+    "FSC9011 ETAP Subscription",
+    "SRV_PM_AUDIT_ADV EcoConsult Audit Power Monitoring audit",
+    "SRV_PQ_AUDIT_ESS EcoConsult Audit PQ Essential",
+
+    # PROCESS ELECTRIFICATION
+    "PEPCONSULTING_0001 Process Electrification Project",
+
+    # INDUSTRY & DT
+    "GCRLIFECYCLECONSUL Industry Consulting (IDIBS)",
+    "GCRDIGITRANSPRJCT Digital Transformation Project",
+
+    # DATA CENTRE & COOLING
+    "WCONSULTADV EcoConsult for Data Centers",
+
+    # BMS
+    "CON596 BMS Consultancy",
+
+    # EV
+    "EVS1AG eMobility Consultancy Audit",
+
+    # ENERGY
+    "CON200 Sust.Serv Smart Grid Elect.Audi",
+    "CON201 Sust.Serv Smart Grid Elect.Design",
+    "CON202 Sust.Serv EV Infrastructure Audit",
+    "CON203 Sust.Serv Energy Efficiency Audit",
+    "CON204 Sust.Serv Remote Energy Assessment",
+    "CON205 Sust.Serv Metering Study",
+    "CON206 Sust.Serv Energy Monitoring",
+
+    # MICROGRID
+    "SRVINAMGFEAS Microgrid Feasibility Study",
+    "SRVINAMGDES Microgrid Design",
+
+    # EXTRA
+    "CON601 DON’T USE Consultancy Ancillary Offers",
+    "CON595 Electrical Network Design"
+]
+
 def extract_rates(uploaded_file):
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
@@ -267,9 +324,24 @@ with col2:
         value=1
     )
 
-    material_code_1 = st.text_input("Material Code No.1")
-    material_code_2 = st.text_input("Material Code No.2")
-    material_code_3 = st.text_input("Material Code No.3")
+    material_code_1 = st.selectbox(
+        "Material Code No.1",
+        material_code_options,
+        key="mc1"
+    )
+    
+    material_code_2 = st.selectbox(
+        "Material Code No.2",
+        [""] + material_code_options,
+        key="mc2"
+    )
+    
+    material_code_3 = st.selectbox(
+        "Material Code No.3",
+        [""] + material_code_options,
+        key="mc3"
+    )
+
 
 # ==========================
 # 📄 FILE NAMING SECTION
