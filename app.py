@@ -308,6 +308,8 @@ if uploaded_file is not None:
         st.markdown("---")
     
     # ✅ Totals (like Excel bottom row)
+
+    peer_review_hours = 0.1 * total_office_day
     
     st.write("### Totals")
     st.write(f"Office Day: {total_office_day}")
@@ -319,9 +321,6 @@ if uploaded_file is not None:
     
     st.write(f"Office Weekend: {total_office_weekend}")
     st.write(f"Site Weekend: {total_site_weekend}")
-
-
-    peer_review_hours = 0.1 * total_office_day
     
     # ✅ SELLING LABOUR (NEW)
     labour_total = (
