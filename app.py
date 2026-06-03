@@ -600,13 +600,13 @@ for i, work in enumerate(st.session_state.works_list):
         )
 
     else:
-    work["description"] = st.text_input(
-        "Description",
-        value=work["description"],
-        key=f"work_desc_{i}"
-    )
+        work["description"] = st.text_input(
+            "Description",
+            value=work["description"],
+            key=f"work_desc_{i}"
+        )
 
-    work["manual_price"] = st.number_input(
+        work["manual_price"] = st.number_input(
         "Manual Price (£)",
         0.0,
         key=f"manual_{i}"
