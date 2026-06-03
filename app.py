@@ -319,7 +319,27 @@ if uploaded_file is not None:
         # ==========================
         # Final Total
         # ==========================
+
         
+# ✅ COST CALCULATION (from Excel logic)
+
+        labour_cost = (
+            (office_day * rates["office_cost"]) +
+            (site_day * rates["site_cost"]) +
+            (office_evening * rates["office_cost"]) +
+            (site_evening * rates["site_cost"]) +
+            (office_weekend * rates["office_cost"]) +
+            (site_weekend * rates["site_cost"])
+        )
+        
+        # Peer review cost (same logic as selling but using cost)
+        peer_review_cost = 0.1 * office_day * rates["office_cost"]
+        
+        labour_cost += peer_review_cost
+        
+        # Other costs already input as cost
+        total_cost = labour_cost + other_cost
+
         
         subtotal = labour_total + expenses_total + other_cost_selling
         
@@ -327,6 +347,16 @@ if uploaded_file is not None:
         
         total_price = subtotal - discount_value
 
+
+        if subtotal > 0:
+            margin_pct = (subtotal - total_cost) / subtotal * 100
+        else:
+            margin_pct = 0
+        
+        if total_price > 0:
+            actual_margin_pct = (total_price - total_cost) / total_price * 100
+        else:
+            actual_margin_pct = 0
 
         # Display
         st.markdown("### Breakdown")
@@ -336,6 +366,8 @@ if uploaded_file is not None:
         st.write(f"Expenses: £{expenses_total:,.2f}")
         st.write(f"Other Costs: £{other_cost_selling:,.2f}")
         st.write(f"Discount ({discount_pct}%): -£{discount_value:,.2f}")
+        st.write(f"Margin (%): {margin_pct:.1f}%")
+        st.write(f"Actual Margin (%): {actual_margin_pct:.1f}%")
         
         st.markdown("---")
         st.metric("Total Price", f"£{total_price:,.2f}")
