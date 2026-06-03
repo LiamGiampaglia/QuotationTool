@@ -371,19 +371,16 @@ if uploaded_file is not None:
     
     labour_cost += peer_review_cost
 
-        
-        # ✅ Expense COST (not selling)
-        
-        expenses_cost = (
-            overnight_outside * (rates.get("outside_m25", 0) / 1.15 if rates.get("outside_m25", 0) else 0)
-            + overnight_inside * (rates.get("inside_m25", 0) / 1.15 if rates.get("inside_m25", 0) else 0)
-            + miles * (rates.get("mileage", 0) / 1.675 if rates.get("mileage", 0) else 0)
-            + flights_cost  # ✅ already cost
-        )
-        
-        # ✅ TOTAL COST now includes EVERYTHING
-        total_cost = labour_cost + expenses_cost + other_cost
 
+    # ✅ Expense COST (not selling)
+    expenses_cost = (
+        overnight_outside * (rates.get("outside_m25", 0) / 1.15 if rates.get("outside_m25", 0) else 0)
+        + overnight_inside * (rates.get("inside_m25", 0) / 1.15 if rates.get("inside_m25", 0) else 0)
+        + miles * (rates.get("mileage", 0) / 1.675 if rates.get("mileage", 0) else 0)
+        + flights_cost
+    )
+
+    total_cost = labour_cost + expenses_cost + other_cost
 
         
         subtotal = labour_total + expenses_total + other_cost_selling
