@@ -71,7 +71,7 @@ def generate_pricing_excel(uploaded_file):
         ws[f"C{row}"] = oc["description"]
         ws[f"D{row}"] = oc["cost"]
         ws[f"E{row}"] = "GBP"
-        ws[f"G{row}"] = oc["margin"]
+        ws[f"G{row}"] = oc["margin"] / 100
 
     # ==========================
     # ✅ EXPENSES
@@ -86,7 +86,7 @@ def generate_pricing_excel(uploaded_file):
     # ✅ DISCOUNT
     # ==========================
 
-    ws["D62"] = discount_pct
+    ws["D62"] = discount_pct / 100
 
     return wb
 
