@@ -539,35 +539,59 @@ for i, work in enumerate(st.session_state.works_list):
 
     if work["mode"] == "Auto":
 
-        work["include_labour"] = st.checkbox(
-            "Include Labour",
-            value=work["include_labour"],
-            key=f"lab_{i}"
-        )
+    work["include_labour"] = st.checkbox(
+        "Include Labour",
+        value=work["include_labour"],
+        key=f"lab_{i}"
+    )
 
-        work["include_other"] = st.checkbox(
-            "Include Other Costs",
-            value=work["include_other"],
-            key=f"other_{i}"
-        )
+    work["include_other"] = st.checkbox(
+        "Include Other Costs",
+        value=work["include_other"],
+        key=f"other_{i}"
+    )
 
-        work["include_expenses"] = st.checkbox(
-            "Include Expenses",
-            value=work["include_expenses"],
-            key=f"exp_{i}"
-        )
+    work["include_expenses"] = st.checkbox(
+        "Include Expenses",
+        value=work["include_expenses"],
+        key=f"exp_{i}"
+    )
 
-        # ✅ Calculate auto price
-        price = 0
+    # ✅ Build description list
+    description_lines = []
 
-        if work["include_labour"]:
-            price += labour_total
+    price = 0
 
-        if work["include_other"]:
-            price += other_cost_selling
+    # ✅ Labour items
+    if work["include_labour"]:
+        for lr in st.session_state.labour_rows:
+            if lr["description"]:
+                description_lines.append(lr["description"])
 
-        if work["include_expenses"]:
-            price += expenses_total
+        price += labour_total
+
+    # ✅ Other cost items
+    if work["include_other"]:
+        for oc in st.session_state.other_cost_rows:
+            if oc["description"]:
+                description_lines.append(oc["description"])
+
+        price += other_cost_selling
+
+    # ✅ Expenses
+    if work["include_expenses"]:
+        description_lines.append("Expenses")
+        price += expenses_total
+
+    # ✅ Combine description into one text block
+    auto_description = "\n".join(description_lines)
+
+    st.text_area(
+        "Auto Description",
+        value=auto_description,
+        key=f"auto_desc_{i}",
+        height=150
+    )
 
     else:
         # ✅ Manual input
