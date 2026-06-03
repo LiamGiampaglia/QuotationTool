@@ -585,6 +585,10 @@ for i, work in enumerate(st.session_state.works_list):
 
     st.markdown("---")
 
+st.write("### Works Total")
+st.write(f"Total Works Price: £{total_works_price:,.2f}")
+
+
 # ==========================
 # 💰 PAYMENT TERMS
 # ==========================
