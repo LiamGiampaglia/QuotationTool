@@ -387,18 +387,18 @@ if uploaded_file is not None:
         
     discount_value = subtotal * (discount_pct / 100)
         
-    total_price = subtotal - discount_value
+total_price = subtotal - discount_value
 
 
-        if subtotal > 0:
-            margin_pct = (subtotal - total_cost) / subtotal * 100
-        else:
-            margin_pct = 0
-        
-        if total_price > 0:
-            actual_margin_pct = (total_price - total_cost) / total_price * 100
-        else:
-            actual_margin_pct = 0
+    if subtotal > 0:
+        margin_pct = (subtotal - total_cost) / subtotal * 100
+    else:
+        margin_pct = 0
+
+    if total_price > 0:
+        actual_margin_pct = (total_price - total_cost) / total_price * 100
+    else:
+        actual_margin_pct = 0
 
         # Display
         st.markdown("### Breakdown")
