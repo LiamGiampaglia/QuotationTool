@@ -33,6 +33,68 @@ def extract_rates(uploaded_file):
     return rates
 
 
+def generate_pricing_excel(uploaded_file):
+
+    wb = openpyxl.load_workbook(uploaded_file)
+    ws = wb["PRICING SHEET"]
+
+    # ==========================
+    # ✅ BASIC DETAILS
+    # ==========================
+
+    ws["B5"] = f"{project_number} - {customer_name} - {project_name}"
+
+    # ==========================
+    # ✅ LABOUR ROWS (START ROW ~20)
+    # ==========================
+
+    start_row = 20
+
+    for i, lr in enumerate(st.session_state.labour_rows):
+
+        row = start_row + i
+
+        ws[f"A{row}"] = lr["description"]
+        ws[f"B{row}"] = lr["office_day"]
+        ws[f"C{row}"] = lr["site_day"]
+        ws[f"D{row}"] = lr["office_evening"]
+        ws[f"E{row}"] = lr["site_evening"]
+        ws[f"F{row}"] = lr["office_weekend"]
+        ws[f"G{row}"] = lr["site_weekend"]
+
+    # ==========================
+    # ✅ EXPENSES
+    # ==========================
+
+    ws["B40"] = overnight_outside
+    ws["B41"] = overnight_inside
+    ws["B42"] = miles
+
+    # Flights cost
+    ws["C43"] = flights_cost
+
+    # ==========================
+    # ✅ OTHER COSTS
+    # ==========================
+
+    other_start = 50
+
+    for i, oc in enumerate(st.session_state.other_cost_rows):
+
+        row = other_start + i
+
+        ws[f"A{row}"] = oc["description"]
+        ws[f"B{row}"] = oc["cost"]
+        ws[f"D{row}"] = oc["margin"]
+
+    # ==========================
+    # ✅ DISCOUNT
+    # ==========================
+
+    ws["E75"] = discount_pct
+
+    return wb
+
 # ==========================
 # SESSION STATE
 # ==========================
@@ -895,3 +957,17 @@ if st.button("📄 Generate Word Document"):
                 f,
                 file_name=f"{file_name}.docx"
             )
+        
+        # ✅ Generate Excel
+        excel_wb = generate_pricing_excel(uploaded_file)
+        
+        excel_output = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+        excel_wb.save(excel_output.name)
+        
+        with open(excel_output.name, "rb") as f:
+            st.download_button(
+                "⬇ Download Pricing Sheet",
+                f,
+                file_name=f"{project_number}-PricingSheet.xlsx"
+            )
+
