@@ -539,64 +539,73 @@ for i, work in enumerate(st.session_state.works_list):
 
     if work["mode"] == "Auto":
 
-    price = 0
-
-    # ✅ Combine all sources into one ordered list
-    combined_items = []
-
-    # Labour rows
-    for lr in st.session_state.labour_rows:
-        if lr["description"]:
-            combined_items.append({
-                "description": lr["description"],
-                "type": "labour"
-            })
-
-    # Other cost rows
-    for oc in st.session_state.other_cost_rows:
-        if oc["description"]:
-            combined_items.append({
-                "description": oc["description"],
-                "type": "other"
-            })
-
-    # Expenses (only once)
-    if expenses_total > 0:
-        combined_items.append({
-            "description": "Expenses",
-            "type": "expenses"
-        })
-
-    # ✅ Assign based on index (THIS IS THE KEY BIT)
-    if i < len(combined_items):
-        item = combined_items[i]
-
-        work["description"] = item["description"]
-
-        if item["type"] == "labour":
-            # Calculate individual labour price per row
-            # (simplified: proportional split)
-            count = len(st.session_state.labour_rows)
-            price = labour_total / count if count > 0 else 0
-
-        elif item["type"] == "other":
-            count = len(st.session_state.other_cost_rows)
-            price = other_cost_selling / count if count > 0 else 0
-
-        elif item["type"] == "expenses":
-            price = expenses_total
-
-    else:
-        work["description"] = "Unused Item"
         price = 0
-
-    # ✅ Display locked description
-    st.text_input(
-        "Description",
-        value=work["description"],
-        key=f"auto_desc_locked_{i}",
-        disabled=True
-    )
+    
+        # ✅ Combine ALL items in correct order
+        combined_items = []
+    
+        # Labour rows
+        for lr in st.session_state.labour_rows:
+            if lr["description"]:
+                combined_items.append({
+                    "description": lr["description"],
+                    "type": "labour",
+                    "data": lr
+                })
+    
+        # Other costs
+        for oc in st.session_state.other_cost_rows:
+            if oc["description"]:
+                combined_items.append({
+                    "description": oc["description"],
+                    "type": "other",
+                    "data": oc
+                })
+    
+        # Expenses (only once)
+        if expenses_total > 0:
+            combined_items.append({
+                "description": "Expenses",
+                "type": "expenses"
+            })
+    
+        # ✅ Assign based on index
+        if i < len(combined_items):
+    
+            item = combined_items[i]
+    
+            work["description"] = item["description"]
+    
+            if item["type"] == "labour":
+                lr = item["data"]
+    
+                # ✅ PROPER labour pricing per row
+                price = (
+                    lr["office_day"] * rates["office_day"] +
+                    lr["site_day"] * rates["site_day"] +
+                    lr["office_evening"] * rates["office_evening"] +
+                    lr["site_evening"] * rates["site_evening"] +
+                    lr["office_weekend"] * rates["office_weekend"] +
+                    lr["site_weekend"] * rates["site_weekend"]
+                )
+    
+            elif item["type"] == "other":
+                price = item["data"]["selling"]
+    
+            elif item["type"] == "expenses":
+                price = expenses_total
+    
+        else:
+            work["description"] = ""
+            price = 0
+    
+        # ✅ SHOW LOCKED DESCRIPTION
+        st.text_input(
+            "Description",
+            value=work["description"],
+            key=f"auto_desc_locked_{i}",
+            disabled=True
+        )
 
 
     price = work["manual_price"]
