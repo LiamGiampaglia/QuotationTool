@@ -557,28 +557,26 @@ for i, work in enumerate(st.session_state.works_list):
             key=f"exp_{i}"
         )
 
-        # ✅ Build description list
+
+        # ✅ Reset
         description_lines = []
         price = 0
-
-        # ✅ Labour items
-        if work["include_labour"]:
-            for lr in st.session_state.labour_rows:
-                if lr["description"]:
-                    description_lines.append(lr["description"])
+        
+        # ✅ Labour → "Energy Consultancy"
+        if work["include_labour"] and labour_total > 0:
+            description_lines.append(f"Energy Consultancy – £{labour_total:,.2f}")
             price += labour_total
-
-        # ✅ Other costs
-        if work["include_other"]:
-            for oc in st.session_state.other_cost_rows:
-                if oc["description"]:
-                    description_lines.append(oc["description"])
+        
+        # ✅ Other Costs
+        if work["include_other"] and other_cost_selling > 0:
+            description_lines.append(f"Other Costs – £{other_cost_selling:,.2f}")
             price += other_cost_selling
-
+        
         # ✅ Expenses
-        if work["include_expenses"]:
-            description_lines.append("Expenses")
+        if work["include_expenses"] and expenses_total > 0:
+            description_lines.append(f"Expenses – £{expenses_total:,.2f}")
             price += expenses_total
+
 
         # ✅ Build description text
         auto_description = "\n".join(description_lines)
