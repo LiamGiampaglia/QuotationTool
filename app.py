@@ -39,6 +39,11 @@ def extract_rates(uploaded_file):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
+
+if "labour_rows" not in st.session_state:
+    st.session_state.labour_rows = []
+
+
 # ==========================
 # PAGE SETUP
 # ==========================
@@ -310,6 +315,32 @@ if uploaded_file is not None:
     st.write(f"Site Evening: {total_site_evening}")
     st.write(f"Office Weekend: {total_office_weekend}")
     st.write(f"Site Weekend: {total_site_weekend}")
+
+    
+    # ✅ SELLING LABOUR (NEW)
+    labour_total = (
+        (total_office_day * rates["office_day"]) +
+        (total_site_day * rates["site_day"]) +
+    
+        (total_office_evening * rates["office_evening"]) +
+        (total_site_evening * rates["site_evening"]) +
+    
+        (total_office_weekend * rates["office_weekend"]) +
+        (total_site_weekend * rates["site_weekend"])
+    )
+    
+    # ✅ Peer review
+    peer_review = 0.1 * total_office_day * rates["office_day"]
+    
+    labour_total += peer_review
+
+    # ✅ EXPENSES (SELLING)
+    expenses_total = (
+        overnight_outside * rates.get("outside_m25", 0)
+        + overnight_inside * rates.get("inside_m25", 0)
+        + miles * rates.get("mileage", 0)
+        + flights_cost * 1.15
+    )
 
         
         # ==========================
