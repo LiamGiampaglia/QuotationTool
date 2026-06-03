@@ -525,26 +525,22 @@ for i, work in enumerate(st.session_state.works_list):
 
     st.markdown(f"#### Work Item {i+1}")
 
-    work["description"] = st.text_input(
-        "Description",
-        value=work["description"],
-        key=f"work_desc_{i}"
-    )
-
     work["mode"] = st.selectbox(
         "Pricing Mode",
         ["Auto", "Manual"],
         key=f"mode_{i}"
     )
 
+    # ==========================
+    # ✅ AUTO MODE
+    # ==========================
     if work["mode"] == "Auto":
 
         price = 0
-    
-        # ✅ Combine ALL items in correct order
+
         combined_items = []
-    
-        # Labour rows
+
+        # ✅ Labour rows
         for lr in st.session_state.labour_rows:
             if lr["description"]:
                 combined_items.append({
@@ -552,8 +548,8 @@ for i, work in enumerate(st.session_state.works_list):
                     "type": "labour",
                     "data": lr
                 })
-    
-        # Other costs
+
+        # ✅ Other costs
         for oc in st.session_state.other_cost_rows:
             if oc["description"]:
                 combined_items.append({
@@ -561,25 +557,22 @@ for i, work in enumerate(st.session_state.works_list):
                     "type": "other",
                     "data": oc
                 })
-    
-        # Expenses (only once)
+
+        # ✅ Expenses
         if expenses_total > 0:
             combined_items.append({
                 "description": "Expenses",
                 "type": "expenses"
             })
-    
-        # ✅ Assign based on index
+
+        # ✅ Assign item based on position
         if i < len(combined_items):
-    
             item = combined_items[i]
-    
             work["description"] = item["description"]
-    
+
             if item["type"] == "labour":
                 lr = item["data"]
-    
-                # ✅ PROPER labour pricing per row
+
                 price = (
                     lr["office_day"] * rates["office_day"] +
                     lr["site_day"] * rates["site_day"] +
@@ -588,18 +581,18 @@ for i, work in enumerate(st.session_state.works_list):
                     lr["office_weekend"] * rates["office_weekend"] +
                     lr["site_weekend"] * rates["site_weekend"]
                 )
-    
+
             elif item["type"] == "other":
                 price = item["data"]["selling"]
-    
+
             elif item["type"] == "expenses":
                 price = expenses_total
-    
+
         else:
             work["description"] = ""
             price = 0
-    
-        # ✅ SHOW LOCKED DESCRIPTION
+
+        # ✅ Locked description display
         st.text_input(
             "Description",
             value=work["description"],
@@ -607,14 +600,31 @@ for i, work in enumerate(st.session_state.works_list):
             disabled=True
         )
 
+    # ==========================
+    # ✅ MANUAL MODE
+    # ==========================
+    else:
+        work["description"] = st.text_input(
+            "Description",
+            value=work["description"],
+            key=f"work_desc_{i}"
+        )
 
-    price = work["manual_price"]
+        work["manual_price"] = st.number_input(
+            "Manual Price (£)",
+            0.0,
+            key=f"manual_{i}"
+        )
 
+        price = work["manual_price"]
+
+    # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
     st.write(f"Price: £{price:,.2f}")
 
     total_works_price += price
 
     st.markdown("---")
+
 
 st.write("### Works Total")
 st.write(f"Total Works Price: £{total_works_price:,.2f}")
