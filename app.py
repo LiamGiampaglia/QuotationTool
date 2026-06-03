@@ -1033,7 +1033,7 @@ def replace_placeholders(doc, data):
     return doc
 
 
-def fill_works_table(doc, works_list):
+def fill_works_table(doc, works_list, fx_rate, currency_symbol):
 
     target_table = None
 
@@ -1061,11 +1061,13 @@ def fill_works_table(doc, works_list):
 
         row_cells[0].text = str(i + 1)
         row_cells[1].text = work["description"]
-        row_cells[2].text = f"£{work['price']:,.2f}"
+        price_fx = work["price"] * fx_rate
+        row_cells[2].text = f"{currency_symbol}{price_fx:,.2f}"
 
     # ✅ Total row
     total = sum(work["price"] for work in works_list)
-    target_table.rows[-1].cells[2].text = f"£{total:,.2f}"
+    total_fx = total * fx_rate
+    target_table.rows[-1].cells[2].text = f"{currency_symbol}{total_fx:,.2f}"
 
     return doc
 
@@ -1201,7 +1203,7 @@ if st.button("📄 Generate Word Document"):
         doc = replace_placeholders(doc, data)
 
         if st.session_state.works_list:
-            doc = fill_works_table(doc, st.session_state.works_list)
+            doc = fill_works_table(doc, st.session_state.works_list, fx_rate, currency_symbol)
 
         # ✅ Filename
         file_name = f"{project_number}-{document_type}-{subject}-{unique_id}-{revision_code}{revision_number}"
