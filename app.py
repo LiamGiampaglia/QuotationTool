@@ -252,35 +252,99 @@ if uploaded_file is not None:
     st.subheader("💰 Live Cost Calculator")
 
     # Inputs
-    office_hours = st.number_input("Office Hours", 0.0)
-    site_hours = st.number_input("Site Hours", 0.0)
+    st.markdown("### Labour Hours (Match Excel)")
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write("**Mon–Fri 08:00–17:00**")
+        office_day = st.number_input("Office (Day)", 0.0)
+        site_day = st.number_input("Site (Day)", 0.0)
+    
+        st.write("**Mon–Fri 17:00–24:00**")
+        office_evening = st.number_input("Office (Evening)", 0.0)
+        site_evening = st.number_input("Site (Evening)", 0.0)
+    
+    with col2:
+        st.write("**Weekend**")
+        office_weekend = st.number_input("Office (Weekend)", 0.0)
+        site_weekend = st.number_input("Site (Weekend)", 0.0)
+
 
     overnight_outside = st.number_input("Overnight Stays (Outside M25)", 0)
     miles = st.number_input("Mileage (miles)", 0)
+    overnight_inside = st.number_input("Overnight Stays (Inside M25)", 0)
+    flights_cost = st.number_input("Flights / Rail (£)", 0.0)
+    other_cost = st.number_input("Other Costs (£)", 0.0)
+    discount = st.number_input("Discount (£)", 0.0)
 
     # Ensure required data exists
     if "office_cost" in rates and "office_margin" in rates:
 
-        # Convert cost → selling using margin
-        office_rate = rates["office_cost"] / (1 - rates["office_margin"])
-        site_rate = rates["site_cost"] / (1 - rates["site_margin"])
-
-        # Labour calculation
-        labour_total = (office_hours * office_rate) + (site_hours * site_rate)
+            # ✅ Use selling rates (NOT margin formula)
+        office_rate = rates.get("office_selling", 0)
+        site_rate = rates.get("site_selling", 0)
+        
+        evening_multiplier = 1.5
+        weekend_multiplier = 2.0
+        
+        labour_total = (
+            (office_day * office_rate) +
+            (site_day * site_rate) +
+        
+            (office_evening * office_rate * evening_multiplier) +
+            (site_evening * site_rate * evening_multiplier) +
+        
+            (office_weekend * office_rate * weekend_multiplier) +
+            (site_weekend * site_rate * weekend_multiplier)
+        )
+    
+        # ✅ Peer review (10% of office hours)
+        peer_review = 0.1 * (
+            office_day + office_evening + office_weekend
+        ) * office_rate
+        
+        labour_total += peer_review
 
         # Expenses
+        # ==========================
+        # Expenses
+        # ==========================
+        
         expenses_total = (
             overnight_outside * rates.get("outside_m25", 0)
+            + overnight_inside * rates.get("inside_m25", 0)
             + miles * rates.get("mileage", 0)
+            + flights_cost * 1.15
         )
+        
+        # ==========================
+        # Other Costs
+        # ==========================
+        
+        other_cost_selling = other_cost * 1.2
+        
+        # ==========================
+        # Final Total
+        # ==========================
+        
+        subtotal = labour_total + expenses_total + other_cost_selling
+        total_price = subtotal - discount
 
         total_price = labour_total + expenses_total
 
         # Display
         st.markdown("### Breakdown")
 
+        
         st.write(f"Labour: £{labour_total:,.2f}")
         st.write(f"Expenses: £{expenses_total:,.2f}")
+        st.write(f"Other Costs: £{other_cost_selling:,.2f}")
+        st.write(f"Discount: -£{discount:,.2f}")
+        
+        st.markdown("---")
+        st.metric("Total Price", f"£{total_price:,.2f}")
+
 
         st.markdown("---")
 
