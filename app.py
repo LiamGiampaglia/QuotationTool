@@ -411,7 +411,6 @@ if uploaded_file is not None:
     
     with col2:
         flights_cost = st.number_input("Flights / Rail (£)", 0.0)
-        other_cost = st.number_input("Other Costs (£)", 0.0)
         discount_pct = st.number_input("Discount (%)", 0.0, 100.0, 0.0)
         discount_factor = 1 - (discount_pct / 100)
 
