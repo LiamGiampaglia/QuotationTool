@@ -24,9 +24,9 @@ def extract_rates(uploaded_file):
         "site_evening": ws["F102"].value or 0,
         "site_weekend": ws["G102"].value or 0,
     
-        "outside_m25": ws["E109"].value or 0,
-        "inside_m25": ws["E110"].value or 0,
-        "mileage": ws["E111"].value or 0
+        "outside_m25": ws["E106"].value or 0,
+        "inside_m25": ws["E107"].value or 0,
+        "mileage": ws["E108"].value or 0
     }
 
 
