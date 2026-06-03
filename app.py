@@ -332,6 +332,14 @@ with col1:
         "Currency",
         ["GBP", "EUR"]
     )
+    
+if currency == "EUR":
+    fx_rate = 1.16
+    currency_symbol = "€"
+else:
+    fx_rate = 1
+    currency_symbol = "£"
+
     consultant_name = st.text_input("Consultant Name")
     customer_contact_name = st.text_input("Customer Contact Name")
     contact_tel = st.text_input("Contact Tel No")
@@ -740,6 +748,16 @@ if uploaded_file is not None:
         
     total_price = subtotal - discount_value
 
+    
+    labour_total_fx = labour_total * fx_rate
+    expenses_total_fx = expenses_total * fx_rate
+    other_cost_selling_fx = other_cost_selling * fx_rate
+    
+    total_cost_fx = total_cost * fx_rate
+    subtotal_fx = subtotal * fx_rate
+    total_price_fx = total_price * fx_rate
+
+
 
     if subtotal > 0:
         margin_pct = (subtotal - total_cost) / subtotal * 100
@@ -755,22 +773,26 @@ if uploaded_file is not None:
     # ✅ Display (NOW OUTSIDE the if/else)
     st.markdown("### Breakdown")
     
-    st.write(f"Labour: £{labour_total:,.2f}")
-    st.write(f"Expenses: £{expenses_total:,.2f}")
-    st.write(f"Other Costs: £{other_cost_selling:,.2f}")
+
+    st.write(f"Labour: {currency_symbol}{labour_total_fx:,.2f}")
+    st.write(f"Expenses: {currency_symbol}{expenses_total_fx:,.2f}")
+    st.write(f"Other Costs: {currency_symbol}{other_cost_selling_fx:,.2f}")
+
     
     st.markdown("---")
     
-    st.write(f"Total Cost: £{total_cost:,.2f}")
-    st.write(f"Selling Price: £{subtotal:,.2f}")
+
+    st.write(f"Total Cost: {currency_symbol}{total_cost_fx:,.2f}")
+    st.write(f"Selling Price: {currency_symbol}{subtotal_fx:,.2f}")
+
     st.write(f"Margin (%): {margin_pct:.2f}%")
     
     st.write(f"Discount (%): {discount_pct:.2f}%")
-    st.write(f"Actual Selling Price: £{total_price:,.2f}")
+    st.write(f"Actual Selling Price: {currency_symbol}{total_price_fx:,.2f}")
     st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
     
     st.markdown("---")
-    st.metric("Total Price", f"£{total_price:,.2f}")
+    st.metric("Total Price", f"{currency_symbol}{total_price_fx:,.2f}")
 
 
 # ==========================
