@@ -39,59 +39,53 @@ def generate_pricing_excel(uploaded_file):
     ws = wb["PRICING SHEET"]
 
     # ==========================
-    # ✅ BASIC DETAILS
+    # ✅ LABOUR ITEMS (ROWS 15–24)
     # ==========================
-
-    ws["B5"] = f"{project_number} - {customer_name} - {project_name}"
-
-    # ==========================
-    # ✅ LABOUR ROWS (START ROW ~20)
-    # ==========================
-
-    start_row = 20
 
     for i, lr in enumerate(st.session_state.labour_rows):
 
-        row = start_row + i
+        if i >= 10:  # max rows (15–24)
+            break
 
-        ws[f"A{row}"] = lr["description"]
-        ws[f"B{row}"] = lr["office_day"]
-        ws[f"C{row}"] = lr["site_day"]
-        ws[f"D{row}"] = lr["office_evening"]
-        ws[f"E{row}"] = lr["site_evening"]
-        ws[f"F{row}"] = lr["office_weekend"]
-        ws[f"G{row}"] = lr["site_weekend"]
+        row = 15 + i
+
+        ws[f"C{row}"] = lr["description"]
+        ws[f"D{row}"] = lr["office_day"]
+        ws[f"E{row}"] = lr["site_day"]
+        ws[f"F{row}"] = lr["office_evening"]
+        ws[f"G{row}"] = lr["site_evening"]
+        ws[f"H{row}"] = lr["office_weekend"]
+        ws[f"I{row}"] = lr["site_weekend"]
+
+    # ==========================
+    # ✅ OTHER COSTS (ROWS 39–44)
+    # ==========================
+
+    for i, oc in enumerate(st.session_state.other_cost_rows):
+
+        if i >= 6:  # max rows (39–44)
+            break
+
+        row = 39 + i
+
+        ws[f"C{row}"] = oc["description"]
+        ws[f"D{row}"] = oc["cost"]
+        ws[f"G{row}"] = oc["margin"]
 
     # ==========================
     # ✅ EXPENSES
     # ==========================
 
-    ws["B40"] = overnight_outside
-    ws["B41"] = overnight_inside
-    ws["B42"] = miles
-
-    # Flights cost
-    ws["C43"] = flights_cost
-
-    # ==========================
-    # ✅ OTHER COSTS
-    # ==========================
-
-    other_start = 50
-
-    for i, oc in enumerate(st.session_state.other_cost_rows):
-
-        row = other_start + i
-
-        ws[f"A{row}"] = oc["description"]
-        ws[f"B{row}"] = oc["cost"]
-        ws[f"D{row}"] = oc["margin"]
+    ws["D30"] = overnight_outside
+    ws["D31"] = overnight_inside
+    ws["D32"] = miles
+    ws["D33"] = flights_cost
 
     # ==========================
     # ✅ DISCOUNT
     # ==========================
 
-    ws["E75"] = discount_pct
+    ws["D62"] = discount_pct
 
     return wb
 
