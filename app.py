@@ -36,8 +36,17 @@ def extract_rates(uploaded_file):
 # ==========================
 # SESSION STATE
 # ==========================
-if "works_list" not in st.session_state:
-    st.session_state.works_list = []
+
+if st.button("➕ Add Work"):
+    st.session_state.works_list.append({
+        "description": "",
+        "mode": "Auto",
+        "include_labour": True,
+        "include_other": True,
+        "include_expenses": True,
+        "manual_price": 0.0
+    })
+
 
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
@@ -507,32 +516,71 @@ if uploaded_file is not None:
 # ==========================
 st.subheader("🛠️ Works & Pricing")
 
-col1, col2 = st.columns(2)
+total_works_price = 0
 
-with col1:
-    work_description = st.text_input("Work Description")
+for i, work in enumerate(st.session_state.works_list):
 
-with col2:
-    work_price = st.text_input("Price (£)")
+    st.markdown(f"#### Work Item {i+1}")
 
-if st.button("➕ Add Work"):
-    if work_description and work_price:
-        try:
-            price = float(work_price.replace(",", ""))
-            st.session_state.works_list.append({
-                "description": work_description,
-                "price": price
-            })
-            st.success("Work added")
-        except:
-            st.error("Enter a valid price")
+    work["description"] = st.text_input(
+        "Description",
+        value=work["description"],
+        key=f"work_desc_{i}"
+    )
 
-if st.session_state.works_list:
-    st.markdown("### Current Works")
-    for i, work in enumerate(st.session_state.works_list):
-        st.write(f"{i+1}. {work['description']} - £{work['price']:,.2f}")
+    work["mode"] = st.selectbox(
+        "Pricing Mode",
+        ["Auto", "Manual"],
+        key=f"mode_{i}"
+    )
 
-st.markdown("---")
+    if work["mode"] == "Auto":
+
+        work["include_labour"] = st.checkbox(
+            "Include Labour",
+            value=work["include_labour"],
+            key=f"lab_{i}"
+        )
+
+        work["include_other"] = st.checkbox(
+            "Include Other Costs",
+            value=work["include_other"],
+            key=f"other_{i}"
+        )
+
+        work["include_expenses"] = st.checkbox(
+            "Include Expenses",
+            value=work["include_expenses"],
+            key=f"exp_{i}"
+        )
+
+        # ✅ Calculate auto price
+        price = 0
+
+        if work["include_labour"]:
+            price += labour_total
+
+        if work["include_other"]:
+            price += other_cost_selling
+
+        if work["include_expenses"]:
+            price += expenses_total
+
+    else:
+        # ✅ Manual input
+        work["manual_price"] = st.number_input(
+            "Manual Price (£)",
+            0.0,
+            key=f"manual_{i}"
+        )
+
+        price = work["manual_price"]
+
+    st.write(f"Price: £{price:,.2f}")
+
+    total_works_price += price
+
+    st.markdown("---")
 
 # ==========================
 # 💰 PAYMENT TERMS
