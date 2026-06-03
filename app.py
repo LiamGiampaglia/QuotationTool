@@ -38,6 +38,14 @@ def extract_rates(uploaded_file):
             if cell == "Margin On-Site" and i+1 < len(row):
                 rates["site_margin"] = row[i+1]
 
+    
+            if cell == "Office (GBP)" and i+2 < len(row):
+                rates["office_selling"] = row[i+2]
+            
+            if cell == "Site (GBP)" and i+2 < len(row):
+                rates["site_selling"] = row[i+2]
+
+
     return rates
 
 # ==========================
@@ -247,6 +255,7 @@ st.markdown("---")
 if uploaded_file is not None:
 
     rates = extract_rates(uploaded_file)
+    st.write("DEBUG RATES:", rates)
 
     st.markdown("---")
     st.subheader("💰 Live Cost Calculator")
@@ -279,7 +288,7 @@ if uploaded_file is not None:
     discount = st.number_input("Discount (£)", 0.0)
 
     # Ensure required data exists
-    if "office_cost" in rates and "office_margin" in rates:
+    if "office_selling" in rates and "site_selling" in rates:
 
             # ✅ Use selling rates (NOT margin formula)
         office_rate = rates.get("office_selling", 0)
@@ -331,8 +340,6 @@ if uploaded_file is not None:
         subtotal = labour_total + expenses_total + other_cost_selling
         total_price = subtotal - discount
 
-        total_price = labour_total + expenses_total
-
         # Display
         st.markdown("### Breakdown")
 
@@ -343,11 +350,6 @@ if uploaded_file is not None:
         st.write(f"Discount: -£{discount:,.2f}")
         
         st.markdown("---")
-        st.metric("Total Price", f"£{total_price:,.2f}")
-
-
-        st.markdown("---")
-
         st.metric("Total Price", f"£{total_price:,.2f}")
 
     else:
