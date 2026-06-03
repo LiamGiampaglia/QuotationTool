@@ -620,6 +620,7 @@ for i, work in enumerate(st.session_state.works_list):
         price = work["manual_price"]
 
     # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
+    work["price"] = price
     st.write(f"Price: £{price:,.2f}")
 
     total_works_price += price
