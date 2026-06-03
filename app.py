@@ -354,22 +354,22 @@ if uploaded_file is not None:
     # ==========================
 
         
-# ✅ COST CALCULATION (from Excel logic)
-
-labour_cost = (
-    (total_office_day * rates["office_cost"]) +
-    (total_site_day * rates["site_cost"]) +
-
-    (total_office_evening * rates["office_cost"]) +
-    (total_site_evening * rates["site_cost"]) +
-
-    (total_office_weekend * rates["office_cost"]) +
-    (total_site_weekend * rates["site_cost"])
-)
-
-peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
-
-labour_cost += peer_review_cost
+    # ✅ COST CALCULATION (from Excel logic)
+    
+    labour_cost = (
+        (total_office_day * rates["office_cost"]) +
+        (total_site_day * rates["site_cost"]) +
+    
+        (total_office_evening * rates["office_cost"]) +
+        (total_site_evening * rates["site_cost"]) +
+    
+        (total_office_weekend * rates["office_cost"]) +
+        (total_site_weekend * rates["site_cost"])
+    )
+    
+    peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
+    
+    labour_cost += peer_review_cost
 
 
 # ✅ Expense COST (not selling)
