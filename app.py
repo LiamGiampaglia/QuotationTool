@@ -103,7 +103,7 @@ def generate_pricing_excel(uploaded_file):
     # ✅ Header info
     ws["C5"] = sap_description
     ws["C8"] = consultant_name
-
+    ws["J5"] = currency
     # ✅ SAP Sheet
     sap_ws = wb["SAP INFO FORM"]
 
