@@ -40,7 +40,29 @@ def generate_pricing_excel(uploaded_file):
     uploaded_file.seek(0)
     file_bytes = uploaded_file.read()
     wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=False)
+
     ws = wb["PRICING SHEET"]
+
+    # ✅ Header info
+    ws["C5"] = sap_description
+    ws["C8"] = consultant_name
+
+    # ✅ SAP Sheet
+    sap_ws = wb["SAP INFO FORM"]
+
+    sap_ws["D7"] = customer_contact_name
+    sap_ws["D8"] = contact_tel
+    sap_ws["D9"] = contact_email
+
+    sap_ws["D17"] = bfo_opp_no
+    sap_ws["D18"] = material_code_count
+
+    sap_ws["D19"] = material_code_1
+    sap_ws["D20"] = material_code_2
+    sap_ws["D21"] = material_code_3
+
+    # ✅ Existing logic continues...
+
 
 
     # ==========================
@@ -219,6 +241,35 @@ with col2:
 # Contact name (optional)
 contact_name = st.text_input("Contact Name (leave blank for default)")
 
+# ==========================
+# 📋 PRICING SHEET INFO
+# ==========================
+st.markdown("---")
+st.subheader("📋 Pricing Sheet Info")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    sap_description = st.text_input("SAP Description Name")
+    consultant_name = st.text_input("Consultant Name")
+
+    customer_contact_name = st.text_input("Customer Contact Name")
+    contact_tel = st.text_input("Contact Tel No")
+    contact_email = st.text_input("Contact Email")
+
+with col2:
+    bfo_opp_no = st.text_input("bFO Opportunity No")
+
+    material_code_count = st.number_input(
+        "No. of Material Codes",
+        min_value=1,
+        max_value=3,
+        value=1
+    )
+
+    material_code_1 = st.text_input("Material Code No.1")
+    material_code_2 = st.text_input("Material Code No.2")
+    material_code_3 = st.text_input("Material Code No.3")
 
 # ==========================
 # 📄 FILE NAMING SECTION
@@ -882,8 +933,31 @@ if st.button("📄 Generate Word Document"):
         wb = openpyxl.load_workbook(io.BytesIO(file_bytes))
         ws = wb["PRICING SHEET"]
     
+        # ==========================
+        # ✅ PRICING SHEET HEADER INFO
+        # ==========================
+        
+        ws["C5"] = sap_description
+        ws["C8"] = consultant_name
+
         ws["B10"] = office_hours
         ws["C10"] = site_hours
+        # ==========================
+        # ✅ SAP INFO FORM SHEET
+        # ==========================
+        
+        sap_ws = wb["SAP INFO FORM"]
+        
+        sap_ws["D7"] = customer_contact_name
+        sap_ws["D8"] = contact_tel
+        sap_ws["D9"] = contact_email
+        
+        sap_ws["D17"] = bfo_opp_no
+        sap_ws["D18"] = material_code_count
+        
+        sap_ws["D19"] = material_code_1
+        sap_ws["D20"] = material_code_2
+        sap_ws["D21"] = material_code_3
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
