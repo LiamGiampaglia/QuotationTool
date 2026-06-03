@@ -401,25 +401,25 @@ if uploaded_file is not None:
         actual_margin_pct = 0
 
 
-# ✅ Display (NOW OUTSIDE the if/else)
-st.markdown("### Breakdown")
-
-st.write(f"Labour: £{labour_total:,.2f}")
-st.write(f"Expenses: £{expenses_total:,.2f}")
-st.write(f"Other Costs: £{other_cost_selling:,.2f}")
-
-st.markdown("---")
-
-st.write(f"Total Cost: £{total_cost:,.2f}")
-st.write(f"Selling Price: £{subtotal:,.2f}")
-st.write(f"Margin (%): {margin_pct:.2f}%")
-
-st.write(f"Discount (%): {discount_pct:.2f}%")
-st.write(f"Actual Selling Price: £{total_price:,.2f}")
-st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
-
-st.markdown("---")
-st.metric("Total Price", f"£{total_price:,.2f}")
+    # ✅ Display (NOW OUTSIDE the if/else)
+    st.markdown("### Breakdown")
+    
+    st.write(f"Labour: £{labour_total:,.2f}")
+    st.write(f"Expenses: £{expenses_total:,.2f}")
+    st.write(f"Other Costs: £{other_cost_selling:,.2f}")
+    
+    st.markdown("---")
+    
+    st.write(f"Total Cost: £{total_cost:,.2f}")
+    st.write(f"Selling Price: £{subtotal:,.2f}")
+    st.write(f"Margin (%): {margin_pct:.2f}%")
+    
+    st.write(f"Discount (%): {discount_pct:.2f}%")
+    st.write(f"Actual Selling Price: £{total_price:,.2f}")
+    st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
+    
+    st.markdown("---")
+    st.metric("Total Price", f"£{total_price:,.2f}")
 
 
 # ==========================
