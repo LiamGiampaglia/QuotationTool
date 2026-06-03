@@ -11,42 +11,28 @@ def extract_rates(uploaded_file):
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
 
-    rates = {}
+    rates = {
+        # ✅ COSTS
+        "office_cost": ws["E97"].value,
+        "site_cost": ws["E98"].value,
 
-    for row in ws.iter_rows(values_only=True):
+        # ✅ SELLING RATES (match Excel exactly)
+        "office_day": ws["E101"].value,
+        "office_evening": ws["F101"].value,
+        "office_weekend": ws["G101"].value,
 
-        for i, cell in enumerate(row):
+        "site_day": ws["E102"].value,
+        "site_evening": ws["F102"].value,
+        "site_weekend": ws["G102"].value,
 
-            if cell == "Office (GBP)" and i+1 < len(row):
-                rates["office_cost"] = row[i+1]
-
-            if cell == "Site (GBP)" and i+1 < len(row):
-                rates["site_cost"] = row[i+1]
-
-            if cell == "Mileage cost (GBP)" and i+1 < len(row):
-                rates["mileage"] = row[i+1]
-
-            if cell == "Outside M25 (GBP)" and i+1 < len(row):
-                rates["outside_m25"] = row[i+1]
-
-            if cell == "Inside M25 (GBP)" and i+1 < len(row):
-                rates["inside_m25"] = row[i+1]
-
-            if cell == "Margin In Office" and i+1 < len(row):
-                rates["office_margin"] = row[i+1]
-
-            if cell == "Margin On-Site" and i+1 < len(row):
-                rates["site_margin"] = row[i+1]
-
-    
-            if cell == "Office (GBP)" and i+2 < len(row):
-                rates["office_selling"] = row[i+2]
-            
-            if cell == "Site (GBP)" and i+2 < len(row):
-                rates["site_selling"] = row[i+2]
-
+        # ✅ EXPENSES
+        "outside_m25": ws["E109"].value,
+        "inside_m25": ws["E110"].value,
+        "mileage": ws["E111"].value
+    }
 
     return rates
+
 
 # ==========================
 # SESSION STATE
@@ -295,19 +281,21 @@ if uploaded_file is not None:
         site_rate = rates.get("site_selling", 0)
         
        
+        
         labour_total = (
-            (office_day * office_rate) +
-            (site_day * site_rate) +
+            (office_day * rates["office_day"]) +
+            (site_day * rates["site_day"]) +
         
-            (office_evening * office_rate) +
-            (site_evening * site_rate) +
+            (office_evening * rates["office_evening"]) +
+            (site_evening * rates["site_evening"]) +
         
-            (office_weekend * office_rate) +
-            (site_weekend * site_rate)
-)
+            (office_weekend * rates["office_weekend"]) +
+            (site_weekend * rates["site_weekend"])
+        )
+
     
         # ✅ Peer review (10% of office hours)
-        peer_review = 0.1 * office_day * office_rate
+        peer_review = 0.1 * office_day * rates["office_day"]
         
         labour_total += peer_review
 
