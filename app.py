@@ -39,6 +39,8 @@ def extract_rates(uploaded_file):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
+if "other_cost_rows" not in st.session_state:
+    st.session_state.other_cost_rows = []
 
 if "labour_rows" not in st.session_state:
     st.session_state.labour_rows = []
@@ -304,6 +306,62 @@ if uploaded_file is not None:
         total_site_evening += row["site_evening"]
         total_office_weekend += row["office_weekend"]
         total_site_weekend += row["site_weekend"]
+    
+        st.markdown("---")
+   
+    st.markdown("### Other Costs (Detailed)")
+
+    # ✅ Add row button
+    if st.button("➕ Add Cost Row"):
+        st.session_state.other_cost_rows.append({
+            "description": "",
+            "cost": 0.0,
+            "margin": 0.0,
+            "selling": 0.0
+        })
+    
+    
+    total_other_cost = 0
+    total_other_selling = 0
+    
+    # ✅ Display rows
+    for i, row in enumerate(st.session_state.other_cost_rows):
+    
+        st.markdown(f"#### Cost Item {i+1}")
+    
+        row["description"] = st.text_input(
+            "Description",
+            value=row["description"],
+            key=f"other_desc_{i}"
+        )
+    
+        col1, col2 = st.columns(2)
+    
+        with col1:
+            row["cost"] = st.number_input(
+                "Cost (£)",
+                0.0,
+                key=f"other_cost_{i}"
+            )
+    
+        with col2:
+            row["margin"] = st.number_input(
+                "Margin (%)",
+                0.0,
+                100.0,
+                key=f"other_margin_{i}"
+            )
+    
+        # ✅ Selling calculation
+        if row["margin"] < 100:
+            row["selling"] = row["cost"] / (1 - row["margin"] / 100)
+        else:
+            row["selling"] = 0
+    
+        st.write(f"Selling Price: £{row['selling']:,.2f}")
+    
+        total_other_cost += row["cost"]
+        total_other_selling += row["selling"]
     
         st.markdown("---")
     
