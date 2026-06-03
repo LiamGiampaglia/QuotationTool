@@ -366,8 +366,8 @@ if uploaded_file is not None:
         st.write(f"Expenses: £{expenses_total:,.2f}")
         st.write(f"Other Costs: £{other_cost_selling:,.2f}")
         st.write(f"Discount ({discount_pct}%): -£{discount_value:,.2f}")
-        st.write(f"Margin (%): {margin_pct:.1f}%")
-        st.write(f"Actual Margin (%): {actual_margin_pct:.1f}%")
+        st.write(f"Margin (%): {margin_pct:.2f}%")
+        st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
         
         st.markdown("---")
         st.metric("Total Price", f"£{total_price:,.2f}")
