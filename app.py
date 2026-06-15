@@ -218,6 +218,8 @@ if "price1" not in st.session_state:
 if "bm_value_0" not in st.session_state:
     st.session_state.bm_value_0 = 0.0
 
+if "do_autofill" not in st.session_state:
+    st.session_state.do_autofill = False
 
 # ==========================
 # PAGE SETUP
@@ -351,6 +353,16 @@ consultant_name = st.text_input("Consultant Name")
 customer_contact_name = st.text_input("Customer Contact Name")
 contact_tel = st.text_input("Contact Tel No")
 contact_email = st.text_input("Contact Email")
+
+
+if st.session_state.do_autofill:
+
+    if "total_price" in st.session_state:
+        st.session_state.price1 = float(st.session_state.total_price)
+        st.session_state.bm_value_0 = float(st.session_state.total_price)
+
+    st.session_state.do_autofill = False
+
 
 
 with col2:
@@ -756,6 +768,7 @@ if uploaded_file is not None:
     discount_value = subtotal * (discount_pct / 100)
         
     total_price = subtotal - discount_value
+    st.session_state.total_price = total_price
         
     labour_total_fx = labour_total * fx_rate
     expenses_total_fx = expenses_total * fx_rate
@@ -802,10 +815,10 @@ if uploaded_file is not None:
     st.markdown("---")
     st.metric("Total Price", f"{currency_symbol}{total_price_fx:,.2f}")
 
+    
     if st.button("Auto Fill Pricing Fields"):
-        st.session_state.price1 = float(total_price)
-        st.session_state.bm_value_0 = float(total_price)
-        st.rerun()
+        st.session_state["do_autofill"] = True
+
 
 
 # ==========================
