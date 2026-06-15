@@ -756,17 +756,7 @@ if uploaded_file is not None:
     discount_value = subtotal * (discount_pct / 100)
         
     total_price = subtotal - discount_value
-    
-    
-    if "price1" in st.session_state and st.session_state.price1 == 0:
-        st.session_state["price1"] = float(total_price)
-    
-    if "bm_value_0" in st.session_state and st.session_state["bm_value_0"] == 0:
-        st.session_state["bm_value_0"] = float(total_price)
-
-
-
-    
+        
     labour_total_fx = labour_total * fx_rate
     expenses_total_fx = expenses_total * fx_rate
     other_cost_selling_fx = other_cost_selling * fx_rate
@@ -811,6 +801,11 @@ if uploaded_file is not None:
     
     st.markdown("---")
     st.metric("Total Price", f"{currency_symbol}{total_price_fx:,.2f}")
+
+    if st.button("Auto Fill Pricing Fields"):
+        st.session_state.price1 = float(total_price)
+        st.session_state.bm_value_0 = float(total_price)
+        st.rerun()
 
 
 # ==========================
