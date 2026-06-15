@@ -321,13 +321,17 @@ with col1:
 
 with col2:
     project_name = st.text_input("Project Name")
-    consultant_name = st.text_input("Consultant Name")
+
+    consultant_name = st.text_input(
+        "Consultant Name",
+    )
     number_of_consultants = st.number_input(
         "Number of Consultants",
         min_value=1,
         max_value=50,
         value=1
     )
+
 # ==========================
 # 🏢 CUSTOMER DETAILS
 # ==========================
@@ -834,7 +838,6 @@ with col1:
 
     
 # ✅ ALWAYS define inputs (FIX)
-consultant_name = st.text_input("Consultant Name")
 customer_contact_name = st.text_input("Customer Contact Name")
 contact_tel = st.text_input("Contact Tel No")
 contact_email = st.text_input("Contact Email")
