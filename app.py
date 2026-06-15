@@ -401,19 +401,19 @@ if uploaded_file is not None:
         
     with col1:
         row["office_day"] = st.number_input(
-            "In Office Hours (Mon-Fri 0800 to 1700)",
+            "Office Hours (Mon-Fri 0800 to 1700)",
             0.0,
             key=f"od_{i}"
         )
         row["site_day"] = st.number_input(
-            "On Site Hours (Mon-Fri 0800 to 1700)",
+            "Site Hours (Mon-Fri 0800 to 1700)",
             0.0,
             key=f"sd_{i}"
         )
     
     with col2:
         row["office_evening"] = st.number_input(
-            "In Office Hours (Mon-Fri 1700 to 2400)",
+            "Office Hours (Mon-Fri 1700 to 2400)",
             0.0,
             key=f"oe_{i}"
         )
@@ -425,7 +425,7 @@ if uploaded_file is not None:
     
     with col3:
         row["office_weekend"] = st.number_input(
-            "In Office Hours (Sat & Sun 0800 to 2400)",
+            "Office Hours (Sat&Sun 0800 to 2400)",
             0.0,
             key=f"ow_{i}"
         )
