@@ -757,19 +757,13 @@ if uploaded_file is not None:
         
     total_price = subtotal - discount_value
     
-    updated = False
     
-    if st.session_state.price1 == 0:
-        st.session_state.price1 = total_price
-        updated = True
+    if "price1" in st.session_state and st.session_state.price1 == 0:
+        st.session_state["price1"] = float(total_price)
     
-    if "bm_value_0" in st.session_state and st.session_state.bm_value_0 == 0:
-        st.session_state.bm_value_0 = total_price
-        updated = True
-    
-    # ✅ Force UI refresh so inputs update
-    if updated:
-        st.rerun()
+    if "bm_value_0" in st.session_state and st.session_state["bm_value_0"] == 0:
+        st.session_state["bm_value_0"] = float(total_price)
+
 
 
     
