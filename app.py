@@ -1059,8 +1059,13 @@ col1, col2 = st.columns(2)
 
 with col1:
     
-    if "project_number" not in st.session_state and project_name:
-        st.session_state.project_number = project_name
+        # ✅ Always sync Project Number to Project Name (LIVE)
+    st.session_state.project_number = project_name
+    
+    project_number = st.text_input(
+        "Project Number",
+        value=st.session_state.project_number
+    )
     project_number = st.text_input(
         "Project Number",
         key="project_number"
