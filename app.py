@@ -355,16 +355,6 @@ contact_tel = st.text_input("Contact Tel No")
 contact_email = st.text_input("Contact Email")
 
 
-if st.session_state.do_autofill:
-
-    if "total_price" in st.session_state:
-        st.session_state.price1 = float(st.session_state.total_price)
-        st.session_state.bm_value_0 = float(st.session_state.total_price)
-
-    st.session_state.do_autofill = False
-
-
-
 with col2:
     bfo_opp_no = st.text_input("bFO Opportunity No")
 
@@ -769,6 +759,13 @@ if uploaded_file is not None:
         
     total_price = subtotal - discount_value
     st.session_state.total_price = total_price
+    if st.session_state.do_autofill:
+
+    if "total_price" in st.session_state:
+        st.session_state.price1 = float(st.session_state.total_price)
+        st.session_state.bm_value_0 = float(st.session_state.total_price)
+
+    st.session_state.do_autofill = False
         
     labour_total_fx = labour_total * fx_rate
     expenses_total_fx = expenses_total * fx_rate
