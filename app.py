@@ -603,15 +603,27 @@ if uploaded_file is not None:
     else:
         actual_margin_pct = 0
 
-
-    # ✅ Display (NOW OUTSIDE the if/else)
+    
     st.markdown("### Breakdown")
     
-
-    st.write(f"Labour: {currency_symbol}{labour_total_fx:,.2f}")
-    st.write(f"Expenses: {currency_symbol}{expenses_total_fx:,.2f}")
-    st.write(f"Other Costs: {currency_symbol}{other_cost_selling_fx:,.2f}")
-
+    st.markdown("#### Labour")
+    st.write(f"Selling: {currency_symbol}{labour_total_fx:,.2f}")
+    st.write(f"Cost: {currency_symbol}{labour_cost_fx:,.2f}")
+    st.write(f"Cost After Discount: {currency_symbol}{labour_cost_discounted_fx:,.2f}")
+    
+    st.markdown("---")
+    
+    st.markdown("#### Expenses")
+    st.write(f"Selling: {currency_symbol}{expenses_total_fx:,.2f}")
+    st.write(f"Cost: {currency_symbol}{expenses_cost_fx:,.2f}")
+    st.write(f"Cost After Discount: {currency_symbol}{expenses_cost_discounted_fx:,.2f}")
+    
+    st.markdown("---")
+    
+    st.markdown("#### Other Costs")
+    st.write(f"Selling: {currency_symbol}{other_cost_selling_fx:,.2f}")
+    st.write(f"Cost: {currency_symbol}{other_cost_fx:,.2f}")
+    st.write(f"Cost After Discount: {currency_symbol}{other_cost_discounted_fx:,.2f}")
     
     st.markdown("---")
     
