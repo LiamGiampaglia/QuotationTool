@@ -287,7 +287,19 @@ if quote_options:
 else:
     st.warning("No quote types available for this discipline yet.")
     quote_type = None
+currency = "GBP
 
+if "currency" not in st.session_state:
+    st.session_state.currency = "GBP"
+
+currency = st.session_state.currency
+
+if currency == "EUR":
+    fx_rate = 1.16
+    currency_symbol = "€"
+else:
+    fx_rate = 1
+    currency_symbol = "£"
 
 st.markdown("---")
 
@@ -811,19 +823,14 @@ st.subheader("📋 Pricing Sheet Info")
 col1, col2 = st.columns(2)
 
 with col1:
-    sap_description = st.text_input("SAP Description Name")
+    sap_description = st.text_input("SAP Description Name")  
     currency = st.selectbox(
         "Currency",
-        ["GBP", "EUR"]
+        ["GBP", "EUR"],
+        key="currency"
     )
-    
-if currency == "EUR":
-    fx_rate = 1.16
-    currency_symbol = "€"
-else:
-    fx_rate = 1
-    currency_symbol = "£"
 
+    
 # ✅ ALWAYS define inputs (FIX)
 consultant_name = st.text_input("Consultant Name")
 customer_contact_name = st.text_input("Customer Contact Name")
