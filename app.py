@@ -189,6 +189,7 @@ def generate_pricing_excel(uploaded_file):
     ws["D31"] = overnight_inside
     ws["D32"] = miles
     ws["D33"] = flights_cost
+    ws["E33"] = "GBP"
 
     # ==========================
     # ✅ DISCOUNT
