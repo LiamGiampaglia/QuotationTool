@@ -334,209 +334,6 @@ with col2:
 contact_name = st.text_input("Contact Name (leave blank for default)")
 
 # ==========================
-# 📋 PRICING SHEET INFO
-# ==========================
-st.markdown("---")
-st.subheader("📋 Pricing Sheet Info")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    sap_description = st.text_input("SAP Description Name")
-    currency = st.selectbox(
-        "Currency",
-        ["GBP", "EUR"]
-    )
-    
-if currency == "EUR":
-    fx_rate = 1.16
-    currency_symbol = "€"
-else:
-    fx_rate = 1
-    currency_symbol = "£"
-
-# ✅ ALWAYS define inputs (FIX)
-consultant_name = st.text_input("Consultant Name")
-customer_contact_name = st.text_input("Customer Contact Name")
-contact_tel = st.text_input("Contact Tel No")
-contact_email = st.text_input("Contact Email")
-
-
-with col2:
-    bfo_opp_no = st.text_input("bFO Opportunity No")
-
-    material_code_count = st.number_input(
-        "No. of Material Codes",
-        min_value=1,
-        max_value=3,
-        value=1
-    )
-
-    # ✅ Material Code 1
-    material_code_1 = st.selectbox(
-        "Material Code No.1",
-        material_code_options,
-        key="mc1"
-    )
-
-
-    material_price_1 = st.number_input(
-        "Price for Material Code 1 (£)",
-        min_value=0.0,
-        key="price1"
-    )
-
-    # ✅ Material Code 2
-    material_code_2 = ""
-    material_price_2 = 0.0
-
-    if material_code_count >= 2:
-        material_code_2 = st.selectbox(
-            "Material Code No.2",
-            material_code_options,
-            key="mc2"
-        )
-
-        material_price_2 = st.number_input(
-            "Price for Material Code 2 (£)",
-            min_value=0.0,
-            key="price2"
-        )
-
-    # ✅ Material Code 3
-    material_code_3 = ""
-    material_price_3 = 0.0
-
-    if material_code_count == 3:
-        material_code_3 = st.selectbox(
-            "Material Code No.3",
-            material_code_options,
-            key="mc3"
-        )
-
-        material_price_3 = st.number_input(
-            "Price for Material Code 3 (£)",
-            min_value=0.0,
-            key="price3"
-        )
-st.markdown("### Billing Milestones")
-
-billing_milestone_count = st.selectbox(
-    "No. of Billing Milestones",
-    [1, 2, 3, 4, 5]
-)
-
-billing_values = []
-billing_dates = []
-
-for i in range(billing_milestone_count):
-    st.markdown(f"#### Billing Milestone {i+1}")
-
-    value = st.number_input(
-        f"Milestone {i+1} Value (£)",
-        min_value=0.0,
-        key=f"bm_value_{i}"
-    )
-
-    date = st.date_input(
-        f"Milestone {i+1} Planned Billing Date",
-        key=f"bm_date_{i}"
-    )
-
-    billing_values.append(value)
-    billing_dates.append(date)
-
-
-# ==========================
-# 📄 FILE NAMING SECTION
-# ==========================
-st.markdown("---")
-st.subheader("📄 File Naming")
-
-document_type_options = {
-    "Cost Sheet": "CST",
-    "Quote": "QTE",
-    "Calculation": "CLC",
-    "Data Collection Form": "DCF",
-    "Document": "DOC",
-    "Drawing": "DRG",
-    "Functional Design Specification": "FDS",
-    "Risk Assessment / Method Statement": "RMS",
-    "Report": "RPT",
-    "Schedule": "SCH",
-    "Specification": "SPC"
-}
-
-subject_options = {
-    "Audit (EcoConsult Audit for Power)": "ADT",
-    "Block": "BLK",
-    "Cabling": "CBL",
-    "Design": "DES",
-    "Data Centre Audit": "DTC",
-    "Equipment": "EQP",
-    "Earthing": "ETH",
-    "Factory Acceptance Test": "FAT",
-    "Feasibility": "FSY",
-    "General Arrangement or Layout": "GAR",
-    "Energy Audit": "NRG",
-    "Microgrid Feasibility": "MGF",
-    "Microgrid Design": "MGD",
-    "Metering Survey": "MTR",
-    "Protection": "PRT",
-    "Power Quality": "PQT",
-    "Pressure Rise Study": "PRS",
-    "Power System Study": "PSS"
-}
-
-col1, col2 = st.columns(2)
-
-with col1:
-    project_number = st.text_input("Project Number")
-
-    document_type_label = st.selectbox("Document Type", list(document_type_options.keys()))
-    document_type = document_type_options[document_type_label]
-
-    subject_label = st.selectbox("Subject", list(subject_options.keys()))
-    subject = subject_options[subject_label]
-
-with col2:
-    unique_id = st.selectbox("Unique Identifier", [f"{i:02d}" for i in range(1, 21)])
-
-    revision_code_label = st.selectbox(
-        "Revision Code",
-        ["Contractual (External)", "Preliminary (Internal)"]
-    )
-    revision_code = "C" if "Contractual" in revision_code_label else "P"
-
-    revision_number = st.selectbox("Revision Number", [f"{i:02d}" for i in range(1, 21)])
-
-# ==========================
-# TRANSPORT SECTION
-# ==========================
-st.markdown("---")
-
-if "Transport" in quote_type:
-    st.subheader("🚚 Transport Details")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        number_of_transport = st.text_input("Number of Transports")
-
-    with col2:
-        transport_type = st.text_input(
-            "Transport Type",
-            placeholder="e.g. HGV and Grey Fleet"
-        )
-        st.caption("If multiple types, use: HGV and Grey Fleet")
-
-else:
-    number_of_transport = ""
-    transport_type = ""
-
-st.markdown("---")
-
-# ==========================
 # 💰 LIVE COST CALCULATOR
 # ==========================
 
@@ -1004,6 +801,211 @@ if total_percent != 100:
     st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
 else:
     st.success("✅ Payment terms total = 100%")
+
+# ==========================
+# 📋 PRICING SHEET INFO
+# ==========================
+st.markdown("---")
+st.subheader("📋 Pricing Sheet Info")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    sap_description = st.text_input("SAP Description Name")
+    currency = st.selectbox(
+        "Currency",
+        ["GBP", "EUR"]
+    )
+    
+if currency == "EUR":
+    fx_rate = 1.16
+    currency_symbol = "€"
+else:
+    fx_rate = 1
+    currency_symbol = "£"
+
+# ✅ ALWAYS define inputs (FIX)
+consultant_name = st.text_input("Consultant Name")
+customer_contact_name = st.text_input("Customer Contact Name")
+contact_tel = st.text_input("Contact Tel No")
+contact_email = st.text_input("Contact Email")
+
+
+with col2:
+    bfo_opp_no = st.text_input("bFO Opportunity No")
+
+    material_code_count = st.number_input(
+        "No. of Material Codes",
+        min_value=1,
+        max_value=3,
+        value=1
+    )
+
+    # ✅ Material Code 1
+    material_code_1 = st.selectbox(
+        "Material Code No.1",
+        material_code_options,
+        key="mc1"
+    )
+
+
+    material_price_1 = st.number_input(
+        "Price for Material Code 1 (£)",
+        min_value=0.0,
+        key="price1"
+    )
+
+    # ✅ Material Code 2
+    material_code_2 = ""
+    material_price_2 = 0.0
+
+    if material_code_count >= 2:
+        material_code_2 = st.selectbox(
+            "Material Code No.2",
+            material_code_options,
+            key="mc2"
+        )
+
+        material_price_2 = st.number_input(
+            "Price for Material Code 2 (£)",
+            min_value=0.0,
+            key="price2"
+        )
+
+    # ✅ Material Code 3
+    material_code_3 = ""
+    material_price_3 = 0.0
+
+    if material_code_count == 3:
+        material_code_3 = st.selectbox(
+            "Material Code No.3",
+            material_code_options,
+            key="mc3"
+        )
+
+        material_price_3 = st.number_input(
+            "Price for Material Code 3 (£)",
+            min_value=0.0,
+            key="price3"
+        )
+st.markdown("### Billing Milestones")
+
+billing_milestone_count = st.selectbox(
+    "No. of Billing Milestones",
+    [1, 2, 3, 4, 5]
+)
+
+billing_values = []
+billing_dates = []
+
+for i in range(billing_milestone_count):
+    st.markdown(f"#### Billing Milestone {i+1}")
+
+    value = st.number_input(
+        f"Milestone {i+1} Value (£)",
+        min_value=0.0,
+        key=f"bm_value_{i}"
+    )
+
+    date = st.date_input(
+        f"Milestone {i+1} Planned Billing Date",
+        key=f"bm_date_{i}"
+    )
+
+    billing_values.append(value)
+    billing_dates.append(date)
+
+
+# ==========================
+# 📄 FILE NAMING SECTION
+# ==========================
+st.markdown("---")
+st.subheader("📄 File Naming")
+
+document_type_options = {
+    "Cost Sheet": "CST",
+    "Quote": "QTE",
+    "Calculation": "CLC",
+    "Data Collection Form": "DCF",
+    "Document": "DOC",
+    "Drawing": "DRG",
+    "Functional Design Specification": "FDS",
+    "Risk Assessment / Method Statement": "RMS",
+    "Report": "RPT",
+    "Schedule": "SCH",
+    "Specification": "SPC"
+}
+
+subject_options = {
+    "Audit (EcoConsult Audit for Power)": "ADT",
+    "Block": "BLK",
+    "Cabling": "CBL",
+    "Design": "DES",
+    "Data Centre Audit": "DTC",
+    "Equipment": "EQP",
+    "Earthing": "ETH",
+    "Factory Acceptance Test": "FAT",
+    "Feasibility": "FSY",
+    "General Arrangement or Layout": "GAR",
+    "Energy Audit": "NRG",
+    "Microgrid Feasibility": "MGF",
+    "Microgrid Design": "MGD",
+    "Metering Survey": "MTR",
+    "Protection": "PRT",
+    "Power Quality": "PQT",
+    "Pressure Rise Study": "PRS",
+    "Power System Study": "PSS"
+}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    project_number = st.text_input("Project Number")
+
+    document_type_label = st.selectbox("Document Type", list(document_type_options.keys()))
+    document_type = document_type_options[document_type_label]
+
+    subject_label = st.selectbox("Subject", list(subject_options.keys()))
+    subject = subject_options[subject_label]
+
+with col2:
+    unique_id = st.selectbox("Unique Identifier", [f"{i:02d}" for i in range(1, 21)])
+
+    revision_code_label = st.selectbox(
+        "Revision Code",
+        ["Contractual (External)", "Preliminary (Internal)"]
+    )
+    revision_code = "C" if "Contractual" in revision_code_label else "P"
+
+    revision_number = st.selectbox("Revision Number", [f"{i:02d}" for i in range(1, 21)])
+
+# ==========================
+# TRANSPORT SECTION
+# ==========================
+st.markdown("---")
+
+if "Transport" in quote_type:
+    st.subheader("🚚 Transport Details")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        number_of_transport = st.text_input("Number of Transports")
+
+    with col2:
+        transport_type = st.text_input(
+            "Transport Type",
+            placeholder="e.g. HGV and Grey Fleet"
+        )
+        st.caption("If multiple types, use: HGV and Grey Fleet")
+
+else:
+    number_of_transport = ""
+    transport_type = ""
+
+st.markdown("---")
+
+
 
 
 
