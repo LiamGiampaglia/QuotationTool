@@ -398,17 +398,43 @@ if uploaded_file is not None:
     
         col1, col2, col3 = st.columns(3)
     
-        with col1:
-            row["office_day"] = st.number_input("Office Day", 0.0, key=f"od_{i}")
-            row["site_day"] = st.number_input("Site Day", 0.0, key=f"sd_{i}")
+        
+    with col1:
+        row["office_day"] = st.number_input(
+            "In Office Hours (Mon-Fri 0800 to 1700)",
+            0.0,
+            key=f"od_{i}"
+        )
+        row["site_day"] = st.number_input(
+            "On Site Hours (Mon-Fri 0800 to 1700)",
+            0.0,
+            key=f"sd_{i}"
+        )
     
-        with col2:
-            row["office_evening"] = st.number_input("Office Evening", 0.0, key=f"oe_{i}")
-            row["site_evening"] = st.number_input("Site Evening", 0.0, key=f"se_{i}")
+    with col2:
+        row["office_evening"] = st.number_input(
+            "In Office Hours (Mon-Fri 1700 to 2400)",
+            0.0,
+            key=f"oe_{i}"
+        )
+        row["site_evening"] = st.number_input(
+            "On Site Hours (Mon-Fri 1700 to 2400)",
+            0.0,
+            key=f"se_{i}"
+        )
     
-        with col3:
-            row["office_weekend"] = st.number_input("Office Weekend", 0.0, key=f"ow_{i}")
-            row["site_weekend"] = st.number_input("Site Weekend", 0.0, key=f"sw_{i}")
+    with col3:
+        row["office_weekend"] = st.number_input(
+            "In Office Hours (Sat & Sun 0800 to 2400)",
+            0.0,
+            key=f"ow_{i}"
+        )
+        row["site_weekend"] = st.number_input(
+            "On Site Hours (Sat & Sun 0800 to 2400)",
+            0.0,
+            key=f"sw_{i}"
+        )
+
     
         # ✅ Accumulate totals
         total_office_day += row["office_day"]
