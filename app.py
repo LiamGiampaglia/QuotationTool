@@ -817,8 +817,6 @@ if uploaded_file is not None:
     if st.button("Auto Fill Pricing Fields"):
         st.session_state["do_autofill"] = True
 
-
-
 # ==========================
 # WORKS INPUT
 # ==========================
@@ -962,6 +960,8 @@ for i, work in enumerate(st.session_state.works_list):
 st.write("### Works Total")
 total_works_price_fx = total_works_price * fx_rate
 st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
+
+
 
 
 
