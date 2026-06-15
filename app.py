@@ -212,6 +212,12 @@ if "other_cost_rows" not in st.session_state:
 if "labour_rows" not in st.session_state:
     st.session_state.labour_rows = []
 
+if "price1" not in st.session_state:
+    st.session_state.price1 = 0.0
+
+if "bm_value_0" not in st.session_state:
+    st.session_state.bm_value_0 = 0.0
+
 
 # ==========================
 # PAGE SETUP
@@ -749,6 +755,12 @@ if uploaded_file is not None:
     discount_value = subtotal * (discount_pct / 100)
         
     total_price = subtotal - discount_value
+
+    if st.session_state.price1 == 0:
+        st.session_state.price1 = total_price
+    
+    if "bm_value_0" in st.session_state and st.session_state.bm_value_0 == 0:
+        st.session_state.bm_value_0 = total_price
 
     
     labour_total_fx = labour_total * fx_rate
