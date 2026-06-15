@@ -638,14 +638,7 @@ if uploaded_file is not None:
     st.write(f"Selling After Discount: {currency_symbol}{other_selling_discounted_fx:,.2f}")
     
     st.markdown("---")
-    
-    st.markdown("#### Other Costs")
-    st.write(f"Selling: {currency_symbol}{other_cost_selling_fx:,.2f}")
-    st.write(f"Cost: {currency_symbol}{other_cost_fx:,.2f}")
-    st.write(f"Cost After Discount: {currency_symbol}{other_cost_discounted_fx:,.2f}")
-    
-    st.markdown("---")
-    
+      
 
     st.write(f"Total Cost: {currency_symbol}{total_cost_fx:,.2f}")
     st.write(f"Selling Price: {currency_symbol}{subtotal_fx:,.2f}")
