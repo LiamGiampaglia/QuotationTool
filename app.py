@@ -370,12 +370,6 @@ with col2:
         key="mc1"
     )
 
-    if uploaded_file is not None:
-            try:
-                if st.session_state.price1 == 0:
-                    st.session_state.price1 = total_price
-            except:
-                pass
 
     material_price_1 = st.number_input(
         "Price for Material Code 1 (£)",
@@ -762,6 +756,21 @@ if uploaded_file is not None:
     discount_value = subtotal * (discount_pct / 100)
         
     total_price = subtotal - discount_value
+    
+    updated = False
+    
+    if st.session_state.price1 == 0:
+        st.session_state.price1 = total_price
+        updated = True
+    
+    if "bm_value_0" in st.session_state and st.session_state.bm_value_0 == 0:
+        st.session_state.bm_value_0 = total_price
+        updated = True
+    
+    # ✅ Force UI refresh so inputs update
+    if updated:
+        st.rerun()
+
 
     
     labour_total_fx = labour_total * fx_rate
