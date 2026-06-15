@@ -590,6 +590,15 @@ if uploaded_file is not None:
     total_cost_fx = total_cost * fx_rate
     subtotal_fx = subtotal * fx_rate
     total_price_fx = total_price * fx_rate
+    labour_cost_fx = labour_cost * fx_rate
+    expenses_cost_fx = expenses_cost * fx_rate
+    other_cost_fx = other_cost * fx_rate
+    labour_cost_discounted = labour_cost * discount_factor
+    expenses_cost_discounted = expenses_cost * discount_factor
+    other_cost_discounted = other_cost * discount_factor
+    labour_cost_discounted_fx = labour_cost_discounted * fx_rate
+    expenses_cost_discounted_fx = expenses_cost_discounted * fx_rate
+    other_cost_discounted_fx = other_cost_discounted * fx_rate
 
 
 
