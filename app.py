@@ -765,7 +765,7 @@ if uploaded_file is not None:
         st.session_state.price1 = float(st.session_state.total_price)
         st.session_state.bm_value_0 = float(st.session_state.total_price)
 
-    st.session_state.do_autofill = False
+        st.session_state.do_autofill = False
         
     labour_total_fx = labour_total * fx_rate
     expenses_total_fx = expenses_total * fx_rate
