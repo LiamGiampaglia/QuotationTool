@@ -406,7 +406,7 @@ if uploaded_file is not None:
             key=f"od_{i}"
         )
         row["site_day"] = st.number_input(
-            "Site Hours (Mon-Fri 0800 to 1700)",
+            "On Site Hours (Mon-Fri 0800 to 1700)",
             0.0,
             key=f"sd_{i}"
         )
