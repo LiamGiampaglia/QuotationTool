@@ -1058,7 +1058,14 @@ subject_options = {
 col1, col2 = st.columns(2)
 
 with col1:
-    project_number = st.text_input("Project Number")
+    
+    if "project_number" not in st.session_state and project_name:
+        st.session_state.project_number = project_name
+    project_number = st.text_input(
+        "Project Number",
+        key="project_number"
+    )
+
 
     document_type_label = st.selectbox("Document Type", list(document_type_options.keys()))
     document_type = document_type_options[document_type_label]
