@@ -321,6 +321,7 @@ with col1:
 
 with col2:
     project_name = st.text_input("Project Name")
+    consultant_name = st.text_input("Consultant Name")
     number_of_consultants = st.number_input(
         "Number of Consultants",
         min_value=1,
