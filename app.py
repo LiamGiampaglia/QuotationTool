@@ -835,7 +835,7 @@ with col1:
         ["GBP", "EUR"],
         key="currency"
     )
-
+    bfo_opp_no = st.text_input("bFO Opportunity No")
     
 # ✅ ALWAYS define inputs (FIX)
 customer_contact_name = st.text_input("Customer Contact Name")
@@ -844,7 +844,6 @@ contact_email = st.text_input("Contact Email")
 
 
 with col2:
-    bfo_opp_no = st.text_input("bFO Opportunity No")
 
     material_code_count = st.number_input(
         "No. of Material Codes",
