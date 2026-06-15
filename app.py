@@ -287,7 +287,7 @@ if quote_options:
 else:
     st.warning("No quote types available for this discipline yet.")
     quote_type = None
-currency = "GBP
+currency = "GBP"
 
 if "currency" not in st.session_state:
     st.session_state.currency = "GBP"
