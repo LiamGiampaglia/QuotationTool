@@ -661,15 +661,52 @@ if uploaded_file is not None:
 # ==========================
 st.subheader("🛠️ Works & Pricing")
 
-if st.button("➕ Add Work"):
-    st.session_state.works_list.append({
-        "description": "",
-        "mode": "Auto",
-        "include_labour": True,
-        "include_other": True,
-        "include_expenses": True,
-        "manual_price": 0.0
+# ==========================
+# ✅ AUTO BUILD WORK ITEMS
+# ==========================
+
+combined_items = []
+
+# Labour
+for lr in st.session_state.labour_rows:
+    if lr["description"]:
+        combined_items.append({
+            "description": lr["description"],
+            "type": "labour",
+            "data": lr
+        })
+
+# Other Costs
+for oc in st.session_state.other_cost_rows:
+    if oc["description"]:
+        combined_items.append({
+            "description": oc["description"],
+            "type": "other",
+            "data": oc
+        })
+
+# Expenses
+if 'expenses_total' in locals() and expenses_total > 0:
+    combined_items.append({
+        "description": "Expenses",
+        "type": "expenses"
     })
+
+
+# ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
+if len(st.session_state.works_list) != len(combined_items):
+    
+    st.session_state.works_list = []
+
+    for item in combined_items:
+        st.session_state.works_list.append({
+            "description": item["description"],
+            "mode": "Auto",
+            "include_labour": True,
+            "include_other": True,
+            "include_expenses": True,
+            "manual_price": 0.0
+        })
 
 total_works_price = 0
 
