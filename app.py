@@ -962,9 +962,6 @@ total_works_price_fx = total_works_price * fx_rate
 st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
 
 
-
-
-
 # ==========================
 # 💰 PAYMENT TERMS
 # ==========================
@@ -1007,6 +1004,9 @@ if total_percent != 100:
     st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
 else:
     st.success("✅ Payment terms total = 100%")
+
+
+
 
 
 # ==========================
