@@ -759,12 +759,12 @@ if uploaded_file is not None:
         
     total_price = subtotal - discount_value
     st.session_state.total_price = total_price
+    
     if st.session_state.do_autofill:
-
-    if "total_price" in st.session_state:
-        st.session_state.price1 = float(st.session_state.total_price)
-        st.session_state.bm_value_0 = float(st.session_state.total_price)
-
+    
+        st.session_state.price1 = float(total_price)
+        st.session_state.bm_value_0 = float(total_price)
+    
         st.session_state.do_autofill = False
         
     labour_total_fx = labour_total * fx_rate
