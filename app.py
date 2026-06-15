@@ -1062,13 +1062,13 @@ with col1:
         # ✅ Always sync Project Number to Project Name (LIVE)
     st.session_state.project_number = project_name
     
+    # ✅ Live sync Project Name → Project Number
+    st.session_state.project_number = project_name
+    
     project_number = st.text_input(
         "Project Number",
+        key="project_number",
         value=st.session_state.project_number
-    )
-    project_number = st.text_input(
-        "Project Number",
-        key="project_number"
     )
 
 
