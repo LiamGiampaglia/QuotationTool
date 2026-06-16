@@ -1242,7 +1242,7 @@ if uploaded_file is not None:
                     st.warning(
                         f"⚠️ Project value is £{total_price_check:,.2f}. "
                         "For projects above £50k, billing milestones should be split into multiple stages "
-                        "(e.g. mobilisation, mid-project, completion)."
+                        "(e.g. 20% mobilisation, 40% mid-project, 40% completion)."
                     )
 
 # ==========================
