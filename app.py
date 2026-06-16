@@ -1266,7 +1266,12 @@ if uploaded_file is not None:
             
             
             
-            total_project = st.session_state.get("total_price", 0)
+            
+            if "total_price" in locals() and total_price > 0:
+                total_project = total_price
+            else:
+                total_project = st.session_state.get("total_price", 0)
+
             
             if total_project > 0:
                 percentage = (value / total_project) * 100
