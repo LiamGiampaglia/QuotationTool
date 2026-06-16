@@ -351,6 +351,9 @@ else:
 if uploaded_file is not None:
     st.session_state.excel_loaded = False
 
+if uploaded_file is not None:
+    rates = extract_rates(uploaded_file)
+
 st.markdown(
     '**Latest Pricing Template:** [Open here](https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template)'
 )
@@ -454,7 +457,6 @@ st.markdown("---")
 # ==========================
 if uploaded_file is not None:
     with st.expander("💰 Live Cost Calculator", expanded=True):
-        rates = extract_rates(uploaded_file)
         st.write("DEBUG RATES:", rates)
     
         st.markdown("---")
