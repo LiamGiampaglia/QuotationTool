@@ -241,6 +241,18 @@ else:
     fx_rate = 1
     currency_symbol = "£"
 
+rates = {
+    "office_day": 0,
+    "site_day": 0,
+    "office_evening": 0,
+    "site_evening": 0,
+    "office_weekend": 0,
+    "site_weekend": 0
+}
+
+expenses_total = 0
+discount_factor = 1
+
 
 # ==========================
 # PAGE SETUP
@@ -756,17 +768,24 @@ with st.expander("🛠️ Works & Pricing", expanded=True):
                 st.session_state.works_list.pop(i)
                 st.rerun()
     
-    
-        work["mode"] = st.selectbox(
-            "Pricing Mode",
-            ["Auto", "Manual"],
-            key=f"mode_{i}"
-        )
+            if uploaded_file is None:
+                work["mode"] = "Manual"
+                st.selectbox(
+                    "Pricing Mode",
+                    ["Manual"],
+                    key=f"mode_{i}"
+                )
+            else:
+                work["mode"] = st.selectbox(
+                    "Pricing Mode",
+                    ["Auto", "Manual"],
+                    key=f"mode_{i}"
+                )
     
         # ==========================
         # ✅ AUTO MODE
         # ==========================
-        if work["mode"] == "Auto":
+        if work["mode"] == "Auto" and uploaded_file is not None:
     
             price = 0
     
