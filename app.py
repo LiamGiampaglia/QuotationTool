@@ -139,11 +139,43 @@ def generate_pricing_excel(uploaded_file):
         # Convert date to Excel format (string safe)
         sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
 
+def extract_existing_works(uploaded_file):
 
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    ws = wb["PRICING SHEET"]
+
+    works = []
+
+    # Labour rows (15–24)
+    for row in range(15, 25):
+        desc = ws[f"C{row}"].value
+
+        if desc:
+            works.append({
+                "description": desc,
+                "mode": "Auto",
+                "manual_price": 0.0,
+                "price": 0.0
+            })
+
+    # Other Costs (39–44)
+    for row in range(39, 45):
+        desc = ws[f"C{row}"].value
+        selling = ws[f"D{row}"].value
+
+        if desc:
+            works.append({
+                "description": desc,
+                "mode": "Manual",  # safer default
+                "manual_price": selling or 0,
+                "price": selling or 0
+            })
+
+    return works
 
 
     # ==========================
-    # ✅ LABOUR ITEMS (ROWS 15–24)
+    # LABOUR ITEMS (ROWS 15–24)
     # ==========================
 
     for i, lr in enumerate(st.session_state.labour_rows):
@@ -266,10 +298,22 @@ st.markdown("---")
 # ==========================
 st.subheader("📊 Cost Sheet")
 
-uploaded_file = st.file_uploader(
-    "Upload Pricing Template",
-    type=["xlsx"]
+template_mode = st.selectbox(
+    "Select Template Mode",
+    [
+        "No Pricing Template Uploaded",
+        "Blank Pricing Template Uploaded",
+        "Pre-Populated Template Uploaded"
+    ]
 )
+
+if template_mode != "No Pricing Template Uploaded":
+    uploaded_file = st.file_uploader(
+        "Upload Pricing Template",
+        type=["xlsx"]
+    )
+else:
+    uploaded_file = None
 
 st.markdown(
     '**Latest Pricing Template:** [Open here](https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template)'
@@ -716,6 +760,14 @@ if uploaded_file is not None:
 # ==========================
 with st.expander("🛠️ Works & Pricing", expanded=False):
     
+    if (
+        template_mode == "Pre-Populated Template Uploaded"
+        and uploaded_file is not None
+        and not st.session_state.works_list
+    ):
+        extracted = extract_existing_works(uploaded_file)
+        st.session_state.works_list = extracted
+
     if st.button("➕ Add Work Item"):
         st.session_state.works_list.append({
             "description": "",
