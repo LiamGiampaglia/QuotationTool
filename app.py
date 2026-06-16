@@ -1116,9 +1116,9 @@ if "Transport" in quote_type:
             )
             st.caption("If multiple types, use: HGV and Grey Fleet")
     
-    else:
-        number_of_transport = ""
-        transport_type = ""
+else:
+    number_of_transport = ""
+    transport_type = ""
 
 st.markdown("---")
 
