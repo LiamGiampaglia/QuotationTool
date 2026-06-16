@@ -264,6 +264,8 @@ uploaded_file = st.file_uploader(
 # ==========================
 # DISCIPLINE SELECTION
 # ==========================
+st.subheader("Quotation Type")
+
 st.markdown("---")
 
 discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
