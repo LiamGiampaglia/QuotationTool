@@ -1238,12 +1238,22 @@ if uploaded_file is not None:
                 if billing_milestone_count > 0:
                     default_value = st.session_state.total_price / billing_milestone_count
             
+            
+            key_name = f"bm_value_{i}"
+            
+            # ✅ Use default if value is missing OR still zero
+            stored_value = st.session_state.get(key_name, None)
+            
+            if stored_value in [None, 0]:
+                stored_value = default_value
+            
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
-                value=float(st.session_state.get(f"bm_value_{i}", default_value)),
-                key=f"bm_value_{i}"
+                value=float(stored_value),
+                key=key_name
             )
+
 
     
             date = st.date_input(
