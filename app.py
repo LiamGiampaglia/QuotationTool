@@ -259,14 +259,12 @@ uploaded_file = st.file_uploader(
     "Upload Pricing Template",
     type=["xlsx"]
 )
-
+st.markdown("---")
 
 # ==========================
 # DISCIPLINE SELECTION
 # ==========================
 st.subheader("Quotation Type")
-
-st.markdown("---")
 
 discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
 discipline = st.selectbox("Select Discipline", discipline_options)
