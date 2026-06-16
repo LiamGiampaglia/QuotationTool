@@ -280,44 +280,44 @@ st.markdown("---")
 # ==========================
 # DISCIPLINE SELECTION
 # ==========================
-st.subheader("Quotation Type")
+with st.expander("Quotation Type", expanded=False):
 
-discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
-discipline = st.selectbox("Select Discipline", discipline_options)
-
-
-# ==========================
-# QUOTE TYPE BY DISCIPLINE
-# ==========================
-
-quote_options_by_discipline = {
-
-    "Energy": {
-        "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
-        "Metering Assessment": "templates/Metering Assessment Template.docx",
-        "EE and Metering": "templates/EE Audit and Metering Template.docx",
-        "ESOS P4": "templates/ESOS P4 Template.docx",
-        "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
-        "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx",
-        "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
-    },
-
-    "Power": {},       # ✅ ready for future
-    "Microgrid": {},   # ✅ ready for future
-    "Data Centre": {}  # ✅ ready for future
-}
-
-
-quote_options = quote_options_by_discipline.get(discipline, {})
-
-if quote_options:
-    quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
-    st.session_state.selected_quote_type = quote_type
-else:
-    st.warning("No quote types available for this discipline yet.")
-    quote_type = None
-
-st.markdown("---")
+    discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
+    discipline = st.selectbox("Select Discipline", discipline_options)
+    
+    
+    # ==========================
+    # QUOTE TYPE BY DISCIPLINE
+    # ==========================
+    
+    quote_options_by_discipline = {
+    
+        "Energy": {
+            "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
+            "Metering Assessment": "templates/Metering Assessment Template.docx",
+            "EE and Metering": "templates/EE Audit and Metering Template.docx",
+            "ESOS P4": "templates/ESOS P4 Template.docx",
+            "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
+            "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx",
+            "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
+        },
+    
+        "Power": {},       # ✅ ready for future
+        "Microgrid": {},   # ✅ ready for future
+        "Data Centre": {}  # ✅ ready for future
+    }
+    
+    
+    quote_options = quote_options_by_discipline.get(discipline, {})
+    
+    if quote_options:
+        quote_type = st.selectbox("Select Quote Type", list(quote_options.keys()))
+        st.session_state.selected_quote_type = quote_type
+    else:
+        st.warning("No quote types available for this discipline yet.")
+        quote_type = None
+    
+    st.markdown("---")
 
 # ==========================
 # INPUT FIELDS
