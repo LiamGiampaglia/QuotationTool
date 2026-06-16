@@ -714,7 +714,7 @@ if uploaded_file is not None:
 # ==========================
 # WORKS INPUT
 # ==========================
-with st.expander("🛠️ Works & Pricing", expanded=True):
+with st.expander("🛠️ Works & Pricing", expanded=False):
     
     if st.button("➕ Add Work Item"):
         st.session_state.works_list.append({
