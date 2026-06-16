@@ -248,11 +248,10 @@ else:
 st.set_page_config(page_title="Energy Quote Tool", layout="centered")
 st.title("Consultancy Quote Generator")
 
-
+st.markdown("---")
 # ==========================
 # 📊 COST SHEET UPLOAD
 # ==========================
-st.markdown("---")
 st.subheader("📊 Cost Sheet")
 
 uploaded_file = st.file_uploader(
@@ -338,26 +337,25 @@ with st.expander("📄 Template Info", expanded=False):
 # 🏢 CUSTOMER DETAILS
 # ==========================
 st.markdown("---")
-st.subheader("🏢 Customer Details")
+with st.expander("🏢 Customer Details", expanded=False):
 
-col1, col2 = st.columns(2)
-
-with col1:
-    address_line_1 = st.text_input("Address Line 1")
-    address_line_2 = st.text_input("Address Line 2")
-
-with col2:
-    city = st.text_input("City")
-    postcode = st.text_input("Postcode")
-
-# Contact name (optional)
-contact_name = st.text_input("Contact Name (leave blank for default)")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        address_line_1 = st.text_input("Address Line 1")
+        address_line_2 = st.text_input("Address Line 2")
+    
+    with col2:
+        city = st.text_input("City")
+        postcode = st.text_input("Postcode")
+    
+    # Contact name (optional)
+    contact_name = st.text_input("Contact Name (leave blank for default)")
 
 # ==========================
 # 💰 LIVE COST CALCULATOR
 # ==========================
 if uploaded_file is not None:
-
     rates = extract_rates(uploaded_file)
     st.write("DEBUG RATES:", rates)
 
@@ -644,9 +642,6 @@ if uploaded_file is not None:
     expenses_selling_discounted_fx = expenses_selling_discounted * fx_rate
     other_selling_discounted_fx = other_selling_discounted * fx_rate
 
-
-
-
     if subtotal > 0:
         margin_pct = (subtotal - total_cost) / subtotal * 100
     else:
@@ -701,183 +696,178 @@ if uploaded_file is not None:
 # ==========================
 # WORKS INPUT
 # ==========================
-st.subheader("🛠️ Works & Pricing")
-
-# ==========================
-# ✅ AUTO BUILD WORK ITEMS
-# ==========================
-
-combined_items = []
-
-# Labour
-for lr in st.session_state.labour_rows:
-    if lr["description"]:
-        combined_items.append({
-            "description": lr["description"],
-            "type": "labour",
-            "data": lr
-        })
-
-# Other Costs
-for oc in st.session_state.other_cost_rows:
-    if oc["description"]:
-        combined_items.append({
-            "description": oc["description"],
-            "type": "other",
-            "data": oc
-        })
-
-# Expenses
-if 'expenses_total' in locals() and expenses_total > 0:
-    combined_items.append({
-        "description": "Expenses",
-        "type": "expenses"
-    })
-
-
-# ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
-if len(st.session_state.works_list) != len(combined_items):
+with st.expander("🛠️ Works & Pricing", expanded=True):
+    combined_items = []
     
-    st.session_state.works_list = []
-
-    for item in combined_items:
-        st.session_state.works_list.append({
-            "description": item["description"],
-            "mode": "Auto",
-            "include_labour": True,
-            "include_other": True,
-            "include_expenses": True,
-            "manual_price": 0.0
-        })
-
-total_works_price = 0
-
-for i, work in enumerate(st.session_state.works_list):
-
-    
-    col1, col2 = st.columns([6, 1])
-    
-    with col1:
-        st.markdown(f"#### Work Item {i+1}")
-    
-    with col2:
-        if st.button("❌", key=f"delete_{i}"):
-            st.session_state.works_list.pop(i)
-            st.rerun()
-
-
-    work["mode"] = st.selectbox(
-        "Pricing Mode",
-        ["Auto", "Manual"],
-        key=f"mode_{i}"
-    )
-
-    # ==========================
-    # ✅ AUTO MODE
-    # ==========================
-    if work["mode"] == "Auto":
-
-        price = 0
-
-        combined_items = []
-
-        # ✅ Labour rows
-        for lr in st.session_state.labour_rows:
-            if lr["description"]:
-                combined_items.append({
-                    "description": lr["description"],
-                    "type": "labour",
-                    "data": lr
-                })
-
-        # ✅ Other costs
-        for oc in st.session_state.other_cost_rows:
-            if oc["description"]:
-                combined_items.append({
-                    "description": oc["description"],
-                    "type": "other",
-                    "data": oc
-                })
-
-        # ✅ Expenses
-        if expenses_total > 0:
+    # Labour
+    for lr in st.session_state.labour_rows:
+        if lr["description"]:
             combined_items.append({
-                "description": "Expenses",
-                "type": "expenses"
+                "description": lr["description"],
+                "type": "labour",
+                "data": lr
             })
-
-        # ✅ Assign item based on position
-        if i < len(combined_items):
-            item = combined_items[i]
-            work["description"] = item["description"]
-        
-            if item["type"] == "labour":
-                lr = item["data"]
-        
-                price = (
-                    # ✅ Normal labour
-                    lr["office_day"] * rates["office_day"] +
-                    lr["site_day"] * rates["site_day"] +
-                    lr["office_evening"] * rates["office_evening"] +
-                    lr["site_evening"] * rates["site_evening"] +
-                    lr["office_weekend"] * rates["office_weekend"] +
-                    lr["site_weekend"] * rates["site_weekend"]
-        
-                    # ✅ Peer review (correctly included ✅)
-                    + (lr["office_day"] * rates["office_day"] * 0.1)
-        
-                ) * discount_factor
-
-            elif item["type"] == "other":
-                price = item["data"]["selling"] * discount_factor
-
-            elif item["type"] == "expenses":
-                price = expenses_total * discount_factor
-
-        else:
-            work["description"] = ""
-            price = 0
-
-        # ✅ Locked description display
-        st.text_input(
-            "Description",
-            value=work["description"],
-            key=f"auto_desc_locked_{i}",
-            disabled=True
-        )
-
-    # ==========================
-    # ✅ MANUAL MODE
-    # ==========================
-    else:
-        work["description"] = st.text_input(
-            "Description",
-            value=work["description"],
-            key=f"work_desc_{i}"
-        )
-
-        work["manual_price"] = st.number_input(
-            "Manual Price (£)",
-            0.0,
-            key=f"manual_{i}"
-        )
-
-        price = work["manual_price"]
-
-    # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
-    work["price"] = price
     
-    price_fx = price * fx_rate
-    st.write(f"Price: {currency_symbol}{price_fx:,.2f}")
-
-    total_works_price += price
-
-    st.markdown("---")
-
-
-st.write("### Works Total")
-total_works_price_fx = total_works_price * fx_rate
-st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
+    # Other Costs
+    for oc in st.session_state.other_cost_rows:
+        if oc["description"]:
+            combined_items.append({
+                "description": oc["description"],
+                "type": "other",
+                "data": oc
+            })
+    
+    # Expenses
+    if 'expenses_total' in locals() and expenses_total > 0:
+        combined_items.append({
+            "description": "Expenses",
+            "type": "expenses"
+        })
+    
+    
+    # ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
+    if len(st.session_state.works_list) != len(combined_items):
+        
+        st.session_state.works_list = []
+    
+        for item in combined_items:
+            st.session_state.works_list.append({
+                "description": item["description"],
+                "mode": "Auto",
+                "include_labour": True,
+                "include_other": True,
+                "include_expenses": True,
+                "manual_price": 0.0
+            })
+    
+    total_works_price = 0
+    
+    for i, work in enumerate(st.session_state.works_list):
+    
+        
+        col1, col2 = st.columns([6, 1])
+        
+        with col1:
+            st.markdown(f"#### Work Item {i+1}")
+        
+        with col2:
+            if st.button("❌", key=f"delete_{i}"):
+                st.session_state.works_list.pop(i)
+                st.rerun()
+    
+    
+        work["mode"] = st.selectbox(
+            "Pricing Mode",
+            ["Auto", "Manual"],
+            key=f"mode_{i}"
+        )
+    
+        # ==========================
+        # ✅ AUTO MODE
+        # ==========================
+        if work["mode"] == "Auto":
+    
+            price = 0
+    
+            combined_items = []
+    
+            # ✅ Labour rows
+            for lr in st.session_state.labour_rows:
+                if lr["description"]:
+                    combined_items.append({
+                        "description": lr["description"],
+                        "type": "labour",
+                        "data": lr
+                    })
+    
+            # ✅ Other costs
+            for oc in st.session_state.other_cost_rows:
+                if oc["description"]:
+                    combined_items.append({
+                        "description": oc["description"],
+                        "type": "other",
+                        "data": oc
+                    })
+    
+            # ✅ Expenses
+            if expenses_total > 0:
+                combined_items.append({
+                    "description": "Expenses",
+                    "type": "expenses"
+                })
+    
+            # ✅ Assign item based on position
+            if i < len(combined_items):
+                item = combined_items[i]
+                work["description"] = item["description"]
+            
+                if item["type"] == "labour":
+                    lr = item["data"]
+            
+                    price = (
+                        # ✅ Normal labour
+                        lr["office_day"] * rates["office_day"] +
+                        lr["site_day"] * rates["site_day"] +
+                        lr["office_evening"] * rates["office_evening"] +
+                        lr["site_evening"] * rates["site_evening"] +
+                        lr["office_weekend"] * rates["office_weekend"] +
+                        lr["site_weekend"] * rates["site_weekend"]
+            
+                        # ✅ Peer review (correctly included ✅)
+                        + (lr["office_day"] * rates["office_day"] * 0.1)
+            
+                    ) * discount_factor
+    
+                elif item["type"] == "other":
+                    price = item["data"]["selling"] * discount_factor
+    
+                elif item["type"] == "expenses":
+                    price = expenses_total * discount_factor
+    
+            else:
+                work["description"] = ""
+                price = 0
+    
+            # ✅ Locked description display
+            st.text_input(
+                "Description",
+                value=work["description"],
+                key=f"auto_desc_locked_{i}",
+                disabled=True
+            )
+    
+        # ==========================
+        # ✅ MANUAL MODE
+        # ==========================
+        else:
+            work["description"] = st.text_input(
+                "Description",
+                value=work["description"],
+                key=f"work_desc_{i}"
+            )
+    
+            work["manual_price"] = st.number_input(
+                "Manual Price (£)",
+                0.0,
+                key=f"manual_{i}"
+            )
+    
+            price = work["manual_price"]
+    
+        # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
+        work["price"] = price
+        
+        price_fx = price * fx_rate
+        st.write(f"Price: {currency_symbol}{price_fx:,.2f}")
+    
+        total_works_price += price
+    
+        st.markdown("---")
+    
+    
+    st.write("### Works Total")
+    total_works_price_fx = total_works_price * fx_rate
+    st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
 
 
 # ==========================
