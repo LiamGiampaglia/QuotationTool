@@ -778,6 +778,7 @@ if uploaded_file is not None:
             
         total_price = subtotal - discount_value
         st.session_state.total_price = total_price
+        st.session_state["final_total_price"] = total_price
     
             
         labour_total_fx = labour_total * fx_rate
@@ -1270,8 +1271,9 @@ if uploaded_file is not None:
             if "total_price" in locals() and total_price > 0:
                 total_project = total_price
             else:
-                total_project = st.session_state.get("total_price", 0)
-
+                total_project = st.session_state.get("final_total_price", 0)
+            
+            total_project = st.session_state.get("final_total_price", 0)
             
             if total_project > 0:
                 percentage = (value / total_project) * 100
@@ -1279,9 +1281,6 @@ if uploaded_file is not None:
             else:
                 st.caption("📊 This milestone = 0% of total project value")
 
-
-
-            
 
 if "total_price" in st.session_state:
 
