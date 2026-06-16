@@ -1199,6 +1199,20 @@ if uploaded_file is not None:
 if uploaded_file is not None:
 
     with st.expander("📆 Billing Milestones", expanded=False): 
+        
+    if st.session_state.get("apply_split", False):
+    
+        total = st.session_state.get("split_total", 0)
+    
+        st.session_state["billing_milestone_count_override"] = 3
+    
+        st.session_state["bm_value_0"] = total * 0.20
+        st.session_state["bm_value_1"] = total * 0.40
+        st.session_state["bm_value_2"] = total * 0.40
+    
+        # ✅ Clear flag AFTER applying
+        st.session_state["apply_split"] = False
+
         milestone_options = [1, 2, 3, 4, 5]
         if "billing_milestone_count_override" in st.session_state:
             default_count = st.session_state["billing_milestone_count_override"]
@@ -1253,18 +1267,17 @@ if "total_price" in st.session_state:
             "(e.g. 20% mobilisation, 40% mid-project, 40% completion)."
         )
 
-        # ✅ AUTO SPLIT BUTTON (SAFE LOCATION)
+        
         if st.button("🔄 Auto Split 20% / 40% / 40%"):
-
+        
             total = st.session_state.total_price
-
-            st.session_state["billing_milestone_count_override"] = 3
-
-            st.session_state["bm_value_0"] = total * 0.20
-            st.session_state["bm_value_1"] = total * 0.40
-            st.session_state["bm_value_2"] = total * 0.40
-
+        
+            # ✅ Store split request ONLY
+            st.session_state["apply_split"] = True
+            st.session_state["split_total"] = total
+        
             st.rerun()
+
 
                 
 
