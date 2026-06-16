@@ -264,11 +264,10 @@ uploaded_file = st.file_uploader(
 # ==========================
 # DISCIPLINE SELECTION
 # ==========================
+st.markdown("---")
 
 discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
 discipline = st.selectbox("Select Discipline", discipline_options)
-
-st.markdown("---")
 
 
 # ==========================
