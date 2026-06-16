@@ -317,7 +317,7 @@ with st.expander("Quotation Type", expanded=False):
         st.warning("No quote types available for this discipline yet.")
         quote_type = None
     
-    st.markdown("---")
+st.markdown("---")
 
 # ==========================
 # INPUT FIELDS
