@@ -141,6 +141,12 @@ def generate_pricing_excel(uploaded_file):
 
 
 def extract_existing_works(uploaded_file, rates):
+   
+    def safe_num(val):
+    try:
+        return float(val)
+    except:
+        return 0
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
@@ -153,12 +159,14 @@ def extract_existing_works(uploaded_file, rates):
 
         if desc:
 
-            office_day = ws[f"D{row}"].value or 0
-            site_day = ws[f"E{row}"].value or 0
-            office_evening = ws[f"F{row}"].value or 0
-            site_evening = ws[f"G{row}"].value or 0
-            office_weekend = ws[f"H{row}"].value or 0
-            site_weekend = ws[f"I{row}"].value or 0
+            
+            office_day = safe_num(ws[f"D{row}"].value)
+            site_day = safe_num(ws[f"E{row}"].value)
+            office_evening = safe_num(ws[f"F{row}"].value)
+            site_evening = safe_num(ws[f"G{row}"].value)
+            office_weekend = safe_num(ws[f"H{row}"].value)
+            site_weekend = safe_num(ws[f"I{row}"].value)
+
 
             # ✅ RECREATE YOUR CALCULATION
             price = (
@@ -182,9 +190,10 @@ def extract_existing_works(uploaded_file, rates):
 
     # ✅ OTHER COSTS (39–44)
     for row in range(39, 45):
-        desc = ws[f"C{row}"].value
-        cost = ws[f"D{row}"].value or 0
-        margin = ws[f"G{row}"].value or 0
+        desc = ws[f"C{row}"].value 
+        cost = safe_num(ws[f"D{row}"].value)
+        margin = safe_num(ws[f"G{row}"].value)
+
 
         if desc:
             if margin < 1:
