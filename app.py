@@ -1225,6 +1225,17 @@ if uploaded_file is not None:
             billing_values.append(value)
             billing_dates.append(date)
 
+            if "total_price" in st.session_state:
+            
+                total_price_check = st.session_state.total_price
+            
+                if total_price_check > 50000:
+                    st.warning(
+                        f"⚠️ Project value is £{total_price_check:,.2f}. "
+                        "For projects above £50k, billing milestones should be split into multiple stages "
+                        "(e.g. mobilisation, mid-project, completion) to support cash flow and reduce risk."
+                    )
+
 # ==========================
 # 📄 FILE NAMING SECTION
 # ==========================
