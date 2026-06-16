@@ -710,6 +710,23 @@ if uploaded_file is not None:
 # WORKS INPUT
 # ==========================
 with st.expander("🛠️ Works & Pricing", expanded=True):
+    
+    if st.button("➕ Add Work Item"):
+        st.session_state.works_list.append({
+            "description": "",
+            "mode": "Manual",
+            "manual_price": 0.0,
+            "price": 0.0
+        })
+        
+    if not st.session_state.works_list:
+            st.session_state.works_list.append({
+                "description": "",
+                "mode": "Manual",
+                "manual_price": 0.0,
+                "price": 0.0
+            })
+
     combined_items = []
     
     # Labour
@@ -739,9 +756,17 @@ with st.expander("🛠️ Works & Pricing", expanded=True):
     
     
     # ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
-    if len(st.session_state.works_list) != len(combined_items):
-        
-        st.session_state.works_list = []
+    
+    if not st.session_state.works_list and uploaded_file is not None:
+    
+        for item in combined_items:
+            st.session_state.works_list.append({
+                "description": item["description"],
+                "mode": "Auto",
+                "manual_price": 0.0,
+                "price": 0.0
+            })
+
     
         for item in combined_items:
             st.session_state.works_list.append({
