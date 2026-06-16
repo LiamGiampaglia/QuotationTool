@@ -306,6 +306,9 @@ st.markdown("---")
 # ==========================
 # INPUT FIELDS
 # ==========================
+
+st.subheader("Template Info")
+
 col1, col2 = st.columns(2)
 
 with col1:
