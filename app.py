@@ -517,40 +517,54 @@ if uploaded_file is not None:
         
             
             with col1:
+                
+
                 row["office_day"] = st.number_input(
                     "Office Hours (Mon-Fri 0800 to 1700)",
-                    0.0,
+                    value=float(row.get("office_day", 0.0)),
                     key=f"od_{i}"
                 )
+
+
+                
                 row["site_day"] = st.number_input(
                     "On Site Hours (Mon-Fri 0800 to 1700)",
-                    0.0,
+                    value=float(row.get("site_day", 0.0)),
                     key=f"sd_{i}"
                 )
+
             
             with col2:
+                
                 row["office_evening"] = st.number_input(
                     "Office Hours (Mon-Fri 1700 to 2400)",
-                    0.0,
+                    value=float(row.get("office_evening", 0.0)),
                     key=f"oe_{i}"
                 )
+
+               
                 row["site_evening"] = st.number_input(
                     "On Site Hours (Mon-Fri 1700 to 2400)",
-                    0.0,
+                    value=float(row.get("site_evening", 0.0)),
                     key=f"se_{i}"
                 )
+
             
             with col3:
+                
                 row["office_weekend"] = st.number_input(
                     "Office Hours (Sat&Sun 0800 to 2400)",
-                    0.0,
+                    value=float(row.get("office_weekend", 0.0)),
                     key=f"ow_{i}"
                 )
+
+                
                 row["site_weekend"] = st.number_input(
                     "On Site Hours (Sat & Sun 0800 to 2400)",
-                    0.0,
+                    value=float(row.get("site_weekend", 0.0)),
                     key=f"sw_{i}"
                 )
+
     
         
             # ✅ Accumulate totals
@@ -591,18 +605,19 @@ if uploaded_file is not None:
         
             col1, col2 = st.columns(2)
         
-            with col1:
+            with col1: 
                 row["cost"] = st.number_input(
                     "Cost (£)",
-                    0.0,
+                    value=float(row.get("cost", 0.0)),
                     key=f"other_cost_{i}"
                 )
-        
+
             with col2:
                 row["margin"] = st.number_input(
                     "Margin (%)",
-                    0.0,
-                    100.0,
+                    min_value=0.0,
+                    max_value=100.0,
+                    value=float(row.get("margin", 0.0)),
                     key=f"other_margin_{i}"
                 )
         
