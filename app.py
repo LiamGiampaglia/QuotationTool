@@ -139,39 +139,68 @@ def generate_pricing_excel(uploaded_file):
         # Convert date to Excel format (string safe)
         sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
 
-def extract_existing_works(uploaded_file):
+
+def extract_existing_works(uploaded_file, rates):
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
 
     works = []
 
-    # ✅ LABOUR (Rows 15–24)
     for row in range(15, 25):
-        desc = ws[f"C{row}"].value
-        selling = ws[f"K{row}"].value
-        if desc is not None and str(desc).strip() not in ["", "0"]:
-            works.append({
-                "description": desc,
-                "mode": "Manual",
-                "manual_price": selling or 0,
-                "price": selling or 0
-            })
 
-    # ✅ OTHER COSTS (Rows 39–44)
-    for row in range(39, 45):
         desc = ws[f"C{row}"].value
-        selling = ws[f"G{row}"].value
 
         if desc:
+
+            office_day = ws[f"D{row}"].value or 0
+            site_day = ws[f"E{row}"].value or 0
+            office_evening = ws[f"F{row}"].value or 0
+            site_evening = ws[f"G{row}"].value or 0
+            office_weekend = ws[f"H{row}"].value or 0
+            site_weekend = ws[f"I{row}"].value or 0
+
+            # ✅ RECREATE YOUR CALCULATION
+            price = (
+                office_day * rates["office_day"] +
+                site_day * rates["site_day"] +
+                office_evening * rates["office_evening"] +
+                site_evening * rates["site_evening"] +
+                office_weekend * rates["office_weekend"] +
+                site_weekend * rates["site_weekend"]
+            )
+
+            # ✅ Add peer review (10% office day)
+            price += office_day * rates["office_day"] * 0.1
+
             works.append({
-                "description": desc,
+                "description": str(desc),
                 "mode": "Manual",
-                "manual_price": selling or 0,
-                "price": selling or 0
+                "manual_price": price,
+                "price": price
+            })
+
+    # ✅ OTHER COSTS (39–44)
+    for row in range(39, 45):
+        desc = ws[f"C{row}"].value
+        cost = ws[f"D{row}"].value or 0
+        margin = ws[f"G{row}"].value or 0
+
+        if desc:
+            if margin < 1:
+                selling = cost / (1 - margin) if margin < 1 else 0
+            else:
+                selling = cost
+
+            works.append({
+                "description": str(desc),
+                "mode": "Manual",
+                "manual_price": selling,
+                "price": selling
             })
 
     return works
+
 
 
     # ==========================
@@ -771,7 +800,7 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         and uploaded_file is not None
         and not st.session_state.excel_loaded
     ):
-        extracted = extract_existing_works(uploaded_file)
+        extracted = extract_existing_works(uploaded_file, rates)
         st.session_state.works_list = extracted
         st.session_state.excel_loaded = True
     
