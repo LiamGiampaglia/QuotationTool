@@ -1018,7 +1018,7 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             value=work.get("manual_price", 0.0),
             key=f"manual_{i}"
         )
-            price = work["manual_price"]
+        price = work["manual_price"]
     
         # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
         work["price"] = price
