@@ -307,32 +307,32 @@ st.markdown("---")
 # INPUT FIELDS
 # ==========================
 
-st.subheader("Template Info")
+with st.expander("📄 Template Info", expanded=False):
 
-col1, col2 = st.columns(2)
-
-with col1:
-    customer_name = st.text_input("Customer Name")
-    number_of_sites = st.text_input("Number of Sites")
-
-    site_name = st.text_input(
-        "Site Name",
-        placeholder="e.g. Coventry, London and Warrington"
-    )
-    st.caption("If multiple sites, use this format: Coventry, London and Warrington")
-
-with col2:
-    project_name = st.text_input("Project Name")
-
-    consultant_name = st.text_input(
-        "Consultant Name",
-    )
-    number_of_consultants = st.number_input(
-        "Number of Consultants",
-        min_value=1,
-        max_value=50,
-        value=1
-    )
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        customer_name = st.text_input("Customer Name")
+        number_of_sites = st.text_input("Number of Sites")
+    
+        site_name = st.text_input(
+            "Site Name",
+            placeholder="e.g. Coventry, London and Warrington"
+        )
+        st.caption("If multiple sites, use this format: Coventry, London and Warrington")
+    
+    with col2:
+        project_name = st.text_input("Project Name")
+    
+        consultant_name = st.text_input(
+            "Consultant Name",
+        )
+        number_of_consultants = st.number_input(
+            "Number of Consultants",
+            min_value=1,
+            max_value=50,
+            value=1
+        )
 
 # ==========================
 # 🏢 CUSTOMER DETAILS
