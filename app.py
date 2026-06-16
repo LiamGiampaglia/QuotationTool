@@ -236,6 +236,10 @@ def extract_existing_works(uploaded_file):
 # ==========================
 
 
+
+if "excel_loaded" not in st.session_state:
+    st.session_state.excel_loaded = False
+
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
@@ -314,6 +318,9 @@ if template_mode != "No Pricing Template Uploaded":
     )
 else:
     uploaded_file = None
+
+if uploaded_file is not None:
+    st.session_state.excel_loaded = False
 
 st.markdown(
     '**Latest Pricing Template:** [Open here](https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template)'
@@ -758,16 +765,18 @@ if uploaded_file is not None:
 # ==========================
 # WORKS INPUT
 # ==========================
-with st.expander("🛠️ Works & Pricing", expanded=False):
-    
+with st.expander("🛠️ Works & Pricing", expanded=False):    
     if (
         template_mode == "Pre-Populated Template Uploaded"
         and uploaded_file is not None
-        and not st.session_state.works_list
+        and not st.session_state.excel_loaded
     ):
         extracted = extract_existing_works(uploaded_file)
         st.session_state.works_list = extracted
-
+        st.session_state.excel_loaded = True
+    
+        st.success("✅ Works imported from Excel")
+    
     if st.button("➕ Add Work Item"):
         st.session_state.works_list.append({
             "description": "",
@@ -775,15 +784,15 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "manual_price": 0.0,
             "price": 0.0
         })
-        
+    
     if not st.session_state.works_list:
-            st.session_state.works_list.append({
-                "description": "",
-                "mode": "Manual",
-                "manual_price": 0.0,
-                "price": 0.0
-            })
-
+        st.session_state.works_list.append({
+            "description": "",
+            "mode": "Manual",
+            "manual_price": 0.0,
+            "price": 0.0
+        })
+    
     combined_items = []
     
     # Labour
