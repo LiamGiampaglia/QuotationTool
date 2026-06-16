@@ -996,33 +996,39 @@ if uploaded_file is not None:
                 min_value=0.0,
                 key="price3"
             )
-st.markdown("### Billing Milestones")
 
-billing_milestone_count = st.selectbox(
-    "No. of Billing Milestones",
-    [1, 2, 3, 4, 5]
-)
 
-billing_values = []
-billing_dates = []
+# ==========================
+# 💰 BILLING MILESTONES (ONLY IF FILE UPLOADED)
+# ==========================
+if uploaded_file is not None:
 
-for i in range(billing_milestone_count):
-    st.markdown(f"#### Billing Milestone {i+1}")
+    st.markdown("### Billing Milestones")
 
-    value = st.number_input(
-        f"Milestone {i+1} Value (£)",
-        min_value=0.0,
-        key=f"bm_value_{i}"
+    billing_milestone_count = st.selectbox(
+        "No. of Billing Milestones",
+        [1, 2, 3, 4, 5]
     )
 
-    date = st.date_input(
-        f"Milestone {i+1} Planned Billing Date",
-        key=f"bm_date_{i}"
-    )
+    billing_values = []
+    billing_dates = []
 
-    billing_values.append(value)
-    billing_dates.append(date)
+    for i in range(billing_milestone_count):
+        st.markdown(f"#### Billing Milestone {i+1}")
 
+        value = st.number_input(
+            f"Milestone {i+1} Value (£)",
+            min_value=0.0,
+            key=f"bm_value_{i}"
+        )
+
+        date = st.date_input(
+            f"Milestone {i+1} Planned Billing Date",
+            key=f"bm_date_{i}"
+        )
+
+        billing_values.append(value)
+        billing_dates.append(date)
 
 # ==========================
 # 📄 FILE NAMING SECTION
