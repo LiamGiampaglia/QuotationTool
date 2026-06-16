@@ -1264,6 +1264,14 @@ if uploaded_file is not None:
             billing_values.append(value)
             billing_dates.append(date)
             
+            if "total_price" in st.session_state and st.session_state.total_price > 0:
+            
+                total_project = st.session_state.total_price
+                percentage = (value / total_project) * 100
+            
+                st.caption(f"📊 This milestone = {percentage:.1f}% of total project value")
+
+            
 
 if "total_price" in st.session_state:
 
