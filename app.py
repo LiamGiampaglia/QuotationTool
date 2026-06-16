@@ -363,7 +363,7 @@ with st.expander("🏢 Customer Details", expanded=False):
     
     # Contact name (optional)
     contact_name = st.text_input("Contact Name (leave blank for default)")
-
+st.markdown("---")
 # ==========================
 # 💰 LIVE COST CALCULATOR
 # ==========================
