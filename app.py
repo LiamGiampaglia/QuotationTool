@@ -185,8 +185,12 @@ def load_excel_into_session(uploaded_file):
         "miles": safe_num(ws["D32"].value),
         "flights_cost": safe_num(ws["D33"].value),
     }
+    
+    discount_raw = safe_num(ws["D62"].value)
+    discount_pct = discount_raw * 100
 
-    return labour_rows, other_cost_rows, expenses
+
+    return labour_rows, other_cost_rows, expenses, discount_pct
 
     
     # ==========================
@@ -351,7 +355,7 @@ if (
     and not st.session_state.get("excel_loaded", False)
 ):
 
-    labour_rows, other_cost_rows, expenses = load_excel_into_session(uploaded_file)
+    labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
 
     st.session_state.labour_rows = labour_rows
     st.session_state.other_cost_rows = other_cost_rows
@@ -360,7 +364,7 @@ if (
     st.session_state.overnight_inside = expenses["overnight_inside"]
     st.session_state.miles = expenses["miles"]
     st.session_state.flights_cost = expenses["flights_cost"]
-
+    st.session_state.discount_pct = discount_p
     st.session_state.excel_loaded = True
 
     st.success("✅ Excel data loaded into calculator")
@@ -713,12 +717,14 @@ if uploaded_file is not None:
         # ==========================
         st.markdown("### Discount")
         
+        
         discount_pct = st.number_input(
             "Discount (%)",
             min_value=0.0,
             max_value=100.0,
-            value=0.0
+            value=float(st.session_state.get("discount_pct", 0.0))
         )
+
         
         discount_factor = 1 - (discount_pct / 100)
            
