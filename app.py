@@ -271,10 +271,6 @@ uploaded_file = st.file_uploader(
     type=["xlsx"]
 )
 
-st.markdown(
-    '**Latest Pricing Template:** [Open here]( /
-)
-
 st.markdown("---")
 
 # ==========================
