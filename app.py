@@ -122,7 +122,66 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
 
+def load_excel_into_session(uploaded_file):
 
+    def safe_num(val):
+        try:
+            return float(val)
+        except:
+            return 0
+
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    ws = wb["PRICING SHEET"]
+
+    # ==========================
+    # ✅ LABOUR ROWS
+    # ==========================
+    labour_rows = []
+
+    for row in range(15, 25):
+        desc = ws[f"C{row}"].value
+
+        if desc and str(desc).strip() not in ["", "0"]:
+
+            labour_rows.append({
+                "description": str(desc),
+                "office_day": safe_num(ws[f"D{row}"].value),
+                "site_day": safe_num(ws[f"E{row}"].value),
+                "office_evening": safe_num(ws[f"F{row}"].value),
+                "site_evening": safe_num(ws[f"G{row}"].value),
+                "office_weekend": safe_num(ws[f"H{row}"].value),
+                "site_weekend": safe_num(ws[f"I{row}"].value),
+            })
+
+    # ==========================
+    # ✅ OTHER COSTS
+    # ==========================
+    other_cost_rows = []
+
+    for row in range(39, 45):
+        desc = ws[f"C{row}"].value
+
+        if desc:
+            other_cost_rows.append({
+                "description": str(desc),
+                "cost": safe_num(ws[f"D{row}"].value),
+                "margin": safe_num(ws[f"G{row}"].value) * 100,
+                "selling": 0.0
+            })
+
+    # ==========================
+    # ✅ EXPENSES
+    # ==========================
+    expenses = {
+        "overnight_outside": safe_num(ws["D30"].value),
+        "overnight_inside": safe_num(ws["D31"].value),
+        "miles": safe_num(ws["D32"].value),
+        "flights_cost": safe_num(ws["D33"].value),
+    }
+
+    return labour_rows, other_cost_rows, expenses
+
+    
     # ==========================
     # ✅ BILLING MILESTONES
     # ==========================
@@ -279,6 +338,25 @@ uploaded_file = st.file_uploader(
     "Upload Pricing Template",
     type=["xlsx"]
 )
+if (
+    template_mode == "Pre-Populated Template Uploaded"
+    and uploaded_file is not None
+    and not st.session_state.get("excel_loaded", False)
+):
+
+    labour_rows, other_cost_rows, expenses = load_excel_into_session(uploaded_file)
+
+    st.session_state.labour_rows = labour_rows
+    st.session_state.other_cost_rows = other_cost_rows
+
+    st.session_state.overnight_outside = expenses["overnight_outside"]
+    st.session_state.overnight_inside = expenses["overnight_inside"]
+    st.session_state.miles = expenses["miles"]
+    st.session_state.flights_cost = expenses["flights_cost"]
+
+    st.session_state.excel_loaded = True
+
+    st.success("✅ Excel data loaded into calculator")
 st.markdown(
     '**Latest Pricing Template:** https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template'
 )
@@ -579,9 +657,27 @@ if uploaded_file is not None:
         col1, col2 = st.columns(2)
         
         with col1:
-            overnight_outside = st.number_input("Overnight Stays (Outside M25)", 0)
-            overnight_inside = st.number_input("Overnight Stays (Inside M25)", 0)
-            miles = st.number_input("Mileage (miles)", 0)
+            
+            overnight_outside = st.number_input(
+                "Overnight Stays (Outside M25)",
+                value=st.session_state.get("overnight_outside", 0)
+            )
+            
+            overnight_inside = st.number_input(
+                "Overnight Stays (Inside M25)",
+                value=st.session_state.get("overnight_inside", 0)
+            )
+            
+            miles = st.number_input(
+                "Mileage (miles)",
+                value=st.session_state.get("miles", 0)
+            )
+            
+            flights_cost = st.number_input(
+                "Flights / Rail (£)",
+                value=st.session_state.get("flights_cost", 0.0)
+            )
+
         
         with col2:
             flights_cost = st.number_input("Flights / Rail (£)", 0.0)
