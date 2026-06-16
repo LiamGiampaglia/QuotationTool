@@ -1,4 +1,4 @@
-from docx.oxml import OxmlElement
+rom docx.oxml import OxmlElement
 from docx.text.paragraph import Paragraph
 import streamlit as st
 from docx import Document
@@ -140,80 +140,10 @@ def generate_pricing_excel(uploaded_file):
         sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
 
 
-def extract_existing_works(uploaded_file, rates):
-   
-    def safe_num(val):
-        try:
-            return float(val)
-        except:
-            return 0
-
-    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
-    ws = wb["PRICING SHEET"]
-
-    works = []
-
-    for row in range(15, 25):
-
-        desc = ws[f"C{row}"].value
-
-        if desc:
-
-            
-            office_day = safe_num(ws[f"D{row}"].value)
-            site_day = safe_num(ws[f"E{row}"].value)
-            office_evening = safe_num(ws[f"F{row}"].value)
-            site_evening = safe_num(ws[f"G{row}"].value)
-            office_weekend = safe_num(ws[f"H{row}"].value)
-            site_weekend = safe_num(ws[f"I{row}"].value)
-
-
-            # ✅ RECREATE YOUR CALCULATION
-            price = (
-                office_day * rates["office_day"] +
-                site_day * rates["site_day"] +
-                office_evening * rates["office_evening"] +
-                site_evening * rates["site_evening"] +
-                office_weekend * rates["office_weekend"] +
-                site_weekend * rates["site_weekend"]
-            )
-
-            # ✅ Add peer review (10% office day)
-            price += office_day * rates["office_day"] * 0.1
-
-            works.append({
-                "description": str(desc),
-                "mode": "Manual",
-                "manual_price": price,
-                "price": price
-            })
-
-    # ✅ OTHER COSTS (39–44)
-    for row in range(39, 45):
-        desc = ws[f"C{row}"].value 
-        cost = safe_num(ws[f"D{row}"].value)
-        margin = safe_num(ws[f"G{row}"].value)
-
-
-        if desc:
-            if margin < 1:
-                selling = cost / (1 - margin) if margin < 1 else 0
-            else:
-                selling = cost
-
-            works.append({
-                "description": str(desc),
-                "mode": "Manual",
-                "manual_price": selling,
-                "price": selling
-            })
-
-    return works
-
 
 
     # ==========================
-    # LABOUR ITEMS (ROWS 15–24)
+    # ✅ LABOUR ITEMS (ROWS 15–24)
     # ==========================
 
     for i, lr in enumerate(st.session_state.labour_rows):
@@ -273,10 +203,6 @@ def extract_existing_works(uploaded_file, rates):
 # SESSION STATE
 # ==========================
 
-
-
-if "excel_loaded" not in st.session_state:
-    st.session_state.excel_loaded = False
 
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
@@ -340,31 +266,13 @@ st.markdown("---")
 # ==========================
 st.subheader("📊 Cost Sheet")
 
-template_mode = st.selectbox(
-    "Select Template Mode",
-    [
-        "No Pricing Template Uploaded",
-        "Blank Pricing Template Uploaded",
-        "Pre-Populated Template Uploaded"
-    ]
+uploaded_file = st.file_uploader(
+    "Upload Pricing Template",
+    type=["xlsx"]
 )
 
-if template_mode != "No Pricing Template Uploaded":
-    uploaded_file = st.file_uploader(
-        "Upload Pricing Template",
-        type=["xlsx"]
-    )
-else:
-    uploaded_file = None
-
-if uploaded_file is not None:
-    st.session_state.excel_loaded = False
-
-if uploaded_file is not None:
-    rates = extract_rates(uploaded_file)
-
 st.markdown(
-    '**Latest Pricing Template:** [Open here](https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template)'
+    '**Latest Pricing Template:** [Open here]( /
 )
 
 st.markdown("---")
@@ -466,6 +374,7 @@ st.markdown("---")
 # ==========================
 if uploaded_file is not None:
     with st.expander("💰 Live Cost Calculator", expanded=True):
+        rates = extract_rates(uploaded_file)
         st.write("DEBUG RATES:", rates)
     
         st.markdown("---")
@@ -805,17 +714,7 @@ if uploaded_file is not None:
 # ==========================
 # WORKS INPUT
 # ==========================
-with st.expander("🛠️ Works & Pricing", expanded=False):    
-    if (
-        template_mode == "Pre-Populated Template Uploaded"
-        and uploaded_file is not None
-        and not st.session_state.excel_loaded
-    ):
-        extracted = extract_existing_works(uploaded_file, rates)
-        st.session_state.works_list = extracted
-        st.session_state.excel_loaded = True
-    
-        st.success("✅ Works imported from Excel")
+with st.expander("🛠️ Works & Pricing", expanded=False):
     
     if st.button("➕ Add Work Item"):
         st.session_state.works_list.append({
@@ -824,15 +723,15 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "manual_price": 0.0,
             "price": 0.0
         })
-    
-    if not st.session_state.works_list and template_mode != "Pre-Populated Template Uploaded":
-        st.session_state.works_list.append({
-            "description": "",
-            "mode": "Manual",
-            "manual_price": 0.0,
-            "price": 0.0
-        })
-    
+        
+    if not st.session_state.works_list:
+            st.session_state.works_list.append({
+                "description": "",
+                "mode": "Manual",
+                "manual_price": 0.0,
+                "price": 0.0
+            })
+
     combined_items = []
     
     # Labour
@@ -862,12 +761,8 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
     
     
     # ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
-      
-    if (
-        not st.session_state.works_list
-        and uploaded_file is not None
-        and template_mode != "Pre-Populated Template Uploaded"
-    ):
+    
+    if not st.session_state.works_list and uploaded_file is not None:
     
         for item in combined_items:
             st.session_state.works_list.append({
@@ -903,32 +798,19 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
                 st.session_state.works_list.pop(i)
                 st.rerun()
     
-            
-        if template_mode == "Pre-Populated Template Uploaded":
-            work["mode"] = "Manual"
-        
-            st.selectbox(
-                "Pricing Mode",
-                ["Manual"],
-                key=f"mode_{i}"
-            )
-        
-        elif uploaded_file is None:
-            work["mode"] = "Manual"
-        
-            st.selectbox(
-                "Pricing Mode",
-                ["Manual"],
-                key=f"mode_{i}"
-            )
-        
-        else:
-            work["mode"] = st.selectbox(
-                "Pricing Mode",
-                ["Auto", "Manual"],
-                key=f"mode_{i}"
-            )
-
+            if uploaded_file is None:
+                work["mode"] = "Manual"
+                st.selectbox(
+                    "Pricing Mode",
+                    ["Manual"],
+                    key=f"mode_{i}"
+                )
+            else:
+                work["mode"] = st.selectbox(
+                    "Pricing Mode",
+                    ["Auto", "Manual"],
+                    key=f"mode_{i}"
+                )
     
         # ==========================
         # ✅ AUTO MODE
@@ -1008,21 +890,19 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         # ✅ MANUAL MODE
         # ==========================
         else:
-            
             work["description"] = st.text_input(
                 "Description",
-                value=str(work.get("description", "")),
+                value=work["description"],
                 key=f"work_desc_{i}"
             )
     
-            
             work["manual_price"] = st.number_input(
                 "Manual Price (£)",
-                value=float(work.get("manual_price", 0.0)),
+                0.0,
                 key=f"manual_{i}"
             )
-        st.write("DEBUG EXTRACT:", extracted)
-        price = work["manual_price"]
+    
+            price = work["manual_price"]
     
         # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
         work["price"] = price
@@ -1537,4 +1417,3 @@ if st.button("📄 Generate Word Document"):
                 f,
                 file_name=f"{project_number}-PricingSheet.xlsx"
             )
-
