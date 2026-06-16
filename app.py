@@ -1252,6 +1252,31 @@ if uploaded_file is not None:
                         "For projects above £50k, billing milestones should be split into multiple stages "
                         "(e.g. 20% mobilisation, 40% mid-project, 40% completion)."
                     )
+                
+                if "total_price" in st.session_state and st.session_state.total_price > 50000:
+                
+                    if st.button("🔄 Auto Split 20% / 40% / 40%"):
+                
+                        total = st.session_state.total_price
+                
+                        # ✅ Force 3 milestones
+                        billing_milestone_count = 3
+                
+                        # ✅ Set values
+                        st.session_state.bm_value_0 = total * 0.20
+                        st.session_state.bm_value_1 = total * 0.40
+                        st.session_state.bm_value_2 = total * 0.40
+                
+                        # ✅ Optional: set future dates (nice UX)
+                        today = datetime.today()
+                        st.session_state.bm_date_0 = today
+                        st.session_state.bm_date_1 = today
+                        st.session_state.bm_date_2 = today
+                
+                        st.success("✅ Milestones auto-split into 20% / 40% / 40%")
+                
+                        st.rerun()
+
 
 # ==========================
 # 📄 FILE NAMING SECTION
