@@ -124,11 +124,18 @@ def generate_pricing_excel(uploaded_file):
 
 def load_excel_into_session(uploaded_file):
 
+    
     def safe_num(val):
+        if val is None:
+            return 0
         try:
             return float(val)
         except:
-            return 0
+            try:
+                return float(str(val).strip())
+            except:
+                return 0
+
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
