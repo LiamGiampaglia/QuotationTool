@@ -1008,16 +1008,20 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         # ✅ MANUAL MODE
         # ==========================
         else:
-            work["description"] = st.text_input(
-                "Description",
-                value=work["description"],
-                key=f"work_desc_{i}"
-            )   
+            
+        work["description"] = st.text_input(
+            "Description",
+            value=str(work.get("description", "")),
+            key=f"work_desc_{i}"
+        )
+
+        
         work["manual_price"] = st.number_input(
             "Manual Price (£)",
-            value=work.get("manual_price", 0.0),
+            value=float(work.get("manual_price", 0.0)),
             key=f"manual_{i}"
         )
+        st.write("DEBUG EXTRACT:", extracted)
         price = work["manual_price"]
     
         # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
