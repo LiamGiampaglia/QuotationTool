@@ -266,6 +266,15 @@ st.markdown("---")
 # ==========================
 st.subheader("📊 Cost Sheet")
 
+template_mode = st.selectbox(
+    "Select Template Mode",
+    [
+        "No Pricing Template Uploaded",
+        "Blank Pricing Template Uploaded",
+        "Pre-Populated Template Uploaded"
+    ]
+)
+
 uploaded_file = st.file_uploader(
     "Upload Pricing Template",
     type=["xlsx"]
