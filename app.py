@@ -141,7 +141,7 @@ def generate_pricing_excel(uploaded_file):
 
 def extract_existing_works(uploaded_file):
 
-    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    wb = openpyxl.load_workbook(uploaded_file, data_only=False)
     ws = wb["PRICING SHEET"]
 
     works = []
@@ -150,8 +150,8 @@ def extract_existing_works(uploaded_file):
     for row in range(15, 25):
         desc = ws[f"C{row}"].value
         selling = ws[f"K{row}"].value
-
-        if desc:
+        st.write(f"Row {row}: desc={desc}, selling={selling}")
+        if desc is not None and str(desc).strip() not in ["", "0"]:
             works.append({
                 "description": desc,
                 "mode": "Manual",
@@ -860,19 +860,32 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
                 st.session_state.works_list.pop(i)
                 st.rerun()
     
-            if uploaded_file is None:
-                work["mode"] = "Manual"
-                st.selectbox(
-                    "Pricing Mode",
-                    ["Manual"],
-                    key=f"mode_{i}"
-                )
-            else:
-                work["mode"] = st.selectbox(
-                    "Pricing Mode",
-                    ["Auto", "Manual"],
-                    key=f"mode_{i}"
-                )
+            
+    if template_mode == "Pre-Populated Template Uploaded":
+        work["mode"] = "Manual"
+    
+        st.selectbox(
+            "Pricing Mode",
+            ["Manual"],
+            key=f"mode_{i}"
+        )
+    
+    elif uploaded_file is None:
+        work["mode"] = "Manual"
+    
+        st.selectbox(
+            "Pricing Mode",
+            ["Manual"],
+            key=f"mode_{i}"
+        )
+    
+    else:
+        work["mode"] = st.selectbox(
+            "Pricing Mode",
+            ["Auto", "Manual"],
+            key=f"mode_{i}"
+        )
+
     
         # ==========================
         # ✅ AUTO MODE
