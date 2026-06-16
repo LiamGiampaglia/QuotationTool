@@ -699,12 +699,6 @@ if uploaded_file is not None:
                 "Flights / Rail (£)",
                 value=st.session_state.get("flights_cost", 0.0)
             )
-
-        
-        with col2:
-            flights_cost = st.number_input("Flights / Rail (£)", 0.0)
-            discount_pct = st.number_input("Discount (%)", 0.0, 100.0, 0.0)
-            discount_factor = 1 - (discount_pct / 100)
     
         # ✅ EXPENSES (SELLING)
         expenses_total = (
@@ -713,7 +707,21 @@ if uploaded_file is not None:
             + miles * rates.get("mileage", 0)
             + flights_cost * 1.15
         )
-    
+ 
+        # ==========================
+        # ✅ DISCOUNT SECTION
+        # ==========================
+        st.markdown("### Discount")
+        
+        discount_pct = st.number_input(
+            "Discount (%)",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0
+        )
+        
+        discount_factor = 1 - (discount_pct / 100)
+           
             
         # ==========================
         # Other Costs
