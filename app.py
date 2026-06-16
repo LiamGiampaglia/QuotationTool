@@ -1211,11 +1211,20 @@ if uploaded_file is not None:
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")
     
+            
+            default_value = 0.0
+            
+            if "total_price" in st.session_state:
+                if billing_milestone_count > 0:
+                    default_value = st.session_state.total_price / billing_milestone_count
+            
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
+                value=float(st.session_state.get(f"bm_value_{i}", default_value)),
                 key=f"bm_value_{i}"
             )
+
     
             date = st.date_input(
                 f"Milestone {i+1} Planned Billing Date",
