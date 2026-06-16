@@ -1198,13 +1198,18 @@ if uploaded_file is not None:
 # ==========================
 if uploaded_file is not None:
 
-    with st.expander("📆 Billing Milestones", expanded=False):
-
+    with st.expander("📆 Billing Milestones", expanded=False):      
+        if "billing_milestone_count_override" in st.session_state:
+            default_count = st.session_state["billing_milestone_count_override"]
+        else:
+            default_count = 1
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
-            [1, 2, 3, 4, 5]
+            milestone_options,
+            index=milestone_options.index(default_count)
         )
-    
+        if "billing_milestone_count_override" in st.session_state:
+            st.session_state.pop("billing_milestone_count_override")
         billing_values = []
         billing_dates = []
     
@@ -1256,27 +1261,18 @@ if uploaded_file is not None:
                 if "total_price" in st.session_state and st.session_state.total_price > 50000:
                 
                     if st.button("🔄 Auto Split 20% / 40% / 40%"):
-                
-                        total = st.session_state.total_price
-                
-                        # ✅ Force 3 milestones
-                        billing_milestone_count = 3
-                
-                        # ✅ Set values
-                        st.session_state.bm_value_0 = total * 0.20
-                        st.session_state.bm_value_1 = total * 0.40
-                        st.session_state.bm_value_2 = total * 0.40
-                
-                        # ✅ Optional: set future dates (nice UX)
-                        today = datetime.today()
-                        st.session_state.bm_date_0 = today
-                        st.session_state.bm_date_1 = today
-                        st.session_state.bm_date_2 = today
-                
-                        st.success("✅ Milestones auto-split into 20% / 40% / 40%")
-                
-                        st.rerun()
 
+                        total = st.session_state.total_price
+                    
+                        # ✅ Store values BEFORE rerun
+                        st.session_state["billing_milestone_count_override"] = 3
+                    
+                        st.session_state["bm_value_0"] = total * 0.20
+                        st.session_state["bm_value_1"] = total * 0.40
+                        st.session_state["bm_value_2"] = total * 0.40
+                    
+                        # ✅ Force full rerun (critical)
+                        st.rerun()
 
 # ==========================
 # 📄 FILE NAMING SECTION
