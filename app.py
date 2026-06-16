@@ -1012,14 +1012,12 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
                 "Description",
                 value=work["description"],
                 key=f"work_desc_{i}"
-            )
-    
-            work["manual_price"] = st.number_input(
-                "Manual Price (£)",
-                0.0,
-                key=f"manual_{i}"
-            )
-    
+            )   
+        work["manual_price"] = st.number_input(
+            "Manual Price (£)",
+            value=work.get("manual_price", 0.0),
+            key=f"manual_{i}"
+        )
             price = work["manual_price"]
     
         # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
