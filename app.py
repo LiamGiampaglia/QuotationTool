@@ -229,6 +229,19 @@ if st.session_state.get("do_autofill", False):
     st.session_state.do_autofill = False
 
 
+if "currency" not in st.session_state:
+    st.session_state.currency = "GBP"
+
+currency = st.session_state.currency
+
+if currency == "EUR":
+    fx_rate = 1.16
+    currency_symbol = "€"
+else:
+    fx_rate = 1
+    currency_symbol = "£"
+
+
 # ==========================
 # PAGE SETUP
 # ==========================
