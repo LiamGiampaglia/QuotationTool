@@ -1198,7 +1198,8 @@ if uploaded_file is not None:
 # ==========================
 if uploaded_file is not None:
 
-    with st.expander("📆 Billing Milestones", expanded=False):      
+    with st.expander("📆 Billing Milestones", expanded=False): 
+        milestone_options = [1, 2, 3, 4, 5]
         if "billing_milestone_count_override" in st.session_state:
             default_count = st.session_state["billing_milestone_count_override"]
         else:
@@ -1212,7 +1213,6 @@ if uploaded_file is not None:
             st.session_state.pop("billing_milestone_count_override")
         billing_values = []
         billing_dates = []
-    
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")
     
