@@ -146,27 +146,28 @@ def extract_existing_works(uploaded_file):
 
     works = []
 
-    # Labour rows (15–24)
+    # ✅ LABOUR (Rows 15–24)
     for row in range(15, 25):
         desc = ws[f"C{row}"].value
+        selling = ws[f"K{row}"].value
 
         if desc:
             works.append({
                 "description": desc,
-                "mode": "Auto",
-                "manual_price": 0.0,
-                "price": 0.0
+                "mode": "Manual",
+                "manual_price": selling or 0,
+                "price": selling or 0
             })
 
-    # Other Costs (39–44)
+    # ✅ OTHER COSTS (Rows 39–44)
     for row in range(39, 45):
         desc = ws[f"C{row}"].value
-        selling = ws[f"D{row}"].value
+        selling = ws[f"G{row}"].value
 
         if desc:
             works.append({
                 "description": desc,
-                "mode": "Manual",  # safer default
+                "mode": "Manual",
                 "manual_price": selling or 0,
                 "price": selling or 0
             })
