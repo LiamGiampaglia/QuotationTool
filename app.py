@@ -926,77 +926,76 @@ else:
 # ==========================
 # 📋 PRICING SHEET INFO
 # ==========================
-st.markdown("---")
-st.subheader("📋 Pricing Sheet Info")
+if uploaded_file is not None:
 
-col1, col2 = st.columns(2)
+    st.markdown("---")
+    st.subheader("📋 Pricing Sheet Info")
 
-with col1:
-    sap_description = st.text_input("SAP Description Name")  
-    bfo_opp_no = st.text_input("bFO Opportunity No")
-    
-# ✅ ALWAYS define inputs (FIX)
-customer_contact_name = st.text_input("Customer Contact Name")
-contact_tel = st.text_input("Contact Tel No")
-contact_email = st.text_input("Contact Email")
+    col1, col2 = st.columns(2)
 
+    with col1:
+        sap_description = st.text_input("SAP Description Name")  
+        bfo_opp_no = st.text_input("bFO Opportunity No")
 
-with col2:
+    # ✅ Keep these inside too (important)
+    customer_contact_name = st.text_input("Customer Contact Name")
+    contact_tel = st.text_input("Contact Tel No")
+    contact_email = st.text_input("Contact Email")
 
-    material_code_count = st.number_input(
-        "No. of Material Codes",
-        min_value=1,
-        max_value=3,
-        value=1
-    )
+    with col2:
 
-    # ✅ Material Code 1
-    material_code_1 = st.selectbox(
-        "Material Code No.1",
-        material_code_options,
-        key="mc1"
-    )
+        material_code_count = st.number_input(
+            "No. of Material Codes",
+            min_value=1,
+            max_value=3,
+            value=1
+        )
 
-
-    material_price_1 = st.number_input(
-        "Price for Material Code 1 (£)",
-        min_value=0.0,
-        key="price1"
-    )
-
-    # ✅ Material Code 2
-    material_code_2 = ""
-    material_price_2 = 0.0
-
-    if material_code_count >= 2:
-        material_code_2 = st.selectbox(
-            "Material Code No.2",
+        material_code_1 = st.selectbox(
+            "Material Code No.1",
             material_code_options,
-            key="mc2"
+            key="mc1"
         )
 
-        material_price_2 = st.number_input(
-            "Price for Material Code 2 (£)",
+        material_price_1 = st.number_input(
+            "Price for Material Code 1 (£)",
             min_value=0.0,
-            key="price2"
+            key="price1"
         )
 
-    # ✅ Material Code 3
-    material_code_3 = ""
-    material_price_3 = 0.0
+        # ✅ Material Code 2
+        material_code_2 = ""
+        material_price_2 = 0.0
 
-    if material_code_count == 3:
-        material_code_3 = st.selectbox(
-            "Material Code No.3",
-            material_code_options,
-            key="mc3"
-        )
+        if material_code_count >= 2:
+            material_code_2 = st.selectbox(
+                "Material Code No.2",
+                material_code_options,
+                key="mc2"
+            )
 
-        material_price_3 = st.number_input(
-            "Price for Material Code 3 (£)",
-            min_value=0.0,
-            key="price3"
-        )
+            material_price_2 = st.number_input(
+                "Price for Material Code 2 (£)",
+                min_value=0.0,
+                key="price2"
+            )
+
+        # ✅ Material Code 3
+        material_code_3 = ""
+        material_price_3 = 0.0
+
+        if material_code_count == 3:
+            material_code_3 = st.selectbox(
+                "Material Code No.3",
+                material_code_options,
+                key="mc3"
+            )
+
+            material_price_3 = st.number_input(
+                "Price for Material Code 3 (£)",
+                min_value=0.0,
+                key="price3"
+            )
 st.markdown("### Billing Milestones")
 
 billing_milestone_count = st.selectbox(
