@@ -364,7 +364,7 @@ if (
     st.session_state.overnight_inside = expenses["overnight_inside"]
     st.session_state.miles = expenses["miles"]
     st.session_state.flights_cost = expenses["flights_cost"]
-    st.session_state.discount_pct = discount_p
+    st.session_state.discount_pct = discount_pct
     st.session_state.excel_loaded = True
 
     st.success("✅ Excel data loaded into calculator")
