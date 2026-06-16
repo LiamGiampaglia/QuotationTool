@@ -1213,6 +1213,7 @@ if uploaded_file is not None:
             st.session_state.pop("billing_milestone_count_override")
         billing_values = []
         billing_dates = []
+        
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")
     
