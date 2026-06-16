@@ -1200,15 +1200,15 @@ if uploaded_file is not None:
 
     with st.expander("📆 Billing Milestones", expanded=False): 
         
-    if st.session_state.get("apply_split", False):
-    
-        total = st.session_state.get("split_total", 0)
-    
-        st.session_state["billing_milestone_count_override"] = 3
-    
-        st.session_state["bm_value_0"] = total * 0.20
-        st.session_state["bm_value_1"] = total * 0.40
-        st.session_state["bm_value_2"] = total * 0.40
+        if st.session_state.get("apply_split", False):
+        
+            total = st.session_state.get("split_total", 0)
+        
+            st.session_state["billing_milestone_count_override"] = 3
+        
+            st.session_state["bm_value_0"] = total * 0.20
+            st.session_state["bm_value_1"] = total * 0.40
+            st.session_state["bm_value_2"] = total * 0.40
     
         # ✅ Clear flag AFTER applying
         st.session_state["apply_split"] = False
