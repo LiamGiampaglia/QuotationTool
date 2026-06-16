@@ -825,7 +825,7 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "price": 0.0
         })
     
-    if not st.session_state.works_list:
+    if not st.session_state.works_list and template_mode != "Pre-Populated Template Uploaded":
         st.session_state.works_list.append({
             "description": "",
             "mode": "Manual",
@@ -862,8 +862,12 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
     
     
     # ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
-    
-    if not st.session_state.works_list and uploaded_file is not None:
+      
+    if (
+        not st.session_state.works_list
+        and uploaded_file is not None
+        and template_mode != "Pre-Populated Template Uploaded"
+    ):
     
         for item in combined_items:
             st.session_state.works_list.append({
