@@ -288,19 +288,6 @@ if quote_options:
 else:
     st.warning("No quote types available for this discipline yet.")
     quote_type = None
-currency = "GBP"
-
-if "currency" not in st.session_state:
-    st.session_state.currency = "GBP"
-
-currency = st.session_state.currency
-
-if currency == "EUR":
-    fx_rate = 1.16
-    currency_symbol = "€"
-else:
-    fx_rate = 1
-    currency_symbol = "£"
 
 st.markdown("---")
 
@@ -354,7 +341,6 @@ contact_name = st.text_input("Contact Name (leave blank for default)")
 # ==========================
 # 💰 LIVE COST CALCULATOR
 # ==========================
-
 if uploaded_file is not None:
 
     rates = extract_rates(uploaded_file)
@@ -362,6 +348,21 @@ if uploaded_file is not None:
 
     st.markdown("---")
     st.subheader("💰 Live Cost Calculator")
+
+    currency = st.selectbox(
+        "Currency",
+        ["GBP", "EUR"],
+        key="currency"
+    )
+    
+    currency = st.session_state.currency
+    
+    if currency == "EUR":
+        fx_rate = 1.16
+        currency_symbol = "€"
+    else:
+        fx_rate = 1
+        currency_symbol = "£"
 
     # Inputs
     st.markdown("### Labour Hours (Detailed)")
@@ -917,11 +918,6 @@ col1, col2 = st.columns(2)
 
 with col1:
     sap_description = st.text_input("SAP Description Name")  
-    currency = st.selectbox(
-        "Currency",
-        ["GBP", "EUR"],
-        key="currency"
-    )
     bfo_opp_no = st.text_input("bFO Opportunity No")
     
 # ✅ ALWAYS define inputs (FIX)
