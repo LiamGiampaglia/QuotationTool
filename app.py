@@ -1527,7 +1527,7 @@ if uploaded_file is not None:
 
     
         
-                st.session_state.milestones_synced = True
+        st.session_state.milestones_synced = True
 
         
         for i in range(billing_milestone_count):
