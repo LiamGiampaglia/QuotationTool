@@ -1510,6 +1510,12 @@ if uploaded_file is not None:
             key="billing_count_selectbox"
         )
 
+        if "last_milestone_count" not in st.session_state:
+            st.session_state.last_milestone_count = billing_milestone_count
+        
+        if st.session_state.last_milestone_count != billing_milestone_count:
+            st.session_state.milestones_synced = False
+            st.session_state.last_milestone_count = billing_milestone_count
         
         if template_mode == "Blank Pricing Template Uploaded":
         
@@ -1524,30 +1530,11 @@ if uploaded_file is not None:
                 st.session_state.milestones_synced = True
 
         
-        if "last_milestone_count" not in st.session_state:
-            st.session_state.last_milestone_count = billing_milestone_count
-        
-        if st.session_state.last_milestone_count != billing_milestone_count:
-            st.session_state.milestones_synced = False
-            st.session_state.last_milestone_count = billing_milestone_count
-
         st.session_state.pop("billing_milestone_count_override", None)
 
         
         billing_values = []
         billing_dates = []
-
-
-        if template_mode == "Blank Pricing Template Uploaded":
-        
-            total_project = st.session_state.get("total_price", 0)
-        
-            if total_project > 0 and not st.session_state.milestones_synced:
-        
-                for i in range(billing_milestone_count):
-                    key = f"bm_value_{i}"
-                    st.session_state[key] = total_project / billing_milestone_count
-
         
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")          
