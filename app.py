@@ -1533,34 +1533,12 @@ if uploaded_file is not None:
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")          
             
-            default_value = 0.0
-            
-            project_total = st.session_state.get("total_price", 0)
-            
-            if project_total > 0 and billing_milestone_count > 0:
-                default_value = project_total / billing_milestone_count
-
  
             key_name = f"bm_value_{i}"
 
             total_project = st.session_state.get("total_price", 0)
             
-            # ✅ Initialise OR FIX zero values
-            
 
-            
-            if template_mode == "Blank Pricing Template Uploaded":
-            
-                total_project = st.session_state.get("total_price", 0)
-            
-                if (
-                    key_name not in st.session_state
-                    or st.session_state[key_name] == 0
-                ):
-                    if total_project > 0 and billing_milestone_count > 0:
-                        st.session_state[key_name] = total_project / billing_milestone_count
-
- 
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
