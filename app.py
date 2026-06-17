@@ -1473,18 +1473,6 @@ if uploaded_file is not None:
             ⚠️ Incorrect milestone values may lead to inaccurate billing terms in the final quotation document.
             """)
         
-        if st.session_state.get("apply_split", False):
-        
-            total = st.session_state.get("split_total", 0)
-        
-            st.session_state["billing_milestone_count_override"] = 3
-        
-            st.session_state["bm_value_0"] = total * 0.20
-            st.session_state["bm_value_1"] = total * 0.40
-            st.session_state["bm_value_2"] = total * 0.40
-    
-        # ✅ Clear flag AFTER applying
-        st.session_state["apply_split"] = False
 
         milestone_options = [1, 2, 3, 4, 5]
         
@@ -1574,15 +1562,25 @@ if "total_price" in st.session_state:
 
         
         
-    if st.button("🔄 Auto Split 20% / 40% / 40%"):
     
+    if st.button("🔄 Auto Split 20% / 40% / 40%"):
+        
         total = st.session_state.total_price
-        st.session_state["apply_split"] = True
-        st.session_state["split_total"] = total
-        st.session_state.milestones_synced = False
-        st.session_state.pop("billing_count_selectbox", None)
+    
+        # ✅ FORCE COUNT TO 3 (THIS FIXES YOUR ISSUE)
+        st.session_state.billing_count_selectbox = 3
+        st.session_state.billing_milestone_count_saved = 3
+    
+        # ✅ APPLY VALUES
+        st.session_state["bm_value_0"] = total * 0.20
+        st.session_state["bm_value_1"] = total * 0.40
+        st.session_state["bm_value_2"] = total * 0.40
+    
+        # ✅ IMPORTANT: reset payment rebuild
+        st.session_state.payment_terms_locked = False
     
         st.rerun()
+
 
 
 # ==========================
