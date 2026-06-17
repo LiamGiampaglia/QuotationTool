@@ -1519,15 +1519,22 @@ if uploaded_file is not None:
 
         st.session_state.pop("billing_milestone_count_override", None)
 
-
-
         
         billing_values = []
         billing_dates = []
 
-    
+
+        if template_mode == "Blank Pricing Template Uploaded":
         
-        st.session_state.milestones_synced = True
+            total_project = st.session_state.get("total_price", 0)
+        
+            if total_project > 0 and not st.session_state.milestones_synced:
+        
+                for i in range(billing_milestone_count):
+                    key = f"bm_value_{i}"
+                    st.session_state[key] = total_project / billing_milestone_count
+        
+                st.session_state.milestones_synced = True
 
         
         for i in range(billing_milestone_count):
@@ -1600,12 +1607,9 @@ if "total_price" in st.session_state:
     if st.button("🔄 Auto Split 20% / 40% / 40%"):
     
         total = st.session_state.total_price
-    
-        # ✅ SET SPLIT FLAG
         st.session_state["apply_split"] = True
         st.session_state["split_total"] = total
-    
-        # ✅ FORCE DROPDOWN TO RESET (THIS IS THE FIX 🔑)
+        st.session_state.milestones_synced = False
         st.session_state.pop("billing_count_selectbox", None)
     
         st.rerun()
