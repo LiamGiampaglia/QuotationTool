@@ -1291,6 +1291,45 @@ if uploaded_file is not None:
 if uploaded_file is not None:
 
     with st.expander("📆 Billing Milestones", expanded=False): 
+        with st.expander("💡 How to fill in", expanded=False):
+            st.markdown("""
+            ### How to fill in
+        
+            This section defines how the project value will be split into billing stages.
+        
+            - Select the **number of billing milestones** required  
+            - For each milestone, enter:
+                - The **billing value (£)**  
+                - The **planned billing date**
+        
+            The system will automatically:
+            - Calculate each milestone as a percentage of the total project value  
+            - Display how much each milestone contributes to the overall project  
+        
+            ---
+        
+            **General Guidance**
+        
+            - Ensure the total value across all milestones matches the total project value  
+            - Milestones should reflect key project stages (e.g. mobilisation, mid-project, completion)  
+            - Billing dates should align with the project timeline  
+        
+            ---
+        
+            **For Projects Above £50,000**
+        
+            - It is recommended to split billing into multiple stages  
+            - A typical structure is:
+                - 20% at mobilisation  
+                - 40% mid-project  
+                - 40% on completion  
+        
+            ✅ You can use the **Auto Split (20% / 40% / 40%)** button to apply this structure automatically  
+        
+            ---
+        
+            ⚠️ Incorrect milestone values may lead to inaccurate billing terms in the final quotation document.
+            """)
         
         if st.session_state.get("apply_split", False):
         
