@@ -394,15 +394,20 @@ if (
     and not st.session_state.get("excel_loaded", False)
 ):
 
-    # ✅ LOAD BILLING MILESTONES
+    
     for i in range(10):
         st.session_state.pop(f"bm_value_{i}", None)
         st.session_state.pop(f"bm_date_{i}", None)
-    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    
+    # ✅ RESET SELECTBOX
     st.session_state.pop("billing_count_selectbox", None)
-    st.session_state.billing_milestone_count_override = bm_count
-
+    
+    # ✅ LOAD FROM EXCEL
+    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    
+    # ✅ STORE COUNT (THIS IS KEY)
     st.session_state.billing_milestone_count_loaded = bm_count
+
 
     for i in range(bm_count):
         st.session_state[f"bm_value_{i}"] = bm_values[i]
@@ -1489,14 +1494,7 @@ if uploaded_file is not None:
         st.session_state["apply_split"] = False
 
         milestone_options = [1, 2, 3, 4, 5]
-        
-        
-        if "billing_milestone_count_override" in st.session_state:
-            default_count = st.session_state["billing_milestone_count_override"]
-        elif template_mode == "Pre-Populated Template Uploaded":
-            default_count = st.session_state.get("billing_milestone_count_loaded", 1)
-        else:
-            default_count = 1
+        default_count = st.session_state.get("billing_milestone_count_loaded", 1)
 
 
         
