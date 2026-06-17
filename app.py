@@ -1016,16 +1016,16 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
 # ✅ Populate works_list automatically (ONLY when empty OR size mismatch)
 
     if len(st.session_state.works_list) != len(combined_items):
-
-        st.session_state.works_list = []
-
-        for item in combined_items:
-            st.session_state.works_list.append({
-                "description": item["description"],
-                "mode": "Auto",
-                "manual_price": 0.0,
-                "price": 0.0
-            })
+        if uploaded_file is not None:
+            st.session_state.works_list = []
+    
+            for item in combined_items:
+                st.session_state.works_list.append({
+                    "description": item["description"],
+                    "mode": "Auto",
+                    "manual_price": 0.0,
+                    "price": 0.0
+                })
 
     
     total_works_price = 0
