@@ -562,6 +562,95 @@ st.markdown("---")
 # ==========================
 if uploaded_file is not None:
     with st.expander("💰 Live Cost Calculator", expanded=True):
+        with st.expander("💡 How to fill in", expanded=False):
+            st.markdown("""
+            ### How to fill in
+        
+            This section is used to calculate the total project cost and selling price based on labour, expenses, and other costs.
+        
+            The process depends on the Template Mode selected:
+        
+            ---
+        
+            **1. Pre-Populated Template Uploaded**
+        
+            - All labour rates, costs, and values are automatically pulled from the uploaded Excel file  
+            - Your role is to:
+                - ✅ Review the imported data carefully  
+                - ✅ Check that all values match the original Excel file  
+                - ✅ Adjust only if necessary  
+        
+            👉 No manual data entry is required unless corrections are needed  
+        
+            ---
+        
+            **2. Blank Pricing Template Uploaded**
+        
+            You must complete this section fully to build the pricing.
+        
+            Follow the steps below:
+        
+            **Step 1 – Select Currency**
+            - Choose the required currency (**GBP** or **EUR**)  
+            - All calculations and totals will update automatically  
+        
+            **Step 2 – Add Labour Items**
+            - Click **Add Labour Row**  
+            - Enter:
+                - Description of the work  
+                - Hours for each category (Office / Site / Evening / Weekend)  
+            - Repeat for all work activities  
+        
+            **Step 3 – Add Other Costs**
+            - Click **Add Cost Row**  
+            - Enter:
+                - Description  
+                - Cost (£)  
+                - Margin (%)  
+            - The selling price will be calculated automatically  
+        
+            **Step 4 – Enter Expenses**
+            - Input:
+                - Overnight stays (Inside / Outside M25)  
+                - Mileage  
+                - Travel costs (Flights / Rail)  
+        
+            **Step 5 – Apply Discount (if required)**
+            - Enter a discount percentage  
+            - The final selling price will be adjusted automatically  
+        
+            **Step 6 – Auto Fill Pricing Fields (Optional)**
+            - Click **Auto Fill Pricing Fields**  
+            - This will:
+                - Populate material pricing values automatically  
+                - Align pricing with the calculated project total  
+        
+            ✅ This helps speed up completion of the Pricing Sheet Info section  
+        
+            ---
+        
+            **What the Calculator Does**
+        
+            The tool will automatically:
+            - Apply labour rates from the pricing template  
+            - Calculate selling prices and costs  
+            - Apply peer review uplift  
+            - Calculate margins and final project value  
+            - Convert values if EUR is selected  
+        
+            ---
+        
+            ✅ The final total is used throughout the tool, including:
+            - Works & Pricing  
+            - Billing Milestones  
+            - Payment Terms  
+            - Final quotation document  
+        
+            ---
+        
+            ⚠️ Ensure all values are accurate, as errors here will impact pricing, margins, and customer-facing outputs.
+            """)
+
         rates = extract_rates(uploaded_file)
         st.write("DEBUG RATES:", rates)
     
