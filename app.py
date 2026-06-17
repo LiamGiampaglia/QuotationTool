@@ -1502,6 +1502,58 @@ def update_payment_term(index):
 
 
 with st.expander("💰 Payment Terms", expanded=False):
+    with st.expander("💡 How to fill in", expanded=False):
+        st.markdown("""
+        ### How to fill in
+    
+        This section defines the payment terms that will appear in the quotation document sent to the customer.
+    
+        Each row represents a payment condition, combining:
+        - A **percentage (%) of the total project value**  
+        - A **description of when payment is due**
+    
+        ---
+    
+        **Auto-Generated Terms**
+    
+        - Payment terms are automatically created based on the **Billing Milestones** section  
+        - Each milestone will populate a corresponding payment percentage  
+        - Descriptions are generated based on milestone stages  
+    
+        ✅ This ensures payment terms align with your billing structure  
+    
+        ---
+    
+        **Manual Adjustments**
+    
+        - You can edit:
+            - The **percentage (%)**  
+            - The **description (payment condition)**  
+        - Once edited, the system switches to **manual override mode**  
+    
+        ✅ This allows full control over how payment terms are presented  
+    
+        ---
+    
+        **Adding Additional Payment Terms**
+    
+        - Click **Add Payment Split** to create a new row  
+        - Enter the percentage and payment condition  
+    
+        ---
+    
+        **Important Rules**
+    
+        - The total of all percentages **must equal 100%**  
+        - The system will display a warning if the total is incorrect  
+    
+        ✅ A green confirmation will appear when the total equals 100%  
+    
+        ---
+    
+        ⚠️ Ensure payment descriptions are clear and commercially appropriate, as they will be included in the final quotation document.
+        """)
+
     
     # Display inputs
     for i, term in enumerate(st.session_state.payment_terms):
