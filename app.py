@@ -1303,6 +1303,9 @@ with st.expander("💰 Payment Terms", expanded=False):
     if "payment_override" not in st.session_state:
         st.session_state.payment_override = False
     
+    if "payment_terms" not in st.session_state:
+        st.session_state.payment_terms = []
+
     
     # ✅ Auto-sync ONLY if NOT overridden
     if (
