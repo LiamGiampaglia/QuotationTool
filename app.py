@@ -436,7 +436,19 @@ st.markdown("---")
 # ==========================
 
 with st.expander("📄 Template Info", expanded=False):
-
+    with st.expander("💡 How to fill in", expanded=False):
+        st.markdown("""
+        **All fields in this section must be completed to ensure the quote template is populated correctly.**
+    
+        Please provide accurate project and customer information, including:
+        - Customer name (Leave blank if unknown)
+        - Project name (EN Number)  
+        - Number and location of sites (Location of sites to be filled in like the example)  
+        - Consultant Name (Main Consultant)
+        - Number of Consultants 
+    
+        ⚠️ Missing or incomplete information other than Customer Name may result in sections of the generated quote not being filled correctly.
+        """)
     col1, col2 = st.columns(2)
     
     with col1:
