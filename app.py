@@ -391,7 +391,7 @@ if (
 
     st.success("✅ Excel data loaded into calculator")
 st.markdown(
-    '**Latest Pricing Template:** https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template'
+    '**Latest Pricing Template:** https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template
 )
 st.markdown("---")
 
@@ -1292,25 +1292,7 @@ if "total_price" in st.session_state:
             st.session_state["split_total"] = total
         
             st.rerun()
-        if (
-                not st.session_state.payment_override
-                and "billing_percentages" in st.session_state
-                and len(st.session_state.billing_percentages) > 0
-            ):
-            
-                # 🔥 THIS IS THE CRITICAL FIX — CLEAR OLD INPUTS
-                for i in range(10):   # safe upper limit
-                    st.session_state.pop(f"percent_{i}", None)
-                    st.session_state.pop(f"desc_{i}", None)
-            
-                # ✅ rebuild payment terms fresh
-                st.session_state.payment_terms = []
-            
-                for i, pct in enumerate(st.session_state.billing_percentages):
-                    st.session_state.payment_terms.append({
-                        "percent": int(round(pct)),
-                        "description": f"Milestone {i+1} completion"
-                    })
+
 # ==========================
 # 💰 PAYMENT TERMS
 # ==========================
@@ -1320,22 +1302,17 @@ with st.expander("💰 Payment Terms", expanded=False):
 
     
     # ✅ Track manual override
-    
     if "payment_override" not in st.session_state:
         st.session_state.payment_override = False
     
+    
+    # ✅ Auto-sync ONLY if NOT overridden
     if (
         not st.session_state.payment_override
         and "billing_percentages" in st.session_state
         and len(st.session_state.billing_percentages) > 0
     ):
     
-        # ✅ Clear old widget values (CRITICAL)
-        for i in range(10):
-            st.session_state.pop(f"percent_{i}", None)
-            st.session_state.pop(f"desc_{i}", None)
-    
-        # ✅ rebuild clean list
         st.session_state.payment_terms = []
     
         for i, pct in enumerate(st.session_state.billing_percentages):
@@ -1344,6 +1321,10 @@ with st.expander("💰 Payment Terms", expanded=False):
                 "description": f"Milestone {i+1} completion"
             })
 
+    
+    # Display inputs
+    for i, term in enumerate(st.session_state.payment_terms):
+        col1, col2 = st.columns([1, 3])
     
         with col1:  
             st.session_state.payment_terms[i]["percent"] = st.number_input(
