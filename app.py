@@ -426,6 +426,23 @@ st.markdown("---")
 # DISCIPLINE SELECTION
 # ==========================
 with st.expander("Quotation Type", expanded=False):
+    with st.expander("💡 How to fill in", expanded=False):
+    st.markdown("""
+    **This section determines the quotation template that will be used to generate the document.**
+
+    Please follow the steps below:
+
+    - Select a **Discipline** from the available options  
+    - Then select the **Quote Type** document you would like to generate  
+
+    The selected quote type will determine:
+    - The structure of the quotation document  
+    - The template used when generating the final Word output  
+
+    ✅ Ensure the correct discipline and quote type are selected before proceeding.
+
+    ⚠️ Selecting the wrong option may result in the incorrect template being used.
+    """)
 
     discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
     discipline = st.selectbox("Select Discipline", discipline_options)
