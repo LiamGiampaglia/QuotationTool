@@ -209,13 +209,15 @@ def load_excel_into_session(uploaded_file):
         # Convert date to Excel format (string safe)
         sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
     
-    billing_total = sum(billing_values)
+    
+        billing_total = sum(billing_values)
+        
+        if billing_total > 0:
+            percentage = (value / billing_total) * 100
+            st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
+        else:
+            st.caption("📊 This milestone = 0% of total project value")
 
-    if billing_total > 0:
-        percentage = (value / billing_total) * 100
-        st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
-    else:
-        st.caption("📊 This milestone = 0% of total project value")
 
 
 
@@ -1240,11 +1242,14 @@ if uploaded_file is not None:
             st.markdown(f"#### Billing Milestone {i+1}")
     
             
+            
             default_value = 0.0
             
-            if "total_price" in st.session_state:
-                if billing_milestone_count > 0:
-                    default_value = st.session_state.total_price / billing_milestone_count
+            project_total = st.session_state.get("total_price", 0)
+            
+            if project_total > 0 and billing_milestone_count > 0:
+                default_value = project_total / billing_milestone_count
+
             
             
             key_name = f"bm_value_{i}"
@@ -1252,11 +1257,9 @@ if uploaded_file is not None:
             # ✅ Use default if value is missing OR still zero
             stored_value = st.session_state.get(key_name, None)
             
-            
             if stored_value is None:
-                stored_value = default_va
-
-            
+                stored_value = default_value
+          
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
