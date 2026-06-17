@@ -395,13 +395,11 @@ if (
 ):
 
     # ✅ LOAD BILLING MILESTONES
-    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
-    st.session_state.billing_milestone_count_override = bm_count
-    
     for i in range(10):
         st.session_state.pop(f"bm_value_{i}", None)
         st.session_state.pop(f"bm_date_{i}", None)
-
+    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    st.session_state.billing_milestone_count_override = bm_count
 
     st.session_state.billing_milestone_count_loaded = bm_count
 
@@ -420,10 +418,9 @@ if (
     st.session_state.miles = expenses["miles"]
     st.session_state.flights_cost = expenses["flights_cost"]
     st.session_state.discount_pct = discount_pct
-
     st.session_state.excel_loaded = True
-
     st.success("✅ Excel data including billing milestones loaded into calculator")
+    st.rerun()
 
 
 st.markdown("---")
@@ -1509,8 +1506,6 @@ if uploaded_file is not None:
             key="billing_count_selectbox"
         )
 
-        if "billing_milestone_count_override" in st.session_state:
-            st.session_state.pop("billing_milestone_count_override")
         billing_values = []
         billing_dates = []
         
