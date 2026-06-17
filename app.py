@@ -2128,14 +2128,18 @@ if st.button("📄 Generate Word Document"):
             )
         
         # ✅ Generate Excel
-        excel_wb = generate_pricing_excel(uploaded_file)
         
-        excel_output = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
-        excel_wb.save(excel_output.name)
+        if uploaded_file is not None:
         
-        with open(excel_output.name, "rb") as f:
-            st.download_button(
-                "⬇ Download Pricing Sheet",
-                f,
-                file_name=f"{project_number}-PricingSheet.xlsx"
-            )
+            excel_wb = generate_pricing_excel(uploaded_file)
+        
+            excel_output = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+            excel_wb.save(excel_output.name)
+        
+            with open(excel_output.name, "rb") as f:
+                st.download_button(
+                    "⬇ Download Pricing Sheet",
+                    f,
+                    file_name=f"{project_number}-PricingSheet.xlsx"
+                )
+
