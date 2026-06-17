@@ -1413,6 +1413,25 @@ with st.expander("💰 Payment Terms", expanded=False):
 # ==========================
 st.markdown("---")
 with st.expander("📄 File Naming", expanded=False):
+    
+    with st.expander("💡 How to fill in", expanded=False):
+        st.markdown("""
+        **This section determines the name of the generated quotation file.**
+    
+        Please ensure all fields are selected correctly, as they will be combined to form the final document name.
+    
+        The filename will follow the format:
+        - Project Number  
+        - Document Type  
+        - Subject  
+        - Unique Identifier  
+        - Revision Code and Number  
+    
+        ✅ Ensure naming is consistent with project conventions.
+    
+        ⚠️ Incorrect or inconsistent inputs may result in an incorrectly named file.
+        """)
+
 
     document_type_options = {
         "Cost Sheet": "CST",
