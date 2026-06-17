@@ -1494,9 +1494,11 @@ if uploaded_file is not None:
         st.session_state["apply_split"] = False
 
         milestone_options = [1, 2, 3, 4, 5]
-        default_count = st.session_state.get("billing_milestone_count_loaded", 1)
-
-
+        
+        default_count = st.session_state.get(
+            "billing_milestone_count_override",
+            st.session_state.get("billing_milestone_count_loaded", 1)
+        )
         
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
@@ -1504,6 +1506,7 @@ if uploaded_file is not None:
             index=milestone_options.index(default_count),
             key="billing_count_selectbox"
         )
+        st.session_state.pop("billing_milestone_count_override", None)
 
         billing_values = []
         billing_dates = []
