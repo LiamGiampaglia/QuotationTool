@@ -1307,12 +1307,19 @@ with st.expander("💰 Payment Terms", expanded=False):
     
     
     # ✅ Auto-sync ONLY if NOT overridden
+    
     if (
         not st.session_state.payment_override
         and "billing_percentages" in st.session_state
         and len(st.session_state.billing_percentages) > 0
     ):
     
+        # 🔥 THIS IS THE CRITICAL FIX — CLEAR OLD INPUTS
+        for i in range(10):   # safe upper limit
+            st.session_state.pop(f"percent_{i}", None)
+            st.session_state.pop(f"desc_{i}", None)
+    
+        # ✅ rebuild payment terms fresh
         st.session_state.payment_terms = []
     
         for i, pct in enumerate(st.session_state.billing_percentages):
@@ -1320,6 +1327,7 @@ with st.expander("💰 Payment Terms", expanded=False):
                 "percent": int(round(pct)),
                 "description": f"Milestone {i+1} completion"
             })
+
 
     
     # Display inputs
