@@ -121,7 +121,49 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E19"] = material_price_1
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
+    
+    # ======================
+    # ✅ LABOUR ROWS
+    # ======================
+    for i, lr in enumerate(st.session_state.labour_rows):
+        if i >= 10:
+            break
+        row = 15 + i
+        ws[f"C{row}"] = lr["description"]
+        ws[f"D{row}"] = lr["office_day"]
+        ws[f"E{row}"] = lr["site_day"]
+        ws[f"F{row}"] = lr["office_evening"]
+        ws[f"G{row}"] = lr["site_evening"]
+        ws[f"H{row}"] = lr["office_weekend"]
+        ws[f"I{row}"] = lr["site_weekend"]
+    
+    # ======================
+    # ✅ OTHER COSTS
+    # ======================
+    for i, oc in enumerate(st.session_state.other_cost_rows):
+        if i >= 6:
+            break
+        row = 39 + i
+        ws[f"C{row}"] = oc["description"]
+        ws[f"D{row}"] = oc["cost"]
+        ws[f"E{row}"] = "GBP"
+        ws[f"G{row}"] = oc["margin"] / 100
+    
+    # ======================
+    # ✅ EXPENSES
+    # ======================
+    ws["D30"] = st.session_state.get("overnight_outside", 0)
+    ws["D31"] = st.session_state.get("overnight_inside", 0)
+    ws["D32"] = st.session_state.get("miles", 0)
+    ws["D33"] = st.session_state.get("flights_cost", 0)
+    
+    # ======================
+    # ✅ DISCOUNT
+    # ======================
+    ws["D62"] = st.session_state.get("discount_pct", 0) / 100
+    
     return wb
+
 
 
 def load_excel_into_session(uploaded_file):
@@ -222,63 +264,6 @@ def load_billing_milestones(uploaded_file):
 
     return milestone_count, billing_values, billing_dates
     
-
-    # ==========================
-    # ✅ LABOUR ITEMS (ROWS 15–24)
-    # ==========================
-
-    for i, lr in enumerate(st.session_state.labour_rows):
-
-        if i >= 10:  # max rows (15–24)
-            break
-
-        row = 15 + i
-
-        ws[f"C{row}"] = lr["description"]
-        ws[f"D{row}"] = lr["office_day"]
-        ws[f"E{row}"] = lr["site_day"]
-        ws[f"F{row}"] = lr["office_evening"]
-        ws[f"G{row}"] = lr["site_evening"]
-        ws[f"H{row}"] = lr["office_weekend"]
-        ws[f"I{row}"] = lr["site_weekend"]
-
-    # ==========================
-    # ✅ OTHER COSTS (ROWS 39–44)
-    # ==========================
-
-    for i, oc in enumerate(st.session_state.other_cost_rows):
-
-        if i >= 6:  # max rows (39–44)
-            break
-
-        row = 39 + i
-
-        ws[f"C{row}"] = oc["description"]
-        ws[f"D{row}"] = oc["cost"]
-        
-        cell = ws[f"E{row}"]
-        cell.value = None   # clear properly first
-        cell.value = "GBP"
-
-        ws[f"G{row}"] = oc["margin"] / 100
-
-    # ==========================
-    # ✅ EXPENSES
-    # ==========================
-
-    ws["D30"] = overnight_outside
-    ws["D31"] = overnight_inside
-    ws["D32"] = miles
-    ws["D33"] = flights_cost
-    ws["E33"] = "GBP"
-
-    # ==========================
-    # ✅ DISCOUNT
-    # ==========================
-
-    ws["D62"] = discount_pct / 100
-
-    return wb
 
 # ==========================
 # SESSION STATE
