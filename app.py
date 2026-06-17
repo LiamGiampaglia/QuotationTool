@@ -1340,7 +1340,7 @@ with st.expander("💰 Payment Terms", expanded=False):
         col1, col2 = st.columns([1, 3])
     
         with col1:  
-            st.session_state.payment_terms[i]["percent"] = st.number_input(
+            value = st.number_input(
                 f"% {i+1}",
                 min_value=0,
                 max_value=100,
@@ -1348,6 +1348,10 @@ with st.expander("💰 Payment Terms", expanded=False):
                 key=f"percent_{i}",
                 on_change=lambda: st.session_state.update({"payment_override": True})
             )
+            
+            # ✅ FORCE overwrite (CRITICAL FIX)
+            st.session_state.payment_terms[i]["percent"] = value
+            st.session_state[f"percent_{i}"] = int(term["percent"])
 
         with col2:
             st.session_state.payment_terms[i]["description"] = st.text_input(
