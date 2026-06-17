@@ -1302,7 +1302,7 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
 # ==========================
 # 📋 PRICING SHEET INFO
 # ==========================
-if uploaded_file is not None:
+if template_mode == "Blank Pricing Template Uploaded":
 
     st.markdown("---")
     with st.expander("📋 Pricing Sheet Info", expanded=False):
