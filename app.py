@@ -308,10 +308,6 @@ if "labour_rows" not in st.session_state:
 if "price1" not in st.session_state:
     st.session_state.price1 = 0.0
 
-if "bm_value_0" not in st.session_state:
-    st.session_state.bm_value_0 = 0.0
-
-
 if st.session_state.get("do_autofill", False):
 
     if "total_price" in st.session_state:
@@ -1219,13 +1215,15 @@ if uploaded_file is not None:
             
             
             key_name = f"bm_value_{i}"
+
+            total_project = st.session_state.get("total_price", 0)
             
-            # ✅ Initialise ONLY once
-            if key_name not in st.session_state:
-                if billing_milestone_count > 0 and st.session_state.get("total_price", 0) > 0:
-                    st.session_state[key_name] = st.session_state.total_price / billing_milestone_count
-                else:
-                    st.session_state[key_name] = 0.0
+            # ✅ Initialise OR FIX zero values
+            if key_name not in st.session_state or (
+                st.session_state[key_name] == 0 and total_project > 0
+            ):
+                if billing_milestone_count > 0:
+                    st.session_state[key_name] = total_project / billing_milestone_count
             
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
