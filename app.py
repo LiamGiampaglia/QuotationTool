@@ -1292,7 +1292,25 @@ if "total_price" in st.session_state:
             st.session_state["split_total"] = total
         
             st.rerun()
-
+        if (
+                not st.session_state.payment_override
+                and "billing_percentages" in st.session_state
+                and len(st.session_state.billing_percentages) > 0
+            ):
+            
+                # 🔥 THIS IS THE CRITICAL FIX — CLEAR OLD INPUTS
+                for i in range(10):   # safe upper limit
+                    st.session_state.pop(f"percent_{i}", None)
+                    st.session_state.pop(f"desc_{i}", None)
+            
+                # ✅ rebuild payment terms fresh
+                st.session_state.payment_terms = []
+            
+                for i, pct in enumerate(st.session_state.billing_percentages):
+                    st.session_state.payment_terms.append({
+                        "percent": int(round(pct)),
+                        "description": f"Milestone {i+1} completion"
+                    })
 # ==========================
 # 💰 PAYMENT TERMS
 # ==========================
@@ -1302,11 +1320,9 @@ with st.expander("💰 Payment Terms", expanded=False):
 
     
     # ✅ Track manual override
+    
     if "payment_override" not in st.session_state:
         st.session_state.payment_override = False
-    
-    
-    # ✅ Auto-sync ONLY if NOT overridden
     
     if (
         not st.session_state.payment_override
@@ -1314,12 +1330,12 @@ with st.expander("💰 Payment Terms", expanded=False):
         and len(st.session_state.billing_percentages) > 0
     ):
     
-        # 🔥 THIS IS THE CRITICAL FIX — CLEAR OLD INPUTS
-        for i in range(10):   # safe upper limit
+        # ✅ Clear old widget values (CRITICAL)
+        for i in range(10):
             st.session_state.pop(f"percent_{i}", None)
             st.session_state.pop(f"desc_{i}", None)
     
-        # ✅ rebuild payment terms fresh
+        # ✅ rebuild clean list
         st.session_state.payment_terms = []
     
         for i, pct in enumerate(st.session_state.billing_percentages):
@@ -1328,11 +1344,6 @@ with st.expander("💰 Payment Terms", expanded=False):
                 "description": f"Milestone {i+1} completion"
             })
 
-
-    
-    # Display inputs
-    for i, term in enumerate(st.session_state.payment_terms):
-        col1, col2 = st.columns([1, 3])
     
         with col1:  
             st.session_state.payment_terms[i]["percent"] = st.number_input(
