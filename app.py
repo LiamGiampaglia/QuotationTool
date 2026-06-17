@@ -1628,15 +1628,20 @@ if "total_price" in st.session_state:
         )
 
         
-        if st.button("🔄 Auto Split 20% / 40% / 40%"):
         
-            total = st.session_state.total_price
-        
-            # ✅ Store split request ONLY
-            st.session_state["apply_split"] = True
-            st.session_state["split_total"] = total
-        
-            st.rerun()
+    if st.button("🔄 Auto Split 20% / 40% / 40%"):
+    
+        total = st.session_state.total_price
+    
+        # ✅ SET SPLIT FLAG
+        st.session_state["apply_split"] = True
+        st.session_state["split_total"] = total
+    
+        # ✅ FORCE DROPDOWN TO RESET (THIS IS THE FIX 🔑)
+        st.session_state.pop("billing_count_selectbox", None)
+    
+        st.rerun()
+
 
 # ==========================
 # ✅ PAYMENT TERMS SYNC ENGINE
