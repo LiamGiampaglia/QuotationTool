@@ -1293,15 +1293,12 @@ if "total_price" in st.session_state:
 # ✅ PAYMENT TERMS SYNC ENGINE
 # ==========================
 
-# ✅ Ensure states exist
 if "payment_terms" not in st.session_state:
     st.session_state.payment_terms = []
 
 if "payment_override" not in st.session_state:
     st.session_state.payment_override = False
 
-
-# ✅ Sync from billing → payment terms
 
 if (
     not st.session_state.payment_override
@@ -1311,31 +1308,18 @@ if (
 
     billing_pcts = st.session_state.billing_percentages
 
-    # ✅ CLEAR FIRST (CRITICAL FIX)
+    # ✅ CLEAR widget keys FIRST
     for i in range(10):
-        if f"percent_{i}" in st.session_state:
-            del st.session_state[f"percent_{i}"]
-        if f"desc_{i}" in st.session_state:
-            del st.session_state[f"desc_{i}"]
+        st.session_state.pop(f"percent_{i}", None)
+        st.session_state.pop(f"desc_{i}", None)
 
-    # ✅ THEN BUILD
+    # ✅ BUILD ONCE ONLY
     if all(pct == 0 for pct in billing_pcts):
-
         st.session_state.payment_terms = [{
             "percent": 100,
             "description": "upon submittal of the report"
         }]
-
     else:
-        st.session_state.payment_terms = [
-            {
-                "percent": int(round(pct)),
-                "description": f"Milestone {i+1} completion"
-            }
-            for i, pct in enumerate(billing_pcts)
-        ]
-
-        # ✅ Build fresh terms
         st.session_state.payment_terms = [
             {
                 "percent": int(round(pct)),
