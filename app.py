@@ -1265,7 +1265,7 @@ if uploaded_file is not None:
             
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
-                st.caption("📊 This milestone = 0% of total project value"
+                st.caption("📊 This milestone = 0% of total project value")
 
 
 
