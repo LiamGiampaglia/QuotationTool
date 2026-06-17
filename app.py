@@ -879,6 +879,12 @@ if uploaded_file is not None:
                 "Flights / Rail (£)",
                 value=st.session_state.get("flights_cost", 0.0)
             )
+            
+        st.session_state.overnight_outside = overnight_outside
+        st.session_state.overnight_inside = overnight_inside
+        st.session_state.miles = miles
+        st.session_state.flights_cost = flights_cost
+
     
         # ✅ EXPENSES (SELLING)
         expenses_total = (
@@ -900,6 +906,7 @@ if uploaded_file is not None:
             max_value=100.0,
             value=float(st.session_state.get("discount_pct", 0.0))
         )
+        st.session_state.discount_pct = discount_pct
 
         
         discount_factor = 1 - (discount_pct / 100)
