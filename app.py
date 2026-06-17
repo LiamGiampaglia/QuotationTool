@@ -1493,6 +1493,10 @@ if uploaded_file is not None:
             key="billing_count_selectbox"
         )
         st.session_state.billing_milestone_count_saved = billing_milestone_count
+        
+        if "billing_milestone_count_override" in st.session_state:
+            del st.session_state.billing_milestone_count_override
+
 
                
         st.session_state.pop("billing_milestone_count_override", None)
@@ -1563,23 +1567,24 @@ if "total_price" in st.session_state:
         
         
     
+   
     if st.button("🔄 Auto Split 20% / 40% / 40%"):
         
         total = st.session_state.total_price
     
-        # ✅ FORCE COUNT TO 3 (THIS FIXES YOUR ISSUE)
-        st.session_state.billing_count_selectbox = 3
-        st.session_state.billing_milestone_count_saved = 3
+        # ✅ SET OVERRIDE VALUE (NOT the widget itself)
+        st.session_state.billing_milestone_count_override = 3
     
         # ✅ APPLY VALUES
         st.session_state["bm_value_0"] = total * 0.20
         st.session_state["bm_value_1"] = total * 0.40
         st.session_state["bm_value_2"] = total * 0.40
     
-        # ✅ IMPORTANT: reset payment rebuild
+        # ✅ unlock payment terms
         st.session_state.payment_terms_locked = False
     
         st.rerun()
+
 
 
 
