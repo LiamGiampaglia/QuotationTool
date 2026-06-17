@@ -1553,7 +1553,7 @@ if uploaded_file is not None:
             if len(st.session_state.billing_percentages) != billing_milestone_count:
                 st.session_state.billing_percentages = [0] * billing_milestone_count
             
-            st.session_state.billing_percentages[i] = round(percentage, 2)
+                st.session_state.billing_percentages[i] = round(percentage, 2)
 
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
