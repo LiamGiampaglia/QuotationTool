@@ -479,6 +479,20 @@ with st.expander("📄 Template Info", expanded=False):
 # ==========================
 st.markdown("---")
 with st.expander("🏢 Customer Details", expanded=False):
+    
+    with st.expander("💡 How to fill in", expanded=False):
+        st.markdown("""
+        **All address fields in this section must be completed to ensure the customer details are correctly populated in the quote.**
+    
+        Please provide:
+        - Full address (Address Line 1, Address Line 2 if applicable, City, and Postcode)
+    
+        **Contact Name is optional** and can be left blank if unknown.  
+        If left blank, the quote will default to a generic title.
+    
+        ⚠️ Missing address details may result in incomplete customer information in the generated document.
+        """)
+
 
     col1, col2 = st.columns(2)
     
