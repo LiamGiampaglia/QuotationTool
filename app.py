@@ -1494,12 +1494,14 @@ if uploaded_file is not None:
         )
         st.session_state.billing_milestone_count_saved = billing_milestone_count
         
-        if "billing_milestone_count_override" in st.session_state:
+        
+        if (
+            "billing_milestone_count_override" in st.session_state
+            and billing_milestone_count == st.session_state.billing_milestone_count_override
+        ):
             del st.session_state.billing_milestone_count_override
 
 
-               
-        st.session_state.pop("billing_milestone_count_override", None)
 
         
         billing_values = []
