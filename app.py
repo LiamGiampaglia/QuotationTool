@@ -1217,6 +1217,57 @@ if uploaded_file is not None:
 
     st.markdown("---")
     with st.expander("📋 Pricing Sheet Info", expanded=False):
+        with st.expander("💡 How to fill in", expanded=False):
+            st.markdown("""
+            ### How to fill in
+        
+            This section is used to populate the **Pricing Excel file** automatically.
+        
+            ⚠️ **Important:**  
+            This section only needs to be completed when using the **Blank Pricing Template Uploaded** mode.
+        
+            ---
+        
+            **When to Use This Section**
+        
+            - ✅ Required for **Blank Pricing Template Uploaded**  
+            - ❌ Not required for:
+                - No Pricing Template Uploaded  
+                - Pre-Populated Template Uploaded (data is already provided)  
+        
+            ---
+        
+            **What to Enter**
+        
+            - **SAP Description Name**  
+              → A short description of the project for SAP  
+        
+            - **bFO Opportunity Number**  
+              → The relevant opportunity reference  
+        
+            - **Customer Contact Details**
+              - Name  
+              - Telephone number  
+              - Email address  
+        
+            - **Material Codes**
+              - Select up to 3 material codes  
+              - Enter the corresponding price for each  
+        
+            ---
+        
+            **How It Works**
+        
+            - The information entered here is written directly into the Pricing Excel file  
+            - This removes the need to manually complete the SAP / pricing sheets  
+            - The Excel file will be fully populated when downloaded  
+        
+            ---
+        
+            ✅ Ensure all required fields are completed accurately to avoid issues in SAP or pricing submission.  
+        
+            ⚠️ Incorrect or missing information may result in an incomplete or invalid pricing sheet.
+            """)
 
         col1, col2 = st.columns(2)
     
