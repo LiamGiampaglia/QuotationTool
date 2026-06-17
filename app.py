@@ -1289,18 +1289,15 @@ if uploaded_file is not None:
             billing_values.append(value)
             billing_dates.append(date)
                         
-            if 'subtotal' in locals() and subtotal > 0:
-                total_project = subtotal
-            elif 'total_price' in locals() and total_price > 0:
-                total_project = total_price
-            else:
-                total_project = 0
+            
+            total_project = st.session_state.get("total_price", 0)
             
             if total_project > 0:
                 percentage = (value / total_project) * 100
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
                 st.caption("📊 This milestone = 0% of total project value")
+
 
 
 if "total_price" in st.session_state:
