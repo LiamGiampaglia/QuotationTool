@@ -1366,51 +1366,6 @@ if (
 st.markdown("---")
 
 with st.expander("💰 Payment Terms", expanded=False):
-
-    
-    # ✅ Track manual override
-    if "payment_override" not in st.session_state:
-        st.session_state.payment_override = False
-    
-    if "payment_terms" not in st.session_state:
-        st.session_state.payment_terms = []
-
-    
-    # ✅ Auto-sync ONLY if NOT overridden
-    
-    if (
-        not st.session_state.payment_override
-        and "billing_percentages" in st.session_state
-        and len(st.session_state.billing_percentages) > 0
-    ):
-    
-        billing_pcts = st.session_state.billing_percentages
-    
-        # ✅ CHECK IF ALL ZERO → fallback to 100%
-        if all(pct == 0 for pct in billing_pcts):
-    
-            st.session_state.payment_terms = [{
-                "percent": 100,
-                "description": "upon submittal of the report"
-            }]
-    
-        else:
-    
-            # ✅ Clear widget values
-            for i in range(10):
-                st.session_state.pop(f"percent_{i}", None)
-                st.session_state.pop(f"desc_{i}", None)
-    
-            # ✅ Build from milestones
-            st.session_state.payment_terms = []
-    
-            for i, pct in enumerate(billing_pcts):
-                st.session_state.payment_terms.append({
-                    "percent": int(round(pct)),
-                    "description": f"Milestone {i+1} completion"
-                })
-
-
     
     # Display inputs
     for i, term in enumerate(st.session_state.payment_terms):
