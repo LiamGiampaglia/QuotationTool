@@ -1095,51 +1095,6 @@ if uploaded_file is not None:
     total_works_price_fx = total_works_price * fx_rate
     st.write(f"Total Works Price: {currency_symbol}{total_works_price_fx:,.2f}")
 
-
-# ==========================
-# 💰 PAYMENT TERMS
-# ==========================
-st.markdown("---")
-
-with st.expander("💰 Payment Terms", expanded=False):
-
-    if "payment_terms" not in st.session_state:
-        st.session_state.payment_terms = [
-            {"percent": 100, "description": "upon submittal of the report"}
-        ]
-    
-    # Display inputs
-    for i, term in enumerate(st.session_state.payment_terms):
-        col1, col2 = st.columns([1, 3])
-    
-        with col1:
-            st.session_state.payment_terms[i]["percent"] = st.number_input(
-                f"% {i+1}",
-                min_value=0,
-                max_value=100,
-                value=term["percent"],
-                key=f"percent_{i}"
-            )
-    
-        with col2:
-            st.session_state.payment_terms[i]["description"] = st.text_input(
-                f"Condition {i+1}",
-                value=term["description"],
-                key=f"desc_{i}"
-            )
-    
-    # Add new row
-    if st.button("➕ Add Payment Split"):
-        st.session_state.payment_terms.append({"percent": 0, "description": ""})
-    
-    # Calculate total
-    total_percent = sum(term["percent"] for term in st.session_state.payment_terms)
-    
-    if total_percent != 100:
-        st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
-    else:
-        st.success("✅ Payment terms total = 100%")
-
 # ==========================
 # 📋 PRICING SHEET INFO
 # ==========================
@@ -1292,11 +1247,26 @@ if uploaded_file is not None:
             
             total_project = st.session_state.get("total_price", 0)
             
+            
+            if "billing_percentages" not in st.session_state:
+                st.session_state.billing_percentages = []
+            
+            # ✅ Ensure correct size
+            if len(st.session_state.billing_percentages) != billing_milestone_count:
+                st.session_state.billing_percentages = [0] * billing_milestone_count
+            
+            total_project = st.session_state.get("total_price", 0)
+            
             if total_project > 0:
                 percentage = (value / total_project) * 100
+            
+                # ✅ STORE IT
+                st.session_state.billing_percentages[i] = round(percentage, 2)
+            
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
-                st.caption("📊 This milestone = 0% of total project value")
+                st.caption("📊 This milestone = 0% of total project value"
+
 
 
 
@@ -1323,7 +1293,68 @@ if "total_price" in st.session_state:
         
             st.rerun()
 
+# ==========================
+# 💰 PAYMENT TERMS
+# ==========================
+st.markdown("---")
 
+with st.expander("💰 Payment Terms", expanded=False):
+
+    
+    # ✅ Track manual override
+    if "payment_override" not in st.session_state:
+        st.session_state.payment_override = False
+    
+    
+    # ✅ Auto-sync ONLY if NOT overridden
+    if (
+        not st.session_state.payment_override
+        and "billing_percentages" in st.session_state
+        and len(st.session_state.billing_percentages) > 0
+    ):
+    
+        st.session_state.payment_terms = []
+    
+        for i, pct in enumerate(st.session_state.billing_percentages):
+            st.session_state.payment_terms.append({
+                "percent": int(round(pct)),
+                "description": f"Milestone {i+1} completion"
+            })
+
+    
+    # Display inputs
+    for i, term in enumerate(st.session_state.payment_terms):
+        col1, col2 = st.columns([1, 3])
+    
+        with col1:  
+            st.session_state.payment_terms[i]["percent"] = st.number_input(
+                f"% {i+1}",
+                min_value=0,
+                max_value=100,
+                value=term["percent"],
+                key=f"percent_{i}",
+                on_change=lambda: st.session_state.update({"payment_override": True})
+            )
+
+        with col2:
+            st.session_state.payment_terms[i]["description"] = st.text_input(
+                f"Condition {i+1}",
+                value=term["description"],
+                key=f"desc_{i}",
+                on_change=lambda: st.session_state.update({"payment_override": True})
+            )
+    
+    # Add new row
+    if st.button("➕ Add Payment Split"):
+        st.session_state.payment_terms.append({"percent": 0, "description": ""})
+    
+    # Calculate total
+    total_percent = sum(term["percent"] for term in st.session_state.payment_terms)
+    
+    if total_percent != 100:
+        st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
+    else:
+        st.success("✅ Payment terms total = 100%")
                 
 
 # ==========================
