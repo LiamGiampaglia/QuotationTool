@@ -1421,7 +1421,7 @@ with st.expander("📄 File Naming", expanded=False):
         Please ensure all fields are selected correctly, as they will be combined to form the final document name.
     
         The filename will follow the format:
-        - Project Number  
+        - Project Number  (This should automatically populate if filled in during Template Info section)
         - Document Type  
         - Subject  
         - Unique Identifier  
