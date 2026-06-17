@@ -287,9 +287,6 @@ def load_billing_milestones(uploaded_file):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
-if "milestones_synced" not in st.session_state:
-    st.session_state.milestones_synced = False
-
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
 
@@ -1510,68 +1507,53 @@ if uploaded_file is not None:
             key="billing_count_selectbox"
         )
 
-        if "last_milestone_count" not in st.session_state:
-            st.session_state.last_milestone_count = billing_milestone_count
-        
-        if st.session_state.last_milestone_count != billing_milestone_count:
-            st.session_state.milestones_synced = False
-            st.session_state.last_milestone_count = billing_milestone_count
-                
+               
         st.session_state.pop("billing_milestone_count_override", None)
 
         
         billing_values = []
         billing_dates = []
         
+        
+        total_project = st.session_state.get("total_price", 0)
+        
         for i in range(billing_milestone_count):
-            st.markdown(f"#### Billing Milestone {i+1}")          
-            
- 
+        
+            st.markdown(f"#### Billing Milestone {i+1}")
+        
             key_name = f"bm_value_{i}"
-
-            total_project = st.session_state.get("total_price", 0)
-            
-
+        
+            # ✅ ONLY auto-fill if value does not exist yet
+            if key_name not in st.session_state:
+                if total_project > 0:
+                    st.session_state[key_name] = total_project / billing_milestone_count
+                else:
+                    st.session_state[key_name] = 0.0
+        
+            # ✅ INPUT
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
-                value=float(st.session_state.get(key_name, 0.0)),
+                value=float(st.session_state[key_name]),
                 key=key_name
             )
-     
+        
             date = st.date_input(
                 f"Milestone {i+1} Planned Billing Date",
                 value=st.session_state.get(f"bm_date_{i}", datetime.today()),
                 key=f"bm_date_{i}"
             )
-
-    
+        
             billing_values.append(value)
             billing_dates.append(date)
-                        
-            
-            total_project = st.session_state.get("total_price", 0)
-            
-            
-            if "billing_percentages" not in st.session_state:
-                st.session_state.billing_percentages = []
-            
-            # ✅ Ensure correct size
-            if len(st.session_state.billing_percentages) != billing_milestone_count:
-                st.session_state.billing_percentages = [0] * billing_milestone_count
-            
-            total_project = st.session_state.get("total_price", 0)
-            
+        
+            # ✅ % display
             if total_project > 0:
                 percentage = (value / total_project) * 100
-            
-                # ✅ STORE IT
-                st.session_state.billing_percentages[i] = round(percentage, 2)
-                st.session_state.payment_override = False
-            
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
-                st.caption("📊 This milestone = 0% of total project value")
+                st.caption("📊 This milestone = 0%")
+
 
 
 
