@@ -396,6 +396,11 @@ if (
 
     # ✅ LOAD BILLING MILESTONES
     bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    
+    for i in range(10):
+        st.session_state.pop(f"bm_value_{i}", None)
+        st.session_state.pop(f"bm_date_{i}", None)
+
 
     st.session_state.billing_milestone_count_loaded = bm_count
 
@@ -1486,18 +1491,23 @@ if uploaded_file is not None:
 
         milestone_options = [1, 2, 3, 4, 5]
         
-        if template_mode == "Pre-Populated Template Uploaded":
-            default_count = st.session_state.get("billing_milestone_count_loaded", 1)
-        elif "billing_milestone_count_override" in st.session_state:
+        
+        if "billing_milestone_count_override" in st.session_state:
             default_count = st.session_state["billing_milestone_count_override"]
+        elif template_mode == "Pre-Populated Template Uploaded":
+            default_count = st.session_state.get("billing_milestone_count_loaded", 1)
         else:
             default_count = 1
 
+
+        
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
             milestone_options,
-            index=milestone_options.index(default_count)
+            index=milestone_options.index(default_count),
+            key="billing_count_selectbox"
         )
+
         if "billing_milestone_count_override" in st.session_state:
             st.session_state.pop("billing_milestone_count_override")
         billing_values = []
@@ -1542,10 +1552,13 @@ if uploaded_file is not None:
             )
 
     
+            
             date = st.date_input(
                 f"Milestone {i+1} Planned Billing Date",
+                value=st.session_state.get(f"bm_date_{i}", datetime.today()),
                 key=f"bm_date_{i}"
             )
+
     
             billing_values.append(value)
             billing_dates.append(date)
