@@ -1525,17 +1525,7 @@ if uploaded_file is not None:
         billing_values = []
         billing_dates = []
 
-        # ✅ SYNC VALUES WHEN TOTAL CHANGES (CRITICAL)
-        
-        if template_mode == "Blank Pricing Template Uploaded":
-        
-            total_project = st.session_state.get("total_price", 0)
-        
-            if total_project > 0 and not st.session_state.milestones_synced:
-        
-                for i in range(billing_milestone_count):
-                    key = f"bm_value_{i}"
-                    st.session_state[key] = total_project / billing_milestone_count
+    
         
                 st.session_state.milestones_synced = True
 
