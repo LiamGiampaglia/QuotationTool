@@ -354,6 +354,39 @@ st.markdown("---")
 # ==========================
 st.subheader("📊 Cost Sheet")
 
+with st.expander("💡 How to fill in", expanded=False):
+    st.markdown("""
+    ### How to fill in
+
+    This section determines how the application handles pricing and how much automation is applied when generating the quotation and pricing sheet.
+
+    Please select one of the following Template Modes:
+
+    **1. No Pricing Template Uploaded**  
+    - Use this option if you only require a quotation document  
+    - All pricing and work items must be entered manually within the app  
+    - No Excel pricing sheet will be used  
+
+    **2. Blank Pricing Template Uploaded**  
+    - Upload a blank pricing template from the following location:  
+      https://schneiderelectric.sharepoint.com/sites/ConsultancyQdriveinternalGroup/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=zUgqAU&CID=1df172e3%2Df1e1%2D40c7%2D99cd%2D639cc9bcd032&FolderCTID=0x012000EB746CE09F8B034EA74F90EDFEBE8CFD&id=%2Fsites%2FConsultancyQdriveinternalGroup%2FShared%20Documents%2FGeneral%2F03%20QMS%20Documents%2F04%20Forms%2FForQ%5FUKI%5FCNS01%20Pricing%20Template  
+    - Complete the sections within the tool to generate:
+        - A quotation document  
+        - A fully populated pricing Excel file  
+    - This removes the need to manually complete the Excel separately  
+
+    **3. Pre-Populated Template Uploaded**  
+    - Upload a completed pricing template  
+    - All pricing data will be automatically pulled into the tool  
+    - You only need to complete the quotation details  
+    - The system will:
+        - Populate calculations automatically  
+        - Generate the quotation document  
+        - Update the pricing Excel  
+
+    ⚠️ Selecting the correct mode is essential for ensuring pricing and outputs behave as expected.
+    """)
+    
 template_mode = st.selectbox(
     "Select Template Mode",
     [
