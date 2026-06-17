@@ -1333,6 +1333,14 @@ if (
 # ==========================
 st.markdown("---")
 
+
+def update_payment_term(index):
+    key = f"percent_{index}"
+    if key in st.session_state:
+        st.session_state.payment_terms[index]["percent"] = st.session_state[key]
+        st.session_state.payment_override = True
+
+
 with st.expander("💰 Payment Terms", expanded=False):
     
     # Display inputs
@@ -1340,13 +1348,16 @@ with st.expander("💰 Payment Terms", expanded=False):
         col1, col2 = st.columns([1, 3])
     
         with col1:  
-            value = st.number_input(
+            
+            if f"percent_{i}" not in st.session_state:
+                st.session_state[f"percent_{i}"] = int(term["percent"])
+            st.number_input(
                 f"% {i+1}",
                 min_value=0,
                 max_value=100,
-                value=term["percent"],
                 key=f"percent_{i}",
-                on_change=lambda: st.session_state.update({"payment_override": True})
+                on_change=update_payment_term,
+                args=(i,)
             )
             
             # ✅ FORCE overwrite (CRITICAL FIX)
