@@ -1351,7 +1351,6 @@ with st.expander("💰 Payment Terms", expanded=False):
             
             # ✅ FORCE overwrite (CRITICAL FIX)
             st.session_state.payment_terms[i]["percent"] = value
-            st.session_state[f"percent_{i}"] = int(term["percent"])
 
         with col2:
             st.session_state.payment_terms[i]["description"] = st.text_input(
