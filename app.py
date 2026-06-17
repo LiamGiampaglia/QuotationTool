@@ -396,6 +396,7 @@ if (
 
     # ✅ LOAD BILLING MILESTONES
     bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    st.session_state.billing_milestone_count_override = bm_count
     
     for i in range(10):
         st.session_state.pop(f"bm_value_{i}", None)
