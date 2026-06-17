@@ -1558,7 +1558,7 @@ if uploaded_file is not None:
             
                 # ✅ STORE IT
                 st.session_state.billing_percentages[i] = round(percentage, 2)
-                st.session_state.payment_override = Fals
+                st.session_state.payment_override = False
             
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
