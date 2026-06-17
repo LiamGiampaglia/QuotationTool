@@ -140,6 +140,35 @@ def load_excel_into_session(uploaded_file):
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
 
+def load_billing_milestones(uploaded_file):
+
+    def safe_num(val):
+        try:
+            return float(val)
+        except:
+            return 0.0
+
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    sap_ws = wb["SAP INFO FORM"]
+
+    milestone_count = int(sap_ws["D37"].value or 0)
+
+    billing_values = []
+    billing_dates = []
+
+    for i in range(milestone_count):
+
+        value_cell = f"D{38 + i * 2}"
+        date_cell = f"D{39 + i * 2}"
+
+        value = safe_num(sap_ws[value_cell].value)
+        date = sap_ws[date_cell].value
+
+        billing_values.append(value)
+        billing_dates.append(date)
+
+    return milestone_count, billing_values, billing_dates
+
     # ==========================
     # ✅ LABOUR ROWS
     # ==========================
@@ -404,6 +433,15 @@ if (
     template_mode == "Pre-Populated Template Uploaded"
     and uploaded_file is not None
     and not st.session_state.get("excel_loaded", False)
+    
+    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    
+    st.session_state.billing_milestone_count_loaded = bm_count
+    
+    for i in range(bm_count):
+        st.session_state[f"bm_value_{i}"] = bm_values[i]
+        st.session_state[f"bm_date_{i}"] = bm_dates[i]
+
 ):
 
     labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
@@ -1485,10 +1523,14 @@ if uploaded_file is not None:
         st.session_state["apply_split"] = False
 
         milestone_options = [1, 2, 3, 4, 5]
-        if "billing_milestone_count_override" in st.session_state:
+        
+        if template_mode == "Pre-Populated Template Uploaded":
+            default_count = st.session_state.get("billing_milestone_count_loaded", 1)
+        elif "billing_milestone_count_override" in st.session_state:
             default_count = st.session_state["billing_milestone_count_override"]
         else:
             default_count = 1
+
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
             milestone_options,
@@ -1519,11 +1561,15 @@ if uploaded_file is not None:
             total_project = st.session_state.get("total_price", 0)
             
             # ✅ Initialise OR FIX zero values
-            if key_name not in st.session_state or (
-                st.session_state[key_name] == 0 and total_project > 0
-            ):
-                if billing_milestone_count > 0:
-                    st.session_state[key_name] = total_project / billing_milestone_count
+            
+
+            if template_mode != "Pre-Populated Template Uploaded":
+                if key_name not in st.session_state or (
+                    st.session_state[key_name] == 0 and total_project > 0
+                ):
+                    if billing_milestone_count > 0:
+                        st.session_state[key_name] = total_project / billing_milestone_count
+
             
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
