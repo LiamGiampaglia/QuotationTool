@@ -1546,6 +1546,15 @@ if uploaded_file is not None:
         
             if total_project > 0:
                 percentage = (value / total_project) * 100
+                
+            if "billing_percentages" not in st.session_state:
+                st.session_state.billing_percentages = [0] * billing_milestone_count
+            
+            if len(st.session_state.billing_percentages) != billing_milestone_count:
+                st.session_state.billing_percentages = [0] * billing_milestone_count
+            
+            st.session_state.billing_percentages[i] = round(percentage, 2)
+
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
                 st.caption("📊 This milestone = 0%")
