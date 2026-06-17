@@ -208,6 +208,14 @@ def load_excel_into_session(uploaded_file):
         
         # Convert date to Excel format (string safe)
         sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
+    
+    billing_total = sum(billing_values)
+
+    if billing_total > 0:
+        percentage = (value / billing_total) * 100
+        st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
+    else:
+        st.caption("📊 This milestone = 0% of total project value")
 
 
 
@@ -1244,8 +1252,10 @@ if uploaded_file is not None:
             # ✅ Use default if value is missing OR still zero
             stored_value = st.session_state.get(key_name, None)
             
-            if stored_value in [None, 0]:
-                stored_value = default_value
+            
+            if stored_value is None:
+                stored_value = default_va
+
             
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
