@@ -122,9 +122,9 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
 
+
 def load_excel_into_session(uploaded_file):
 
-    
     def safe_num(val):
         if val is None:
             return 0
@@ -136,38 +136,8 @@ def load_excel_into_session(uploaded_file):
             except:
                 return 0
 
-
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
-
-def load_billing_milestones(uploaded_file):
-
-    def safe_num(val):
-        try:
-            return float(val)
-        except:
-            return 0.0
-
-    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
-    sap_ws = wb["SAP INFO FORM"]
-
-    milestone_count = int(sap_ws["D37"].value or 0)
-
-    billing_values = []
-    billing_dates = []
-
-    for i in range(milestone_count):
-
-        value_cell = f"D{38 + i * 2}"
-        date_cell = f"D{39 + i * 2}"
-
-        value = safe_num(sap_ws[value_cell].value)
-        date = sap_ws[date_cell].value
-
-        billing_values.append(value)
-        billing_dates.append(date)
-
-    return milestone_count, billing_values, billing_dates
 
     # ==========================
     # ✅ LABOUR ROWS
@@ -176,9 +146,7 @@ def load_billing_milestones(uploaded_file):
 
     for row in range(15, 25):
         desc = ws[f"C{row}"].value
-
-        if desc and str(desc).strip() not in ["", "0"]:
-
+        if desc:
             labour_rows.append({
                 "description": str(desc),
                 "office_day": safe_num(ws[f"D{row}"].value),
@@ -196,7 +164,6 @@ def load_billing_milestones(uploaded_file):
 
     for row in range(39, 45):
         desc = ws[f"C{row}"].value
-
         if desc:
             other_cost_rows.append({
                 "description": str(desc),
@@ -214,10 +181,9 @@ def load_billing_milestones(uploaded_file):
         "miles": safe_num(ws["D32"].value),
         "flights_cost": safe_num(ws["D33"].value),
     }
-    
+
     discount_raw = safe_num(ws["D62"].value)
     discount_pct = discount_raw * 100
-
 
     return labour_rows, other_cost_rows, expenses, discount_pct
 
@@ -444,7 +410,7 @@ if (
         st.session_state[f"bm_value_{i}"] = bm_values[i]
         st.session_state[f"bm_date_{i}"] = bm_dates[i]
 
-    # ✅ EXISTING EXCEL LOAD
+    # ✅ LOAD MAIN EXCEL DATA
     labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
 
     st.session_state.labour_rows = labour_rows
@@ -459,6 +425,7 @@ if (
     st.session_state.excel_loaded = True
 
     st.success("✅ Excel data including billing milestones loaded into calculator")
+
 
     labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
 
