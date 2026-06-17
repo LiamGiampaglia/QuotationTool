@@ -1625,10 +1625,6 @@ if "billing_percentages" in st.session_state:
 
     billing_pcts = st.session_state.billing_percentages
 
-    # ✅ CLEAR widget keys FIRST
-    for i in range(10):
-        st.session_state.pop(f"percent_{i}", None)
-        st.session_state.pop(f"desc_{i}", None)
 
     # ✅ BUILD ONCE ONLY
     if all(pct == 0 for pct in billing_pcts):
