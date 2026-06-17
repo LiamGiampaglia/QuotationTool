@@ -399,6 +399,7 @@ if (
         st.session_state.pop(f"bm_value_{i}", None)
         st.session_state.pop(f"bm_date_{i}", None)
     bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    st.session_state.pop("billing_count_selectbox", None)
     st.session_state.billing_milestone_count_override = bm_count
 
     st.session_state.billing_milestone_count_loaded = bm_count
