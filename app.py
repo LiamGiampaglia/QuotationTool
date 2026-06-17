@@ -1272,14 +1272,14 @@ if uploaded_file is not None:
             else:
                 total_project = st.session_state.get("final_total_price", 0)
             
-            total_project = st.session_state.get("final_total_price", 0)
+            
+            total_project = st.session_state.get("total_price", 0)
             
             if total_project > 0:
                 percentage = (value / total_project) * 100
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
                 st.caption("📊 This milestone = 0% of total project value")
-
 
 if "total_price" in st.session_state:
 
