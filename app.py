@@ -1496,10 +1496,15 @@ if uploaded_file is not None:
 
         milestone_options = [1, 2, 3, 4, 5]
         
+        
         default_count = st.session_state.get(
             "billing_milestone_count_override",
-            st.session_state.get("billing_milestone_count_loaded", 1)
+            st.session_state.get(
+                "billing_milestone_count_saved",
+                st.session_state.get("billing_milestone_count_loaded", 1)
+            )
         )
+
         
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
@@ -1507,6 +1512,7 @@ if uploaded_file is not None:
             index=milestone_options.index(default_count),
             key="billing_count_selectbox"
         )
+        st.session_state.billing_milestone_count_saved = billing_milestone_count
 
                
         st.session_state.pop("billing_milestone_count_override", None)
