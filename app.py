@@ -187,6 +187,39 @@ def load_excel_into_session(uploaded_file):
 
     return labour_rows, other_cost_rows, expenses, discount_pct
 
+def load_billing_milestones(uploaded_file):
+
+    def safe_num(val):
+        try:
+            return float(val)
+        except:
+            return 0.0
+
+    def safe_date(val):
+        if isinstance(val, datetime):
+            return val
+        return datetime.today()
+
+    wb = openpyxl.load_workbook(uploaded_file, data_only=True)
+    sap_ws = wb["SAP INFO FORM"]
+
+    milestone_count = int(sap_ws["D37"].value or 0)
+
+    billing_values = []
+    billing_dates = []
+
+    for i in range(milestone_count):
+
+        value_cell = f"D{38 + i * 2}"
+        date_cell = f"D{39 + i * 2}"
+
+        value = safe_num(sap_ws[value_cell].value)
+        date = safe_date(sap_ws[date_cell].value)
+
+        billing_values.append(value)
+        billing_dates.append(date)
+
+    return milestone_count, billing_values, billing_dates
     
     # ==========================
     # ✅ BILLING MILESTONES
@@ -426,20 +459,6 @@ if (
 
     st.success("✅ Excel data including billing milestones loaded into calculator")
 
-
-    labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
-
-    st.session_state.labour_rows = labour_rows
-    st.session_state.other_cost_rows = other_cost_rows
-
-    st.session_state.overnight_outside = expenses["overnight_outside"]
-    st.session_state.overnight_inside = expenses["overnight_inside"]
-    st.session_state.miles = expenses["miles"]
-    st.session_state.flights_cost = expenses["flights_cost"]
-    st.session_state.discount_pct = discount_pct
-    st.session_state.excel_loaded = True
-
-    st.success("✅ Excel data loaded into calculator")
 
 st.markdown("---")
 
