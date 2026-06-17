@@ -433,16 +433,32 @@ if (
     template_mode == "Pre-Populated Template Uploaded"
     and uploaded_file is not None
     and not st.session_state.get("excel_loaded", False)
-    
+):
+
+    # ✅ LOAD BILLING MILESTONES
     bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
-    
+
     st.session_state.billing_milestone_count_loaded = bm_count
-    
+
     for i in range(bm_count):
         st.session_state[f"bm_value_{i}"] = bm_values[i]
         st.session_state[f"bm_date_{i}"] = bm_dates[i]
 
-):
+    # ✅ EXISTING EXCEL LOAD
+    labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
+
+    st.session_state.labour_rows = labour_rows
+    st.session_state.other_cost_rows = other_cost_rows
+
+    st.session_state.overnight_outside = expenses["overnight_outside"]
+    st.session_state.overnight_inside = expenses["overnight_inside"]
+    st.session_state.miles = expenses["miles"]
+    st.session_state.flights_cost = expenses["flights_cost"]
+    st.session_state.discount_pct = discount_pct
+
+    st.session_state.excel_loaded = True
+
+    st.success("✅ Excel data including billing milestones loaded into calculator")
 
     labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
 
