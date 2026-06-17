@@ -1014,7 +1014,6 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         })
 
 # ✅ Populate works_list automatically (ONLY when empty OR size mismatch)
-if uploaded_file is not None:
 
     if len(st.session_state.works_list) != len(combined_items):
 
