@@ -1515,22 +1515,22 @@ if uploaded_file is not None:
         billing_dates = []
         
         
-        total_project = st.session_state.get("total_price", 0)
         
+        total_project = st.session_state.get("total_price", 0)
+
         for i in range(billing_milestone_count):
         
             st.markdown(f"#### Billing Milestone {i+1}")
         
             key_name = f"bm_value_{i}"
         
-            # ✅ ONLY auto-fill if value does not exist yet
-            if key_name not in st.session_state:
+            # ✅ FIXED INITIALISATION
+            if key_name not in st.session_state or st.session_state[key_name] == 0:
                 if total_project > 0:
                     st.session_state[key_name] = total_project / billing_milestone_count
                 else:
                     st.session_state[key_name] = 0.0
         
-            # ✅ INPUT
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
@@ -1544,18 +1544,11 @@ if uploaded_file is not None:
                 key=f"bm_date_{i}"
             )
         
-            billing_values.append(value)
-            billing_dates.append(date)
-        
-            # ✅ % display
             if total_project > 0:
                 percentage = (value / total_project) * 100
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
                 st.caption("📊 This milestone = 0%")
-
-
-
 
 
 if "total_price" in st.session_state:
