@@ -1360,8 +1360,6 @@ with st.expander("💰 Payment Terms", expanded=False):
                 args=(i,)
             )
             
-            # ✅ FORCE overwrite (CRITICAL FIX)
-            st.session_state.payment_terms[i]["percent"] = value
 
         with col2:
             st.session_state.payment_terms[i]["description"] = st.text_input(
@@ -1376,7 +1374,7 @@ with st.expander("💰 Payment Terms", expanded=False):
         st.session_state.payment_terms.append({"percent": 0, "description": ""})
     
     # Calculate total
-    total_percent = sum(term["percent"] for term in st.session_state.payment_terms)
+    total_percent = sum(float(term["percent"]) for term in st.session_state.payment_terms)
     
     if total_percent != 100:
         st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
