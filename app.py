@@ -1558,6 +1558,7 @@ if uploaded_file is not None:
             
                 # ✅ STORE IT
                 st.session_state.billing_percentages[i] = round(percentage, 2)
+                st.session_state.payment_override = Fals
             
                 st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
             else:
@@ -1600,11 +1601,32 @@ if "payment_override" not in st.session_state:
     st.session_state.payment_override = False
 
 
-if (
-    not st.session_state.payment_override
-    and "billing_percentages" in st.session_state
-    and len(st.session_state.billing_percentages) > 0
-):
+
+if "billing_percentages" in st.session_state:
+
+    billing_pcts = st.session_state.billing_percentages
+
+    if not st.session_state.get("payment_override", False):
+
+        # ✅ ONLY rebuild if data actually exists
+        if len(billing_pcts) > 0:
+
+            st.session_state.payment_terms = [
+                {
+                    "percent": int(round(pct)),
+                    "description": f"Milestone {i+1} completion"
+                }
+                for i, pct in enumerate(billing_pcts)
+                if pct > 0
+            ]
+
+        # ✅ fallback if everything is zero
+        if not any(billing_pcts):
+            st.session_state.payment_terms = [{
+                "percent": 100,
+                "description": "upon submittal of the report"
+            }]
+
 
     billing_pcts = st.session_state.billing_percentages
 
