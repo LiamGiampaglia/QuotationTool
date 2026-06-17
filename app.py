@@ -441,18 +441,18 @@ with st.expander("📄 Template Info", expanded=False):
         **All fields in this section must be completed to ensure the quote template is populated correctly.**
     
         Please provide accurate project and customer information, including:
-        - Customer name (Leave blank if unknown)
+        - Company name
         - Project name (EN Number)  
         - Number and location of sites (Location of sites to be filled in like the example)  
         - Consultant Name (Main Consultant)
         - Number of Consultants 
     
-        ⚠️ Missing or incomplete information other than Customer Name may result in sections of the generated quote not being filled correctly.
+        ⚠️ Missing or incomplete information may result in sections of the generated quote not being filled correctly.
         """)
     col1, col2 = st.columns(2)
     
     with col1:
-        customer_name = st.text_input("Customer Name")
+        customer_name = st.text_input("Company Name")
         number_of_sites = st.text_input("Number of Sites")
     
         site_name = st.text_input(
