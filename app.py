@@ -287,6 +287,9 @@ def load_billing_milestones(uploaded_file):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
+if "milestones_synced" not in st.session_state:
+    st.session_state.milestones_synced = False
+
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
 
@@ -1506,6 +1509,14 @@ if uploaded_file is not None:
             index=milestone_options.index(default_count),
             key="billing_count_selectbox"
         )
+        
+        if "last_milestone_count" not in st.session_state:
+            st.session_state.last_milestone_count = billing_milestone_count
+        
+        if st.session_state.last_milestone_count != billing_milestone_count:
+            st.session_state.milestones_synced = False
+            st.session_state.last_milestone_count = billing_milestone_count
+
         st.session_state.pop("billing_milestone_count_override", None)
 
 
@@ -1515,16 +1526,19 @@ if uploaded_file is not None:
         billing_dates = []
 
         # ✅ SYNC VALUES WHEN TOTAL CHANGES (CRITICAL)
+        
         if template_mode == "Blank Pricing Template Uploaded":
         
             total_project = st.session_state.get("total_price", 0)
         
-            if total_project > 0:
+            if total_project > 0 and not st.session_state.milestones_synced:
+        
                 for i in range(billing_milestone_count):
                     key = f"bm_value_{i}"
+                    st.session_state[key] = total_project / billing_milestone_count
         
-                    if key not in st.session_state or st.session_state[key] == 0:
-                        st.session_state[key] = total_project / billing_milestone_count
+                st.session_state.milestones_synced = True
+
         
         for i in range(billing_milestone_count):
             st.markdown(f"#### Billing Milestone {i+1}")          
