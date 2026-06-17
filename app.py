@@ -777,9 +777,8 @@ if uploaded_file is not None:
         discount_value = subtotal * (discount_pct / 100)
             
         total_price = subtotal - discount_value
-        st.session_state.total_price = total_price
         st.session_state["final_total_price"] = total_price
-    
+        st.session_state.total_price = total_price    
             
         labour_total_fx = labour_total * fx_rate
         expenses_total_fx = expenses_total * fx_rate
