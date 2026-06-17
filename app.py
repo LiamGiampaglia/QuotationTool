@@ -199,28 +199,40 @@ def load_excel_into_session(uploaded_file):
     
     sap_ws["D37"] = billing_milestone_count
     
+    
     for i in range(billing_milestone_count):
-        
-        value_cell = 38 + (i * 2)
-        date_cell = 39 + (i * 2)
     
-        sap_ws[f"D{value_cell}"] = billing_values[i]
-        
-        # Convert date to Excel format (string safe)
-        sap_ws[f"D{date_cell}"] = billing_dates[i].strftime("%d/%m/%Y")
+        st.markdown(f"#### Billing Milestone {i+1}")
     
+        key_name = f"bm_value_{i}"
     
+        # ✅ Use session value ONLY (no overwrite logic)
+        if key_name not in st.session_state:
+            st.session_state[key_name] = 0.0
+    
+        value = st.number_input(
+            f"Milestone {i+1} Value (£)",
+            min_value=0.0,
+            value=float(st.session_state[key_name]),
+            key=key_name
+        )
+    
+        date = st.date_input(
+            f"Milestone {i+1} Planned Billing Date",
+            key=f"bm_date_{i}"
+        )
+    
+        billing_values.append(value)
+        billing_dates.append(date)
+    
+        # ✅ CALCULATE TOTAL FROM WHAT USER ENTERS
         billing_total = sum(billing_values)
-        
+    
         if billing_total > 0:
             percentage = (value / billing_total) * 100
             st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
         else:
             st.caption("📊 This milestone = 0% of total project value")
-
-
-
-
 
     # ==========================
     # ✅ LABOUR ITEMS (ROWS 15–24)
