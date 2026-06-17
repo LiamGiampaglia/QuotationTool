@@ -1514,7 +1514,7 @@ with st.expander("💰 Payment Terms", expanded=False):
     
         ---
     
-        **Blank Template UploadedAuto-Generated Terms**
+        **Blank Template Uploaded Auto-Generated Terms**
     
         - Payment terms are automatically created based on the **Billing Milestones** section for Blank Template Uploads  
         - Each milestone will populate a corresponding payment percentage  
