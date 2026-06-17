@@ -946,6 +946,52 @@ if uploaded_file is not None:
 # WORKS INPUT
 # ==========================
 with st.expander("🛠️ Works & Pricing", expanded=False):
+    with st.expander("💡 How to fill in", expanded=False):
+        st.markdown("""
+        ### How to fill in
+    
+        This section defines the work items that will appear in the quotation document sent to the customer.
+    
+        The behaviour of this section depends on the Template Mode selected:
+    
+        **1. No Pricing Template Uploaded**  
+        - Click **Add Work Item** to create a new line  
+        - Ensure **Pricing Mode = Manual**  
+        - Enter:
+            - A **Description** (this appears in the quotation document)  
+            - A **Price**  
+        - To add multiple items, click **Add Work Item** again and repeat  
+    
+        ✅ Use this mode when creating a quotation manually without an Excel pricing file  
+    
+        ---
+    
+        **2. Blank Pricing Template Uploaded**  
+        - Complete the **Live Cost Calculator** section first  
+        - Labour, Other Costs, and Expenses will automatically populate into this section  
+        - Leave items as **Auto** if you are happy with the structure  
+    
+        ✅ These items will appear automatically in the quotation document  
+    
+        - To customise:
+            - Change **Pricing Mode → Manual**  
+            - Edit the description or price  
+            - Delete items if required  
+    
+        ✅ Use this option to control how work items are displayed in the quotation  
+    
+        ---
+    
+        **3. Pre-Populated Template Uploaded**  
+        - This behaves the same as the Blank Pricing Template option  
+        - All pricing and work items are automatically populated from the uploaded Excel file  
+    
+        ✅ You can still switch to Manual mode to customise descriptions and pricing if needed  
+    
+        ---
+    
+        ⚠️ Ensure descriptions are clear and accurate, as they will be presented directly to the customer in the final quotation.
+        """)
     
     if st.button("➕ Add Work Item"):
         st.session_state.works_list.append({
