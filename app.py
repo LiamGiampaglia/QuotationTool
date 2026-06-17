@@ -1509,6 +1509,20 @@ if uploaded_file is not None:
             index=milestone_options.index(default_count),
             key="billing_count_selectbox"
         )
+
+        
+        if template_mode == "Blank Pricing Template Uploaded":
+        
+            total_project = st.session_state.get("total_price", 0)
+        
+            if total_project > 0 and not st.session_state.milestones_synced:
+        
+                for i in range(billing_milestone_count):
+                    key = f"bm_value_{i}"
+                    st.session_state[key] = total_project / billing_milestone_count
+        
+                st.session_state.milestones_synced = True
+
         
         if "last_milestone_count" not in st.session_state:
             st.session_state.last_milestone_count = billing_milestone_count
@@ -1533,8 +1547,6 @@ if uploaded_file is not None:
                 for i in range(billing_milestone_count):
                     key = f"bm_value_{i}"
                     st.session_state[key] = total_project / billing_milestone_count
-        
-                st.session_state.milestones_synced = True
 
         
         for i in range(billing_milestone_count):
