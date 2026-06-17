@@ -121,6 +121,7 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E19"] = material_price_1
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
+    return wb
 
 
 def load_excel_into_session(uploaded_file):
