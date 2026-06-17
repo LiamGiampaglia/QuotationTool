@@ -1290,6 +1290,52 @@ if "total_price" in st.session_state:
             st.rerun()
 
 # ==========================
+# ✅ PAYMENT TERMS SYNC ENGINE
+# ==========================
+
+# ✅ Ensure states exist
+if "payment_terms" not in st.session_state:
+    st.session_state.payment_terms = []
+
+if "payment_override" not in st.session_state:
+    st.session_state.payment_override = False
+
+
+# ✅ Sync from billing → payment terms
+if (
+    not st.session_state.payment_override
+    and "billing_percentages" in st.session_state
+    and len(st.session_state.billing_percentages) > 0
+):
+
+    billing_pcts = st.session_state.billing_percentages
+
+    # ✅ IF billing empty → default 100%
+    if all(pct == 0 for pct in billing_pcts):
+
+        st.session_state.payment_terms = [{
+            "percent": 100,
+            "description": "upon submittal of the report"
+        }]
+
+    else:
+        # ✅ Clear widget values properly
+        for i in range(10):
+            if f"percent_{i}" in st.session_state:
+                del st.session_state[f"percent_{i}"]
+            if f"desc_{i}" in st.session_state:
+                del st.session_state[f"desc_{i}"]
+
+        # ✅ Build fresh terms
+        st.session_state.payment_terms = [
+            {
+                "percent": int(round(pct)),
+                "description": f"Milestone {i+1} completion"
+            }
+            for i, pct in enumerate(billing_pcts)
+        ]
+
+# ==========================
 # 💰 PAYMENT TERMS
 # ==========================
 st.markdown("---")
