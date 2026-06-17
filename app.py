@@ -1516,11 +1516,17 @@ if uploaded_file is not None:
             key_name = f"bm_value_{i}"
         
             # ✅ FIXED INITIALISATION
-            if key_name not in st.session_state or st.session_state[key_name] == 0:
-                if total_project > 0:
-                    st.session_state[key_name] = total_project / billing_milestone_count
-                else:
-                    st.session_state[key_name] = 0.0
+            
+            if "split_values" in st.session_state and i < len(st.session_state["split_values"]):
+                st.session_state[key_name] = st.session_state["split_values"][i]
+    
+            else:
+                if key_name not in st.session_state or st.session_state[key_name] == 0:
+                    if total_project > 0:
+                        st.session_state[key_name] = total_project / billing_milestone_count
+                    else:
+                        st.session_state[key_name] = 0.0
+
         
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
@@ -1576,14 +1582,18 @@ if "total_price" in st.session_state:
         st.session_state.billing_milestone_count_override = 3
     
         # ✅ APPLY VALUES
-        st.session_state["bm_value_0"] = total * 0.20
-        st.session_state["bm_value_1"] = total * 0.40
-        st.session_state["bm_value_2"] = total * 0.40
-    
-        # ✅ unlock payment terms
+        
+        st.session_state["split_values"] = [
+            total * 0.20,
+            total * 0.40,
+            total * 0.40
+        ]
+        
+        st.session_state.billing_milestone_count_override = 3
         st.session_state.payment_terms_locked = False
-    
+        
         st.rerun()
+
 
 
 
