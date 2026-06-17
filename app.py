@@ -221,46 +221,6 @@ def load_billing_milestones(uploaded_file):
 
     return milestone_count, billing_values, billing_dates
     
-    # ==========================
-    # ✅ BILLING MILESTONES
-    # ==========================
-    
-    sap_ws["D37"] = billing_milestone_count
-    
-    
-    for i in range(billing_milestone_count):
-    
-        st.markdown(f"#### Billing Milestone {i+1}")
-    
-        key_name = f"bm_value_{i}"
-    
-        # ✅ Use session value ONLY (no overwrite logic)
-        if key_name not in st.session_state:
-            st.session_state[key_name] = 0.0
-    
-        value = st.number_input(
-            f"Milestone {i+1} Value (£)",
-            min_value=0.0,
-            value=float(st.session_state[key_name]),
-            key=key_name
-        )
-    
-        date = st.date_input(
-            f"Milestone {i+1} Planned Billing Date",
-            key=f"bm_date_{i}"
-        )
-    
-        billing_values.append(value)
-        billing_dates.append(date)
-    
-        # ✅ CALCULATE TOTAL FROM WHAT USER ENTERS
-        billing_total = sum(billing_values)
-    
-        if billing_total > 0:
-            percentage = (value / billing_total) * 100
-            st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
-        else:
-            st.caption("📊 This milestone = 0% of total project value")
 
     # ==========================
     # ✅ LABOUR ITEMS (ROWS 15–24)
@@ -1573,12 +1533,14 @@ if uploaded_file is not None:
                         st.session_state[key_name] = total_project / billing_milestone_count
 
             
+            
             value = st.number_input(
                 f"Milestone {i+1} Value (£)",
                 min_value=0.0,
-                value=float(st.session_state[key_name]),
+                value=float(st.session_state.get(key_name, 0.0)),
                 key=key_name
             )
+
     
             date = st.date_input(
                 f"Milestone {i+1} Planned Billing Date",
