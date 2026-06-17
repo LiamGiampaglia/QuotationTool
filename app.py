@@ -1335,22 +1335,6 @@ if (
             for i, pct in enumerate(billing_pcts)
         ]
 
-    # ✅ IF billing empty → default 100%
-    if all(pct == 0 for pct in billing_pcts):
-
-        st.session_state.payment_terms = [{
-            "percent": 100,
-            "description": "upon submittal of the report"
-        }]
-
-    else:
-        # ✅ Clear widget values properly
-        for i in range(10):
-            if f"percent_{i}" in st.session_state:
-                del st.session_state[f"percent_{i}"]
-            if f"desc_{i}" in st.session_state:
-                del st.session_state[f"desc_{i}"]
-
         # ✅ Build fresh terms
         st.session_state.payment_terms = [
             {
