@@ -2049,7 +2049,7 @@ def insert_payment_terms(doc, payment_terms):
 # ==========================
 # GENERATE DOCUMENT
 # ==========================
-if st.button("📄 Generate Word Document"):
+if st.button("📄 Generate Documents"):
     
     
     if uploaded_file is not None and "office_hours" in locals():
