@@ -1771,9 +1771,9 @@ with st.expander("💰 Payment Terms", expanded=False):
             )
             
 
-        with col2:
-            
-            st.text_input(st.text f"Condition {i+1}",
+        with col2:         
+            st.text_input(
+                f"Condition {i+1}",
                 value=term["description"],
                 placeholder="e.g. Submittal of Energy Report",
                 key=f"desc_{i}",
