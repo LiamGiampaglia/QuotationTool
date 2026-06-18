@@ -1646,18 +1646,22 @@ if "billing_percentages" in st.session_state:
     if not st.session_state.get("payment_terms_locked", False):
 
         if any(billing_pcts):
+            
             st.session_state.payment_terms = [
                 {
                     "percent": int(round(pct)),
-                    "description": f"Milestone {i+1} completion"
+                    "description": ""  # ✅ start EMPTY instead of auto text
                 }
                 for i, pct in enumerate(billing_pcts)
             ]
+
         else:
+            
             st.session_state.payment_terms = [{
                 "percent": 100,
-                "description": "upon submittal of the report"
+                "description": ""
             }]
+
 
         # ✅ LOCK AFTER BUILD
         st.session_state.payment_terms_locked = True
@@ -1768,9 +1772,10 @@ with st.expander("💰 Payment Terms", expanded=False):
             
 
         with col2:
-            st.session_state.payment_terms[i]["description"] = st.text_input(
-                f"Condition {i+1}",
+            
+            st.text_input(st.text f"Condition {i+1}",
                 value=term["description"],
+                placeholder="e.g. Submittal of Energy Report",
                 key=f"desc_{i}",
                 on_change=lambda: st.session_state.update({"payment_override": True})
             )
@@ -1780,12 +1785,25 @@ with st.expander("💰 Payment Terms", expanded=False):
         st.session_state.payment_terms.append({"percent": 0, "description": ""})
     
     # Calculate total
+    
     total_percent = sum(float(term["percent"]) for term in st.session_state.payment_terms)
+    
+    # ✅ Check if any descriptions are blank
+    empty_descriptions = any(
+        not term["description"].strip()
+        for term in st.session_state.payment_terms
+        if term["percent"] > 0
+    )
     
     if total_percent != 100:
         st.warning(f"⚠️ Total must equal 100% (Currently {total_percent}%)")
+    
+    elif empty_descriptions:
+        st.error("❌ Please enter a description for all payment terms")
+    
     else:
         st.success("✅ Payment terms total = 100%")
+
                 
 
 # ==========================
