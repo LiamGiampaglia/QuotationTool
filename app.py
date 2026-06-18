@@ -1509,12 +1509,21 @@ if uploaded_file is not None:
         )
 
         
+        
+        # ✅ Initialise if not exists
+        if "billing_count_selectbox" not in st.session_state:
+            st.session_state.billing_count_selectbox = default_count
+        
+        # ✅ Apply override BEFORE rendering
+        if "billing_milestone_count_override" in st.session_state:
+            st.session_state.billing_count_selectbox = st.session_state.billing_milestone_count_override
+        
         billing_milestone_count = st.selectbox(
             "No. of Billing Milestones",
             milestone_options,
-            index=milestone_options.index(default_count),
             key="billing_count_selectbox"
         )
+
         st.session_state.billing_milestone_count_saved = billing_milestone_count
         
         
