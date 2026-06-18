@@ -1593,7 +1593,7 @@ if uploaded_file is not None:
 
         
             value = st.number_input(
-                f"Milestone {i+1} Value (£)",
+                f"Milestone {i+1} Value ({currency_symbol})",
                 min_value=0.0,
                 value=float(st.session_state[key_name]),
                 key=key_name
