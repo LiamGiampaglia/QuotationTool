@@ -1627,13 +1627,11 @@ if "total_price" in st.session_state:
     total_price_check = st.session_state.total_price
 
     if total_price_check > 50000:
-
         st.warning(
-            f"⚠️ Project value is £{total_price_check:,.2f}. "
-            "For projects above £50k, billing milestones should be split into multiple stages "
+            f"⚠️ Project value is {currency_symbol}{total_price_check * fx_rate:,.2f}. "
+            f"For projects above {currency_symbol}50,000, billing milestones should be split "
             "(e.g. 20% mobilisation, 40% mid-project, 40% completion)."
         )
-
 
 # ==========================
 # ✅ PAYMENT TERMS SYNC ENGINE
