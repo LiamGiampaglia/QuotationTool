@@ -1790,6 +1790,11 @@ with st.expander("💰 Payment Terms", expanded=False):
     
     total_percent = sum(float(term["percent"]) for term in st.session_state.payment_terms)
     
+    for i in range(len(st.session_state.payment_terms)):
+        key = f"desc_{i}"
+        if key in st.session_state:
+            st.session_state.payment_terms[i]["description"] = st.session_state[key]
+
     # ✅ Check if any descriptions are blank
     empty_descriptions = any(
         not term["description"].strip()
