@@ -206,6 +206,7 @@ def load_excel_into_session(uploaded_file):
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     ws = wb["PRICING SHEET"]
+    currency = ws["J5"].value or "GBP"
 
     # ==========================
     # ✅ LABOUR ROWS
@@ -253,7 +254,7 @@ def load_excel_into_session(uploaded_file):
     discount_raw = safe_num(ws["D62"].value)
     discount_pct = discount_raw * 100
 
-    return labour_rows, other_cost_rows, expenses, discount_pct
+    return labour_rows, other_cost_rows, expenses, discount_pct, currency
 
 def load_billing_milestones(uploaded_file):
 
@@ -425,7 +426,10 @@ if (
         st.session_state[f"bm_date_{i}"] = bm_dates[i]
 
     # ✅ LOAD MAIN EXCEL DATA
-    labour_rows, other_cost_rows, expenses, discount_pct = load_excel_into_session(uploaded_file)
+    labour_rows, other_cost_rows, expenses, discount_pct, excel_currency = load_excel_into_session(uploaded_file)
+    
+    if excel_currency in ["GBP", "EUR"]:
+        st.session_state.currency = excel_currency
 
     st.session_state.labour_rows = labour_rows
     st.session_state.other_cost_rows = other_cost_rows
