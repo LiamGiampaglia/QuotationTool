@@ -1571,7 +1571,7 @@ if uploaded_file is not None:
         billing_values = []
         billing_dates = []
 
-        total_project = st.session_state.get("total_price", 0)
+        total_project = st.session_state.get("total_price", 0) * fx_rate
 
         for i in range(billing_milestone_count):
         
