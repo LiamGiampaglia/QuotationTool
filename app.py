@@ -2143,7 +2143,8 @@ if st.button("📄 Generate Word Document"):
         
         # ✅ Generate Excel
         
-        if uploaded_file is not None:
+        
+        if template_mode == "Blank Pricing Template Uploaded" and uploaded_file is not None:
         
             excel_wb = generate_pricing_excel(uploaded_file)
         
@@ -2155,5 +2156,5 @@ if st.button("📄 Generate Word Document"):
                     "⬇ Download Pricing Sheet",
                     f,
                     file_name=f"{project_number}-PricingSheet.xlsx"
-                )
+
 
