@@ -1672,19 +1672,21 @@ if "billing_percentages" in st.session_state:
 
 
     # ✅ BUILD ONCE ONLY
+    
     if all(pct == 0 for pct in billing_pcts):
         st.session_state.payment_terms = [{
             "percent": 100,
-            "description": "upon submittal of the report"
+            "description": ""
         }]
     else:
         st.session_state.payment_terms = [
             {
                 "percent": int(round(pct)),
-                "description": f"Milestone {i+1} completion"
+                "description": ""
             }
             for i, pct in enumerate(billing_pcts)
         ]
+
 
 # ==========================
 # 💰 PAYMENT TERMS
