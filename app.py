@@ -1037,6 +1037,28 @@ if uploaded_file is not None:
 # WORKS INPUT
 # ==========================
 with st.expander("🛠️ Works & Pricing", expanded=False):
+    if st.button("🔄 Auto Split 20% / 40% / 40%"):
+    
+    total = st.session_state.total_price
+
+    # ✅ FORCE RESET OF SELECTBOX VALUE
+    st.session_state.pop("billing_count_selectbox", None)
+    st.session_state.pop("billing_milestone_count_saved", None)
+
+    # ✅ SET OVERRIDE (THIS WILL NOW WORK)
+    st.session_state.billing_milestone_count_override = 3
+
+    # ✅ SET SPLIT VALUES
+    st.session_state["split_values"] = [
+        total * 0.20,
+        total * 0.40,
+        total * 0.40
+    ]
+
+    st.session_state.payment_terms_locked = False
+
+    st.rerun()
+    
     with st.expander("💡 How to fill in", expanded=False):
         st.markdown("""
         ### How to fill in
@@ -1572,27 +1594,6 @@ if "total_price" in st.session_state:
             "(e.g. 20% mobilisation, 40% mid-project, 40% completion)."
         )
 
-if st.button("🔄 Auto Split 20% / 40% / 40%"):
-    
-    total = st.session_state.total_price
-
-    # ✅ FORCE RESET OF SELECTBOX VALUE
-    st.session_state.pop("billing_count_selectbox", None)
-    st.session_state.pop("billing_milestone_count_saved", None)
-
-    # ✅ SET OVERRIDE (THIS WILL NOW WORK)
-    st.session_state.billing_milestone_count_override = 3
-
-    # ✅ SET SPLIT VALUES
-    st.session_state["split_values"] = [
-        total * 0.20,
-        total * 0.40,
-        total * 0.40
-    ]
-
-    st.session_state.payment_terms_locked = False
-
-    st.rerun()
 
 # ==========================
 # ✅ PAYMENT TERMS SYNC ENGINE
