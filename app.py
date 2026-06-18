@@ -180,6 +180,7 @@ def generate_pricing_excel(uploaded_file):
     ws["D31"] = st.session_state.get("overnight_inside", 0)
     ws["D32"] = st.session_state.get("miles", 0)
     ws["D33"] = st.session_state.get("flights_cost", 0)
+    ws["E33"] = currency
     
     # ======================
     # ✅ DISCOUNT
