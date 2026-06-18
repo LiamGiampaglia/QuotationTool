@@ -122,6 +122,30 @@ def generate_pricing_excel(uploaded_file):
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
     
+    milestone_count = st.session_state.get("billing_count_selectbox", 1)
+    
+    sap_ws["D37"] = milestone_count
+    
+    for i in range(milestone_count):
+        
+        value = st.session_state.get(f"bm_value_{i}", 0)
+        date = st.session_state.get(f"bm_date_{i}", datetime.today())
+    
+        value_cell = f"D{38 + i * 2}"
+        date_cell = f"D{39 + i * 2}"
+    
+        sap_ws[value_cell] = value
+    
+        # ✅ Convert date properly to Excel format
+        if isinstance(date, datetime):
+            sap_ws[date_cell] = date
+        else:
+            try:
+                sap_ws[date_cell] = datetime.combine(date, datetime.min.time())
+            except:
+                sap_ws[date_cell] = date
+
+    
     # ======================
     # ✅ LABOUR ROWS
     # ======================
