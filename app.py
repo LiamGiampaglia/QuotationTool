@@ -256,7 +256,7 @@ def load_excel_into_session(uploaded_file):
 
     return labour_rows, other_cost_rows, expenses, discount_pct, currency
 
-def load_billing_milestones(uploaded_file):
+def load_billing_milestones(uploaded_file, currency):
 
     def safe_num(val):
         try:
@@ -282,7 +282,13 @@ def load_billing_milestones(uploaded_file):
         value_cell = f"D{38 + i * 2}"
         date_cell = f"D{39 + i * 2}"
 
+        
         value = safe_num(sap_ws[value_cell].value)
+        
+        # ✅ Convert if EUR
+        if currency == "EUR":
+            value = value * 1.16
+
         date = safe_date(sap_ws[date_cell].value)
 
         billing_values.append(value)
@@ -415,7 +421,7 @@ if (
     st.session_state.pop("billing_count_selectbox", None)
     
     # ✅ LOAD FROM EXCEL
-    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file)
+    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file, st.session_state.get("currency", "GBP")
     
     # ✅ STORE COUNT (THIS IS KEY)
     st.session_state.billing_milestone_count_loaded = bm_count
