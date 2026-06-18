@@ -2156,5 +2156,6 @@ if st.button("📄 Generate Word Document"):
                     "⬇ Download Pricing Sheet",
                     f,
                     file_name=f"{project_number}-PricingSheet.xlsx"
+                )
 
 
