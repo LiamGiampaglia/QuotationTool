@@ -421,7 +421,7 @@ if (
     st.session_state.pop("billing_count_selectbox", None)
     
     # ✅ LOAD FROM EXCEL
-    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file, st.session_state.get("currency", "GBP")
+    bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file, st.session_state.get("currency", "GBP"))
     
     # ✅ STORE COUNT (THIS IS KEY)
     st.session_state.billing_milestone_count_loaded = bm_count
