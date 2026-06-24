@@ -542,7 +542,7 @@ with st.expander("📄 Template Info", expanded=False):
         st.caption("If multiple sites, use this format: Coventry, London and Warrington")
     
     with col2:
-        project_name = st.text_input("Project Name")
+        project_name = st.text_input("EN Number")
     
         consultant_name = st.text_input(
             "Consultant Name",
