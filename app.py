@@ -308,6 +308,10 @@ if "works_list" not in st.session_state:
 if "works_initialized" not in st.session_state:
     st.session_state.works_init
 
+if "works_init" not in st.session_state:
+    st.session_state.works_init = False
+
+
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
 
@@ -1188,11 +1192,8 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "type": "expenses"
         })
 
-# ✅ Populate works_list automatically (ONLY when empty OR size mismatch)
-
+    if uploaded_file is not None and not st.session_state.works_init:
     
-    if (not st.session_state.works_initialized) and uploaded_file is not None:
-        
         st.session_state.works_list = []
     
         for item in combined_items:
@@ -1203,9 +1204,8 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
                 "price": 0.0
             })
     
-        st.session_state.works_initialized = True
-
-
+        # ✅ Mark as initialised so it doesn't overwrite deletes
+        st.session_state.works_init = True
     
     total_works_price = 0
     
