@@ -305,9 +305,6 @@ def load_billing_milestones(uploaded_file, currency):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
-if "works_initialized" not in st.session_state:
-    st.session_state.works_init
-
 if "works_init" not in st.session_state:
     st.session_state.works_init = False
 
