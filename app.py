@@ -90,7 +90,60 @@ def extract_rates(uploaded_file):
 
     return rates
 
+def clear_pricing_template(wb):
+    ws = wb["PRICING SHEET"]
+    sap_ws = wb["SAP INFO FORM"]
 
+    # ======================
+    # ✅ CLEAR LABOUR ROWS (15–25)
+    # ======================
+    for row in range(15, 25):
+        for col in ["C","D","E","F","G","H","I"]:
+            ws[f"{col}{row}"] = None
+
+    # ======================
+    # ✅ CLEAR OTHER COSTS (39–45)
+    # ======================
+    for row in range(39, 45):
+        for col in ["C","D","E","G"]:
+            ws[f"{col}{row}"] = None
+
+    # ======================
+    # ✅ CLEAR EXPENSES
+    # ======================
+    for cell in ["D30","D31","D32","D33","E33"]:
+        ws[cell] = None
+
+    # ======================
+    # ✅ CLEAR DISCOUNT
+    # ======================
+    ws["D62"] = None
+
+    # ======================
+    # ✅ CLEAR SAP INFO FORM
+    # ======================
+    for cell in [
+        "D7","D8","D9",
+        "D17","D18",
+        "D19","D20","D21",
+        "E19","E20","E21"
+    ]:
+        sap_ws[cell] = None
+
+    # ✅ CLEAR BILLING MILESTONES
+    for i in range(10):
+        sap_ws[f"D{38 + i*2}"] = None
+        sap_ws[f"D{39 + i*2}"] = None
+
+    sap_ws["D37"] = None
+
+    # ======================
+    # ✅ CLEAR HEADER (optional but recommended)
+    # ======================
+    ws["C5"] = None
+    ws["C8"] = None
+
+    return wb
 
 def generate_pricing_excel(uploaded_file):
 
@@ -99,6 +152,9 @@ def generate_pricing_excel(uploaded_file):
     wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=False)
 
     ws = wb["PRICING SHEET"]
+    
+    if template_mode == "Blank Pricing Template Uploaded":
+        wb = clear_pricing_template(wb)
 
     # ✅ Header info
     ws["C5"] = sap_description
