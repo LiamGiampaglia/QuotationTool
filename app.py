@@ -1318,7 +1318,7 @@ with st.expander("Works & Pricing", expanded=False):
 if template_mode == "Blank Pricing Template Uploaded":
 
     st.markdown("---")
-    with st.expander("📋 Pricing Sheet Info", expanded=False):
+    with st.expander("Pricing Sheet Info", expanded=False):
         with st.expander("💡 How to fill in", expanded=False):
             st.markdown("""
             ### How to fill in
