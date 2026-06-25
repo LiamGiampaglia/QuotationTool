@@ -404,9 +404,9 @@ st.title("Consultancy Quote Generator")
 
 st.markdown("---")
 # ==========================
-# 📊 COST SHEET UPLOAD
+# COST SHEET UPLOAD
 # ==========================
-st.subheader("📊 Cost Sheet")
+st.subheader("Cost Sheet")
 
 with st.expander("💡 How to fill in", expanded=False):
     st.markdown("""
@@ -491,7 +491,7 @@ if (
     st.session_state.flights_cost = expenses["flights_cost"]
     st.session_state.discount_pct = discount_pct
     st.session_state.excel_loaded = True
-    st.success("✅ Excel data including billing milestones loaded into calculator")
+    st.success("Excel data including billing milestones loaded into calculator")
     st.rerun()
 
 st.markdown("---")
@@ -601,7 +601,7 @@ with st.expander("📄 Template Info", expanded=False):
 # CUSTOMER DETAILS
 # ==========================
 st.markdown("---")
-with st.expander("🏢 Customer Details", expanded=False):
+with st.expander("Customer Details", expanded=False):
     
     with st.expander("💡 How to fill in", expanded=False):
         st.markdown("""
@@ -632,7 +632,7 @@ st.markdown("---")
 # LIVE COST CALCULATOR
 # ==========================
 if uploaded_file is not None:
-    with st.expander("💰 Live Cost Calculator", expanded=True):
+    with st.expander("Live Cost Calculator", expanded=True):
         with st.expander("💡 How to fill in", expanded=False):
             st.markdown("""
             ### How to fill in
@@ -725,7 +725,7 @@ if uploaded_file is not None:
         rates = extract_rates(uploaded_file)
         st.write("DEBUG RATES:", rates)
         st.markdown("---")
-        st.subheader("💰 Live Cost Calculator")
+        st.subheader("Live Cost Calculator")
     
         currency = st.selectbox(
             "Currency",
@@ -803,25 +803,18 @@ if uploaded_file is not None:
                     value=float(row.get("site_evening", 0.0)),
                     key=f"se_{i}"
                 )
-
             with col3:
-                
                 row["office_weekend"] = st.number_input(
                     "Office Hours (Sat&Sun 0800 to 2400)",
                     value=float(row.get("office_weekend", 0.0)),
                     key=f"ow_{i}"
                 )
-
-                
                 row["site_weekend"] = st.number_input(
                     "On Site Hours (Sat & Sun 0800 to 2400)",
                     value=float(row.get("site_weekend", 0.0)),
                     key=f"sw_{i}"
                 )
-
-    
-        
-            # ✅ Accumulate totals
+            # Accumulate totals
             total_office_day += row["office_day"]
             total_site_day += row["site_day"]
             total_office_evening += row["office_evening"]
@@ -833,7 +826,7 @@ if uploaded_file is not None:
        
         st.markdown("### Other Costs (Detailed)")
     
-        # ✅ Add row button
+        # Add row button
         if st.button("➕ Add Cost Row"):
             st.session_state.other_cost_rows.append({
                 "description": "",
@@ -842,11 +835,10 @@ if uploaded_file is not None:
                 "selling": 0.0
             })
         
-        
         total_other_cost = 0
         total_other_selling = 0
         
-        # ✅ Display rows
+        # Display rows
         for i, row in enumerate(st.session_state.other_cost_rows):
         
             st.markdown(f"#### Cost Item {i+1}")
@@ -875,7 +867,7 @@ if uploaded_file is not None:
                     key=f"other_margin_{i}"
                 )
         
-            # ✅ Selling calculation
+            # Selling calculation
             if row["margin"] < 100:
                 row["selling"] = row["cost"] / (1 - row["margin"] / 100)
             else:
@@ -888,7 +880,7 @@ if uploaded_file is not None:
         
             st.markdown("---")
         
-        # ✅ Totals (like Excel bottom row)
+        # Totals (like Excel bottom row)
     
         peer_review_hours = 0.1 * total_office_day
         
@@ -896,14 +888,12 @@ if uploaded_file is not None:
         st.write(f"Office Day: {total_office_day}")
         st.write(f"Peer Review (Office): {peer_review_hours}")
         st.write(f"Site Day: {total_site_day}")
-        
         st.write(f"Office Evening: {total_office_evening}")
         st.write(f"Site Evening: {total_site_evening}")
-        
         st.write(f"Office Weekend: {total_office_weekend}")
         st.write(f"Site Weekend: {total_site_weekend}")
         
-        # ✅ SELLING LABOUR (NEW)
+        # SELLING LABOUR (NEW)
         labour_total = (
             (total_office_day * rates["office_day"]) +
             (total_site_day * rates["site_day"]) +
@@ -915,7 +905,7 @@ if uploaded_file is not None:
             (total_site_weekend * rates["site_weekend"])
         )
         
-        # ✅ Peer review
+        # Peer review
         peer_review = 0.1 * total_office_day * rates["office_day"]
         peer_review_factor = 0.1
         
@@ -926,7 +916,6 @@ if uploaded_file is not None:
         col1, col2 = st.columns(2)
         
         with col1:
-            
             overnight_outside = st.number_input(
                 "Overnight Stays (Outside M25)",
                 value=st.session_state.get("overnight_outside", 0)
@@ -953,7 +942,7 @@ if uploaded_file is not None:
         st.session_state.flights_cost = flights_cost
 
     
-        # ✅ EXPENSES (SELLING)
+        # EXPENSES (SELLING)
         expenses_total = (
             overnight_outside * rates.get("outside_m25", 0)
             + overnight_inside * rates.get("inside_m25", 0)
@@ -962,11 +951,10 @@ if uploaded_file is not None:
         )
  
         # ==========================
-        # ✅ DISCOUNT SECTION
+        # DISCOUNT SECTION
         # ==========================
         st.markdown("### Discount")
-        
-        
+    
         discount_pct = st.number_input(
             "Discount (%)",
             min_value=0.0,
@@ -974,8 +962,6 @@ if uploaded_file is not None:
             value=float(st.session_state.get("discount_pct", 0.0))
         )
         st.session_state.discount_pct = discount_pct
-
-        
         discount_factor = 1 - (discount_pct / 100)
            
             
@@ -993,8 +979,7 @@ if uploaded_file is not None:
         # ==========================
     
             
-        # ✅ COST CALCULATION (from Excel logic)
-        
+        # COST CALCULATION
         labour_cost = (
             (total_office_day * rates["office_cost"]) +
             (total_site_day * rates["site_cost"]) +
@@ -1005,13 +990,10 @@ if uploaded_file is not None:
             (total_office_weekend * rates["office_cost"]) +
             (total_site_weekend * rates["site_cost"])
         )
-        
         peer_review_cost = 0.1 * total_office_day * rates["office_cost"]
-        
         labour_cost += peer_review_cost
     
-    
-        # ✅ Expense COST (not selling)
+        # Expense COST (not selling)
         expenses_cost = (
             overnight_outside * (rates.get("outside_m25", 0) / 1.15 if rates.get("outside_m25", 0) else 0)
             + overnight_inside * (rates.get("inside_m25", 0) / 1.15 if rates.get("inside_m25", 0) else 0)
@@ -1019,32 +1001,24 @@ if uploaded_file is not None:
             + flights_cost
         )
     
-        total_cost = labour_cost + expenses_cost + other_cost
-    
-            
+        total_cost = labour_cost + expenses_cost + other_cost 
         subtotal = labour_total + expenses_total + other_cost_selling
-            
         discount_value = subtotal * (discount_pct / 100)
-            
         total_price = subtotal - discount_value
         st.session_state["final_total_price"] = total_price
         st.session_state.total_price = total_price    
-            
         labour_total_fx = labour_total * fx_rate
         expenses_total_fx = expenses_total * fx_rate
         other_cost_selling_fx = other_cost_selling * fx_rate
-        
         total_cost_fx = total_cost * fx_rate
         subtotal_fx = subtotal * fx_rate
         total_price_fx = total_price * fx_rate
         labour_cost_fx = labour_cost * fx_rate
         expenses_cost_fx = expenses_cost * fx_rate
         other_cost_fx = other_cost * fx_rate
-    
         labour_selling_discounted = labour_total * discount_factor
         expenses_selling_discounted = expenses_total * discount_factor
         other_selling_discounted = other_cost_selling * discount_factor
-    
         labour_selling_discounted_fx = labour_selling_discounted * fx_rate
         expenses_selling_discounted_fx = expenses_selling_discounted * fx_rate
         other_selling_discounted_fx = other_selling_discounted * fx_rate
@@ -1059,51 +1033,38 @@ if uploaded_file is not None:
         else:
             actual_margin_pct = 0
     
-        
         st.markdown("### Breakdown")
-    
         st.markdown("#### Labour")
         st.write(f"Selling: {currency_symbol}{labour_total_fx:,.2f}")
         st.write(f"Cost: {currency_symbol}{labour_cost_fx:,.2f}")
         st.write(f"Selling After Discount: {currency_symbol}{labour_selling_discounted_fx:,.2f}")
-        
         st.markdown("---")
-        
         st.markdown("#### Expenses")
         st.write(f"Selling: {currency_symbol}{expenses_total_fx:,.2f}")
         st.write(f"Cost: {currency_symbol}{expenses_cost_fx:,.2f}")
         st.write(f"Selling After Discount: {currency_symbol}{expenses_selling_discounted_fx:,.2f}")
-        
         st.markdown("---")
-        
         st.markdown("#### Other Costs")
         st.write(f"Selling: {currency_symbol}{other_cost_selling_fx:,.2f}")
         st.write(f"Cost: {currency_symbol}{other_cost_fx:,.2f}")
         st.write(f"Selling After Discount: {currency_symbol}{other_selling_discounted_fx:,.2f}")
-        
         st.markdown("---")
-          
-    
         st.write(f"Total Cost: {currency_symbol}{total_cost_fx:,.2f}")
         st.write(f"Selling Price: {currency_symbol}{subtotal_fx:,.2f}")
-    
         st.write(f"Margin (%): {margin_pct:.2f}%")
-        
         st.write(f"Discount (%): {discount_pct:.2f}%")
         st.write(f"Actual Selling Price: {currency_symbol}{total_price_fx:,.2f}")
         st.write(f"Actual Margin (%): {actual_margin_pct:.2f}%")
-        
         st.markdown("---")
         st.metric("Total Price", f"{currency_symbol}{total_price_fx:,.2f}")
     
-        
         if st.button("Auto Fill Pricing Fields"):
             st.session_state["do_autofill"] = True
 
 # ==========================
 # WORKS INPUT
 # ==========================
-with st.expander("🛠️ Works & Pricing", expanded=False):  
+with st.expander("Works & Pricing", expanded=False):  
     with st.expander("💡 How to fill in", expanded=False):
         st.markdown("""
         ### How to fill in
