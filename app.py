@@ -2077,6 +2077,7 @@ if st.button("Generate Documents"):
             "NumberOfConsultants": number_of_consultants,
             "FullAddress": full_address,
             "ContactName": contact_name_final,
+            "ConsultantName": consultant_name,
             "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
