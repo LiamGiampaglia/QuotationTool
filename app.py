@@ -1189,22 +1189,22 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "type": "expenses"
         })
 
-    
     if uploaded_file is not None:
     
-        # ✅ Only rebuild if NEW items appeared (not on delete)
-        if len(st.session_state.works_list) < len(combined_items):
+        # ✅ Build list of current descriptions in works_list
+        existing_descriptions = [w["description"] for w in st.session_state.works_list]
     
-            st.session_state.works_list = [
-                {
+        for item in combined_items:
+    
+            # ✅ Only add if NOT already present
+            if item["description"] not in existing_descriptions:
+    
+                st.session_state.works_list.append({
                     "description": item["description"],
                     "mode": "Auto",
                     "manual_price": 0.0,
                     "price": 0.0
-                }
-                for item in combined_items
-            ]
-
+                })
     
     total_works_price = 0
     
