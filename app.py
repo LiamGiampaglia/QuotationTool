@@ -438,7 +438,7 @@ with st.expander("💡 How to fill in", expanded=False):
         - Generate the quotation document  
         - Update the pricing Excel  
 
-    ⚠️ Selecting the correct mode is essential for ensuring pricing and outputs behave as expected.
+    Selecting the correct mode is essential for ensuring pricing and outputs behave as expected.
     """)
     
 template_mode = st.selectbox(
@@ -515,7 +515,7 @@ with st.expander("Quotation Type", expanded=False):
     
         Ensure the correct discipline and quote type are selected before proceeding.
     
-        ⚠️ Selecting the wrong option may result in the incorrect template being used.
+        Selecting the wrong option may result in the incorrect template being used.
         """)
 
     discipline_options = ["Energy", "Power", "Microgrid", "Data Centre"]
@@ -719,7 +719,7 @@ if uploaded_file is not None:
         
             ---
         
-            ⚠️ Ensure all values are accurate, as errors here will impact pricing, margins, and customer-facing outputs.
+            Ensure all values are accurate, as errors here will impact pricing, margins, and customer-facing outputs.
             """)
 
         rates = extract_rates(uploaded_file)
@@ -840,24 +840,19 @@ if uploaded_file is not None:
         
         # Display rows
         for i, row in enumerate(st.session_state.other_cost_rows):
-        
             st.markdown(f"#### Cost Item {i+1}")
-        
             row["description"] = st.text_input(
                 "Description",
                 value=row["description"],
                 key=f"other_desc_{i}"
             )
-        
             col1, col2 = st.columns(2)
-        
             with col1: 
                 row["cost"] = st.number_input(
                     "Cost (£)",
                     value=float(row.get("cost", 0.0)),
                     key=f"other_cost_{i}"
                 )
-
             with col2:
                 row["margin"] = st.number_input(
                     "Margin (%)",
@@ -908,13 +903,9 @@ if uploaded_file is not None:
         # Peer review
         peer_review = 0.1 * total_office_day * rates["office_day"]
         peer_review_factor = 0.1
-        
         labour_total += peer_review
-    
         st.markdown("### Expenses & Costs")
-    
         col1, col2 = st.columns(2)
-        
         with col1:
             overnight_outside = st.number_input(
                 "Overnight Stays (Outside M25)",
@@ -941,7 +932,6 @@ if uploaded_file is not None:
         st.session_state.miles = miles
         st.session_state.flights_cost = flights_cost
 
-    
         # EXPENSES (SELLING)
         expenses_total = (
             overnight_outside * rates.get("outside_m25", 0)
@@ -1081,7 +1071,7 @@ with st.expander("Works & Pricing", expanded=False):
             - A **Price**  
         - To add multiple items, click **Add Work Item** again and repeat  
     
-        ✅ Use this mode when creating a quotation manually without an Excel pricing file  
+        Use this mode when creating a quotation manually without an Excel pricing file  
     
         ---
     
@@ -1090,14 +1080,14 @@ with st.expander("Works & Pricing", expanded=False):
         - Labour, Other Costs, and Expenses will automatically populate into this section  
         - Leave items as **Auto** if you are happy with the structure  
     
-        ✅ These items will appear automatically in the quotation document  
+        These items will appear automatically in the quotation document  
     
         - To customise:
             - Change **Pricing Mode → Manual**  
             - Edit the description or price  
             - Delete items if required  
     
-        ✅ Use this option to control how work items are displayed in the quotation  
+        Use this option to control how work items are displayed in the quotation  
     
         ---
     
@@ -1105,11 +1095,11 @@ with st.expander("Works & Pricing", expanded=False):
         - This behaves the same as the Blank Pricing Template option  
         - All pricing and work items are automatically populated from the uploaded Excel file  
     
-        ✅ You can still switch to Manual mode to customise descriptions and pricing if needed  
+        You can still switch to Manual mode to customise descriptions and pricing if needed  
     
         ---
     
-        ⚠️ Ensure descriptions are clear and accurate, as they will be presented directly to the customer in the final quotation.
+        Ensure descriptions are clear and accurate, as they will be presented directly to the customer in the final quotation.
         """)
     
     if st.button("➕ Add Work Item"):
@@ -1148,11 +1138,8 @@ with st.expander("Works & Pricing", expanded=False):
         })
     
     
-    # ✅ AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
-    
-    
+    # AUTO-POPULATE ONLY IF EMPTY OR SIZE CHANGED
     combined_items = []
-    
     # Labour
     for lr in st.session_state.labour_rows:
         if lr["description"]:
@@ -1178,18 +1165,17 @@ with st.expander("Works & Pricing", expanded=False):
             "type": "expenses"
         })
 
-    
     if uploaded_file is not None:
     
         existing_descriptions = [w["description"] for w in st.session_state.works_list]
     
         for item in combined_items:
     
-            # ✅ Skip anything user deleted
+            # Skip anything user deleted
             if item["description"] in st.session_state.deleted_auto_items:
                 continue
     
-            # ✅ Only add if not already present
+            # Only add if not already present
             if item["description"] not in existing_descriptions:
     
                 st.session_state.works_list.append({
@@ -1200,15 +1186,10 @@ with st.expander("Works & Pricing", expanded=False):
                 })
     
     total_works_price = 0
-    
     for i, work in enumerate(st.session_state.works_list):
-    
-        
         col1, col2 = st.columns([6, 1])
-        
         with col1:
             st.markdown(f"#### Work Item {i+1}")
-        
         with col2:
             if st.button("❌", key=f"delete_{i}"):
                 deleted_desc = st.session_state.works_list[i]["description"]
@@ -1231,15 +1212,12 @@ with st.expander("Works & Pricing", expanded=False):
                 )
     
         # ==========================
-        # ✅ AUTO MODE
+        # AUTO MODE
         # ==========================
         if work["mode"] == "Auto" and uploaded_file is not None:
-    
             price = 0
-    
             combined_items = []
-    
-            # ✅ Labour rows
+            # Labour rows
             for lr in st.session_state.labour_rows:
                 if lr["description"]:
                     combined_items.append({
@@ -1248,7 +1226,7 @@ with st.expander("Works & Pricing", expanded=False):
                         "data": lr
                     })
     
-            # ✅ Other costs
+            # Other costs
             for oc in st.session_state.other_cost_rows:
                 if oc["description"]:
                     combined_items.append({
@@ -1257,14 +1235,14 @@ with st.expander("Works & Pricing", expanded=False):
                         "data": oc
                     })
     
-            # ✅ Expenses
+            # Expenses
             if expenses_total > 0:
                 combined_items.append({
                     "description": "Expenses",
                     "type": "expenses"
                 })
     
-            # ✅ Assign item based on position
+            # Assign item based on position
             if i < len(combined_items):
                 item = combined_items[i]
                 work["description"] = item["description"]
@@ -1273,7 +1251,7 @@ with st.expander("Works & Pricing", expanded=False):
                     lr = item["data"]
             
                     price = (
-                        # ✅ Normal labour
+                        # Normal labour
                         lr["office_day"] * rates["office_day"] +
                         lr["site_day"] * rates["site_day"] +
                         lr["office_evening"] * rates["office_evening"] +
@@ -1281,7 +1259,7 @@ with st.expander("Works & Pricing", expanded=False):
                         lr["office_weekend"] * rates["office_weekend"] +
                         lr["site_weekend"] * rates["site_weekend"]
             
-                        # ✅ Peer review (correctly included ✅)
+                        # Peer review
                         + (lr["office_day"] * rates["office_day"] * 0.1)
             
                     ) * discount_factor
@@ -1296,7 +1274,7 @@ with st.expander("Works & Pricing", expanded=False):
                 work["description"] = ""
                 price = 0
     
-            # ✅ Locked description display
+            # Locked description display
             st.text_input(
                 "Description",
                 value=work["description"],
@@ -1305,7 +1283,7 @@ with st.expander("Works & Pricing", expanded=False):
             )
     
         # ==========================
-        # ✅ MANUAL MODE
+        # MANUAL MODE
         # ==========================
         else:
             work["description"] = st.text_input(
@@ -1322,16 +1300,13 @@ with st.expander("Works & Pricing", expanded=False):
     
             price = work["manual_price"]
     
-        # ✅ FINAL PRICE DISPLAY (ONLY ONCE)
+        # FINAL PRICE DISPLAY
         work["price"] = price
         
         price_fx = price * fx_rate
         st.write(f"Price: {currency_symbol}{price_fx:,.2f}")
-    
         total_works_price += price
-    
         st.markdown("---")
-    
     
     st.write("### Works Total")
     total_works_price_fx = total_works_price * fx_rate
@@ -1350,15 +1325,15 @@ if template_mode == "Blank Pricing Template Uploaded":
         
             This section is used to populate the **Pricing Excel file** automatically.
         
-            ⚠️ **Important:**  
+            **Important:**  
             This section only needs to be completed when using the **Blank Pricing Template Uploaded** mode.
         
             ---
         
             **When to Use This Section**
         
-            - ✅ Required for **Blank Pricing Template Uploaded**  
-            - ❌ Not required for:
+            - Required for **Blank Pricing Template Uploaded**  
+            - Not required for:
                 - No Pricing Template Uploaded  
                 - Pre-Populated Template Uploaded (data is already provided)  
         
@@ -1370,7 +1345,7 @@ if template_mode == "Blank Pricing Template Uploaded":
               → A short description of the project for SAP  
         
             - **bFO Opportunity Number**  
-              → The relevant opportunity reference  
+              The relevant opportunity reference  
         
             - **Customer Contact Details**
               - Name  
@@ -1391,18 +1366,15 @@ if template_mode == "Blank Pricing Template Uploaded":
         
             ---
         
-            ✅ Ensure all required fields are completed accurately to avoid issues in SAP or pricing submission.  
+            Ensure all required fields are completed accurately to avoid issues in SAP or pricing submission.  
         
-            ⚠️ Incorrect or missing information may result in an incomplete or invalid pricing sheet.
+            Incorrect or missing information may result in an incomplete or invalid pricing sheet.
             """)
 
         col1, col2 = st.columns(2)
-    
         with col1:
             sap_description = st.text_input("SAP Description Name")  
             bfo_opp_no = st.text_input("bFO Opportunity No")
-    
-        # ✅ Keep these inside too (important)
         customer_contact_name = st.text_input("Customer Contact Name")
         contact_tel = st.text_input("Contact Tel No")
         contact_email = st.text_input("Contact Email")
@@ -1428,7 +1400,7 @@ if template_mode == "Blank Pricing Template Uploaded":
                 key="price1"
             )
     
-            # ✅ Material Code 2
+            # Material Code 2
             material_code_2 = ""
             material_price_2 = 0.0
     
@@ -1445,7 +1417,7 @@ if template_mode == "Blank Pricing Template Uploaded":
                     key="price2"
                 )
     
-            # ✅ Material Code 3
+            # Material Code 3
             material_code_3 = ""
             material_price_3 = 0.0
     
@@ -1464,24 +1436,24 @@ if template_mode == "Blank Pricing Template Uploaded":
 
 
 # ==========================
-# 💰 BILLING MILESTONES (ONLY IF FILE UPLOADED)
+# BILLING MILESTONES
 # ==========================
 if uploaded_file is not None:
 
-    with st.expander("📆 Billing Milestones", expanded=False): 
+    with st.expander("Billing Milestones", expanded=False): 
         
-        if st.button("🔄 Auto Split 20% / 40% / 40%"):
+        if st.button("Auto Split 20% / 40% / 40%"):
             
             total = st.session_state.total_price
         
-            # ✅ Clear old selectbox value so override works
+            # Clear old selectbox value so override works
             st.session_state.pop("billing_count_selectbox", None)
             st.session_state.pop("billing_milestone_count_saved", None)
         
-            # ✅ Set override
+            # Set override
             st.session_state.billing_milestone_count_override = 3
         
-            # ✅ Set split values
+            # Set split values
             st.session_state["split_values"] = [
                 total * 0.20,
                 total * 0.40,
@@ -1489,7 +1461,6 @@ if uploaded_file is not None:
             ]
         
             st.session_state.payment_terms_locked = False
-        
             st.rerun()
 
         with st.expander("💡 How to fill in", expanded=False):
@@ -1525,11 +1496,11 @@ if uploaded_file is not None:
                 - 40% mid-project  
                 - 40% on completion  
         
-            ✅ You can use the **Auto Split (20% / 40% / 40%)** button to apply this structure automatically  
+            You can use the **Auto Split (20% / 40% / 40%)** button to apply this structure automatically  
         
             ---
         
-            ⚠️ Incorrect milestone values may lead to inaccurate billing terms in the final quotation document.
+            Incorrect milestone values may lead to inaccurate billing terms in the final quotation document.
             """)
         
 
@@ -1544,13 +1515,11 @@ if uploaded_file is not None:
             )
         )
 
-        
-        
-        # ✅ Initialise if not exists
+        # Initialise if not exists
         if "billing_count_selectbox" not in st.session_state:
             st.session_state.billing_count_selectbox = default_count
         
-        # ✅ Apply override BEFORE rendering
+        # Apply override BEFORE rendering
         if "billing_milestone_count_override" in st.session_state:
             st.session_state.billing_count_selectbox = st.session_state.billing_milestone_count_override
         
@@ -1561,7 +1530,6 @@ if uploaded_file is not None:
         )
 
         st.session_state.billing_milestone_count_saved = billing_milestone_count
-        
         
         if (
             "billing_milestone_count_override" in st.session_state
@@ -1580,7 +1548,7 @@ if uploaded_file is not None:
         
             key_name = f"bm_value_{i}"
         
-            # ✅ FIXED INITIALISATION
+            # FIXED INITIALISATION
             
             if "split_values" in st.session_state and i < len(st.session_state["split_values"]):
                 st.session_state[key_name] = st.session_state["split_values"][i]
@@ -1591,7 +1559,6 @@ if uploaded_file is not None:
                         st.session_state[key_name] = total_project / billing_milestone_count
                     else:
                         st.session_state[key_name] = 0.0
-
         
             value = st.number_input(
                 f"Milestone {i+1} Value ({currency_symbol})",
@@ -1606,11 +1573,10 @@ if uploaded_file is not None:
                 key=f"bm_date_{i}"
             )
         
-            
             if total_project > 0:
                 percentage = (value / total_project) * 100
             
-                # ✅ FIX: STORE PERCENTAGES PROPERLY
+                # STORE PERCENTAGES PROPERLY
                 if "billing_percentages" not in st.session_state:
                     st.session_state.billing_percentages = [0] * billing_milestone_count
             
@@ -1619,14 +1585,10 @@ if uploaded_file is not None:
             
                 st.session_state.billing_percentages[i] = percentage  # ✅ IMPORTANT
             
-                st.caption(f"📊 This milestone = {percentage:.0f}% of total project value")
-
-
+                st.caption(f" This milestone = {percentage:.0f}% of total project value")
 
 if "total_price" in st.session_state:
-
     total_price_check = st.session_state.total_price
-
     if total_price_check > 50000:
         st.warning(
             f"⚠️ Project value is {currency_symbol}{total_price_check * fx_rate:,.2f}. "
@@ -1635,7 +1597,7 @@ if "total_price" in st.session_state:
         )
 
 # ==========================
-# ✅ PAYMENT TERMS SYNC ENGINE
+# PAYMENT TERMS SYNC ENGINE
 # ==========================
 
 if "payment_terms" not in st.session_state:
@@ -1652,7 +1614,6 @@ if "billing_percentages" in st.session_state:
 
     billing_pcts = st.session_state.billing_percentages
 
-    # ✅ ONLY BUILD ONCE (DO NOT REBUILD EVERY RERUN)
     if not st.session_state.get("payment_terms_locked", False):
 
         if any(billing_pcts):
@@ -1660,7 +1621,7 @@ if "billing_percentages" in st.session_state:
             st.session_state.payment_terms = [
                 {
                     "percent": int(round(pct)),
-                    "description": ""  # ✅ start EMPTY instead of auto text
+                    "description": ""
                 }
                 for i, pct in enumerate(billing_pcts)
             ]
@@ -1671,18 +1632,10 @@ if "billing_percentages" in st.session_state:
                 "percent": 100,
                 "description": ""
             }]
-
-
-        # ✅ LOCK AFTER BUILD
         st.session_state.payment_terms_locked = True
-
-
 
     billing_pcts = st.session_state.billing_percentages
 
-
-    # ✅ BUILD ONCE ONLY
-    
     if all(pct == 0 for pct in billing_pcts):
         st.session_state.payment_terms = [{
             "percent": 100,
@@ -1697,12 +1650,10 @@ if "billing_percentages" in st.session_state:
             for i, pct in enumerate(billing_pcts)
         ]
 
-
 # ==========================
-# 💰 PAYMENT TERMS
+# PAYMENT TERMS
 # ==========================
 st.markdown("---")
-
 
 def update_payment_term(index):
     key = f"percent_{index}"
@@ -1711,7 +1662,7 @@ def update_payment_term(index):
         st.session_state.payment_override = True
 
 
-with st.expander("💰 Payment Terms", expanded=False):
+with st.expander("Payment Terms", expanded=False):
     with st.expander("💡 How to fill in", expanded=False):
         st.markdown("""
         ### How to fill in
@@ -1730,7 +1681,7 @@ with st.expander("💰 Payment Terms", expanded=False):
         - Each milestone will populate a corresponding payment percentage  
         - Descriptions are generated based on milestone stages  
     
-        ✅ This ensures payment terms align with your billing structure  
+        This ensures payment terms align with your billing structure  
     
         ---
     
@@ -1741,7 +1692,7 @@ with st.expander("💰 Payment Terms", expanded=False):
             - The **description (payment condition)**  
         - Once edited, the system switches to **manual override mode**  
     
-        ✅ This allows full control over how payment terms are presented  
+        This allows full control over how payment terms are presented  
     
         ---
     
@@ -1757,20 +1708,18 @@ with st.expander("💰 Payment Terms", expanded=False):
         - The total of all percentages **must equal 100%**  
         - The system will display a warning if the total is incorrect  
     
-        ✅ A green confirmation will appear when the total equals 100%  
+        A green confirmation will appear when the total equals 100%  
     
         ---
     
-        ⚠️ Ensure payment descriptions are clear and commercially appropriate, as they will be included in the final quotation document.
+        Ensure payment descriptions are clear and commercially appropriate, as they will be included in the final quotation document.
         """)
 
     
     # Display inputs
     for i, term in enumerate(st.session_state.payment_terms):
         col1, col2 = st.columns([1, 3])
-    
         with col1:  
-            
             if f"percent_{i}" not in st.session_state:
                 st.session_state[f"percent_{i}"] = int(term["percent"])
             st.number_input(
@@ -1782,7 +1731,6 @@ with st.expander("💰 Payment Terms", expanded=False):
                 args=(i,)
             )
             
-
         with col2:         
             st.text_input(
                 f"Condition {i+1}",
@@ -1797,7 +1745,6 @@ with st.expander("💰 Payment Terms", expanded=False):
         st.session_state.payment_terms.append({"percent": 0, "description": ""})
     
     # Calculate total
-    
     total_percent = sum(float(term["percent"]) for term in st.session_state.payment_terms)
     
     for i in range(len(st.session_state.payment_terms)):
@@ -1805,7 +1752,7 @@ with st.expander("💰 Payment Terms", expanded=False):
         if key in st.session_state:
             st.session_state.payment_terms[i]["description"] = st.session_state[key]
 
-    # ✅ Check if any descriptions are blank
+    # Check if any descriptions are blank
     empty_descriptions = any(
         not term["description"].strip()
         for term in st.session_state.payment_terms
@@ -1824,10 +1771,10 @@ with st.expander("💰 Payment Terms", expanded=False):
                 
 
 # ==========================
-# 📄 FILE NAMING SECTION
+# FILE NAMING SECTION
 # ==========================
 st.markdown("---")
-with st.expander("📄 File Naming", expanded=False):
+with st.expander("File Naming", expanded=False):
     
     with st.expander("💡 How to fill in", expanded=False):
         st.markdown("""
@@ -1842,9 +1789,9 @@ with st.expander("📄 File Naming", expanded=False):
         - Unique Identifier  
         - Revision Code and Number  
     
-        ✅ Ensure naming is consistent with project conventions.
+        Ensure naming is consistent with project conventions.
     
-        ⚠️ Incorrect or inconsistent inputs may result in an incorrectly named file.
+        Incorrect or inconsistent inputs may result in an incorrectly named file.
         """)
 
 
@@ -1884,13 +1831,9 @@ with st.expander("📄 File Naming", expanded=False):
     }
     
     col1, col2 = st.columns(2)
-    
     with col1:
         
-            # ✅ Always sync Project Number to Project Name (LIVE)
         st.session_state.project_number = project_name
-        
-        # ✅ Live sync Project Name → Project Number
         st.session_state.project_number = project_name
         
         project_number = st.text_input(
@@ -1898,11 +1841,8 @@ with st.expander("📄 File Naming", expanded=False):
             key="project_number",
             value=st.session_state.project_number
         )
-    
-    
         document_type_label = st.selectbox("Document Type", list(document_type_options.keys()))
         document_type = document_type_options[document_type_label]
-    
         subject_label = st.selectbox("Subject", list(subject_options.keys()))
         subject = subject_options[subject_label]
     
@@ -1923,7 +1863,7 @@ with st.expander("📄 File Naming", expanded=False):
 st.markdown("---")
 
 if "Transport" in quote_type:
-    with st.expander("🚚 Transport Details", expanded=False):
+    with st.expander("Transport Details", expanded=False):
 
         col1, col2 = st.columns(2)
     
@@ -1944,7 +1884,7 @@ else:
 st.markdown("---")
 
 # ==========================
-# ✅ SAFE PLACEHOLDER FUNCTION
+# SAFE PLACEHOLDER FUNCTION
 # ==========================
    
 def replace_placeholders(doc, data):
@@ -1954,15 +1894,15 @@ def replace_placeholders(doc, data):
         for key, value in data.items():
             placeholder = f"{{{{{key}}}}}"
 
-            # ✅ Check full text
+            # Check full text
             full_text = "".join(run.text for run in paragraph.runs)
 
             if placeholder in full_text:
 
-                # ✅ Replace across runs carefully
+                # Replace across runs carefully
                 remaining_text = full_text.replace(placeholder, str(value))
 
-                # ✅ Write back character by character across runs
+                # Write back character by character across runs
                 i = 0
                 for run in paragraph.runs:
                     run_len = len(run.text)
@@ -1971,15 +1911,15 @@ def replace_placeholders(doc, data):
 
                     i += run_len
 
-                # ✅ If any text left, append to last run
+                # If any text left, append to last run
                 if i < len(remaining_text):
                     paragraph.runs[-1].text += remaining_text[i:]
 
-    # ✅ Process paragraphs
+    # Process paragraphs
     for paragraph in doc.paragraphs:
         process_paragraph(paragraph)
 
-    # ✅ Process tables
+    # Process tables
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -1993,7 +1933,7 @@ def fill_works_table(doc, works_list, fx_rate, currency_symbol):
 
     target_table = None
 
-    # ✅ Find the table with "Work Description" header
+    # Find the table with "Work Description" header
     for table in doc.tables:
         first_row = table.rows[0].cells
 
@@ -2007,7 +1947,7 @@ def fill_works_table(doc, works_list, fx_rate, currency_symbol):
 
     start_row = 1
 
-    # ✅ Fill rows
+    # Fill rows
     for i, work in enumerate(works_list):
 
         if start_row + i >= len(target_table.rows) - 1:
@@ -2020,31 +1960,27 @@ def fill_works_table(doc, works_list, fx_rate, currency_symbol):
         price_fx = work["price"] * fx_rate
         row_cells[2].text = f"{currency_symbol}{price_fx:,.2f}"
 
-    # ✅ Total row
+    # Total row
     total = sum(work["price"] for work in works_list)
     total_fx = total * fx_rate
     target_table.rows[-1].cells[2].text = f"{currency_symbol}{total_fx:,.2f}"
 
     return doc
 
-
-
 def insert_payment_terms(doc, payment_terms):
-
     payment_lines = []
-
     for term in payment_terms:
         if term["percent"] > 0 and term["description"]:
             payment_lines.append(f" {term['percent']}% {term['description']}")
 
     payment_text = "\n".join(payment_lines)
 
-    # ✅ 1. Normal paragraphs
+    # 1. Normal paragraphs
     for paragraph in doc.paragraphs:
         if "{{PaymentTerms}}" in paragraph.text:
             paragraph.text = paragraph.text.replace("{{PaymentTerms}}", payment_text)
 
-    # ✅ 2. TABLE CELLS (THIS IS THE MISSING PIECE)
+    # 2. TABLE CELLS
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -2054,23 +1990,20 @@ def insert_payment_terms(doc, payment_terms):
 
     return doc
 
-
-
 # ==========================
 # GENERATE DOCUMENT
 # ==========================
-if st.button("📄 Generate Documents"):
+if st.button("Generate Documents"):
     
     
     if uploaded_file is not None and "office_hours" in locals():
-        
         uploaded_file.seek(0)
         file_bytes = uploaded_file.read()
         wb = openpyxl.load_workbook(io.BytesIO(file_bytes))
         ws = wb["PRICING SHEET"]
     
         # ==========================
-        # ✅ PRICING SHEET HEADER INFO
+        # PRICING SHEET HEADER INFO
         # ==========================
         
         ws["C5"] = sap_description
@@ -2079,22 +2012,18 @@ if st.button("📄 Generate Documents"):
         ws["B10"] = office_hours
         ws["C10"] = site_hours
         # ==========================
-        # ✅ SAP INFO FORM SHEET
+        # SAP INFO FORM SHEET
         # ==========================
         
         sap_ws = wb["SAP INFO FORM"]
-        
         sap_ws["D7"] = customer_contact_name
         sap_ws["D8"] = contact_tel
         sap_ws["D9"] = contact_email
-        
         sap_ws["D17"] = bfo_opp_no
         sap_ws["D18"] = material_code_count
-        
         sap_ws["D19"] = material_code_1
         sap_ws["D20"] = material_code_2
         sap_ws["D21"] = material_code_3
-
 
     if not customer_name or not project_name:
         st.error("Customer Name and Project Name are required.")
@@ -2115,15 +2044,14 @@ if st.button("📄 Generate Documents"):
         template_path = quote_options[quote_type]
         doc = Document(template_path)
 
-        # ✅ Fix contact name logic
+        # Fix contact name logic
         if not contact_name.strip():
             contact_name_final = "whom it may concern"
         else:
             contact_name_final = contact_name
 
-        # ✅ Build address properly (FIXED INDENT)
+        # Build address properly (FIXED INDENT)
         address_lines = []
-
         if address_line_1:
             address_lines.append(address_line_1)
 
@@ -2138,7 +2066,7 @@ if st.button("📄 Generate Documents"):
 
         full_address = "\n".join(address_lines)
 
-        # ✅ Build data dictionary
+        # Build data dictionary
         data = {
             "CustomerName": customer_name,
             "NumberOfSites": number_of_sites,
@@ -2147,27 +2075,25 @@ if st.button("📄 Generate Documents"):
             "TransportType": transport_type,
             "ProjectName": project_name,
             "NumberOfConsultants": number_of_consultants,
-
             "FullAddress": full_address,
             "ContactName": contact_name_final,
-
             "TodaysDate": datetime.now().strftime("%d %B %Y")
         }
 
-        # ✅ Apply transformations
+        # Apply transformations
         doc = insert_payment_terms(doc, st.session_state.payment_terms)
         doc = replace_placeholders(doc, data)
 
         if st.session_state.works_list:
             doc = fill_works_table(doc, st.session_state.works_list, fx_rate, currency_symbol)
 
-        # ✅ Filename
+        # Filename
         file_name = f"{project_number}-{document_type}-{subject}-{unique_id}-{revision_code}{revision_number}"
 
         output = tempfile.NamedTemporaryFile(delete=False, suffix=".docx")
         doc.save(output.name)
 
-        st.success("✅ Document generated successfully!")
+        st.success("Document generated successfully!")
 
         with open(output.name, "rb") as f:
             st.download_button(
@@ -2176,7 +2102,7 @@ if st.button("📄 Generate Documents"):
                 file_name=f"{file_name}.docx"
             )
         
-        # ✅ Generate Excel
+        # Generate Excel
         
         
         if template_mode == "Blank Pricing Template Uploaded" and uploaded_file is not None:
@@ -2192,5 +2118,3 @@ if st.button("📄 Generate Documents"):
                     f,
                     file_name=f"{project_number}-PricingSheet.xlsx"
                 )
-
-
