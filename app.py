@@ -95,32 +95,32 @@ def clear_pricing_template(wb):
     sap_ws = wb["SAP INFO FORM"]
 
     # ======================
-    # ✅ CLEAR LABOUR ROWS (15–25)
+    # Clear LABOUR ROWS (15–25)
     # ======================
     for row in range(15, 25):
         for col in ["C","D","E","F","G","H","I"]:
             ws[f"{col}{row}"] = None
 
     # ======================
-    # ✅ CLEAR OTHER COSTS (39–45)
+    # Clear OTHER COSTS (39–45)
     # ======================
     for row in range(39, 45):
         for col in ["C","D","E","G"]:
             ws[f"{col}{row}"] = None
 
     # ======================
-    # ✅ CLEAR EXPENSES
+    # Clear EXPENSES
     # ======================
     for cell in ["D30","D31","D32","D33","E33"]:
         ws[cell] = None
 
     # ======================
-    # ✅ CLEAR DISCOUNT
+    # CLEAR DISCOUNT
     # ======================
     ws["D62"] = None
 
     # ======================
-    # ✅ CLEAR SAP INFO FORM
+    # CLEAR SAP INFO FORM
     # ======================
     for cell in [
         "D7","D8","D9",
@@ -130,7 +130,7 @@ def clear_pricing_template(wb):
     ]:
         sap_ws[cell] = None
 
-    # ✅ CLEAR BILLING MILESTONES
+    # CLEAR BILLING MILESTONES
     for i in range(10):
         sap_ws[f"D{38 + i*2}"] = None
         sap_ws[f"D{39 + i*2}"] = None
@@ -138,7 +138,7 @@ def clear_pricing_template(wb):
     sap_ws["D37"] = None
 
     # ======================
-    # ✅ CLEAR HEADER (optional but recommended)
+    # CLEAR HEADER
     # ======================
     ws["C5"] = None
     ws["C8"] = None
@@ -156,30 +156,25 @@ def generate_pricing_excel(uploaded_file):
     if template_mode == "Blank Pricing Template Uploaded":
         wb = clear_pricing_template(wb)
 
-    # ✅ Header info
+    # Header info
     ws["C5"] = sap_description
     ws["C8"] = consultant_name
     ws["J5"] = currency
-    # ✅ SAP Sheet
+    
+    # SAP Sheet
     sap_ws = wb["SAP INFO FORM"]
-
     sap_ws["D7"] = customer_contact_name
     sap_ws["D8"] = contact_tel
     sap_ws["D9"] = contact_email
-
     sap_ws["D17"] = bfo_opp_no
     sap_ws["D18"] = material_code_count
-
     sap_ws["D19"] = material_code_1
     sap_ws["D20"] = material_code_2
     sap_ws["D21"] = material_code_3
-    
     sap_ws["E19"] = material_price_1
     sap_ws["E20"] = material_price_2 if material_code_count >= 2 else ""
     sap_ws["E21"] = material_price_3 if material_code_count == 3 else ""
-    
     milestone_count = st.session_state.get("billing_count_selectbox", 1)
-    
     sap_ws["D37"] = milestone_count
     
     for i in range(milestone_count):
@@ -192,7 +187,7 @@ def generate_pricing_excel(uploaded_file):
     
         sap_ws[value_cell] = value
     
-        # ✅ Convert date properly to Excel format
+        # Convert date properly to Excel format
         if isinstance(date, datetime):
             sap_ws[date_cell] = date
         else:
@@ -201,9 +196,8 @@ def generate_pricing_excel(uploaded_file):
             except:
                 sap_ws[date_cell] = date
 
-    
     # ======================
-    # ✅ LABOUR ROWS
+    # LABOUR ROWS
     # ======================
     for i, lr in enumerate(st.session_state.labour_rows):
         if i >= 10:
@@ -218,7 +212,7 @@ def generate_pricing_excel(uploaded_file):
         ws[f"I{row}"] = lr["site_weekend"]
     
     # ======================
-    # ✅ OTHER COSTS
+    # OTHER COSTS
     # ======================
     for i, oc in enumerate(st.session_state.other_cost_rows):
         if i >= 6:
@@ -230,7 +224,7 @@ def generate_pricing_excel(uploaded_file):
         ws[f"G{row}"] = oc["margin"] / 100
     
     # ======================
-    # ✅ EXPENSES
+    # EXPENSES
     # ======================
     ws["D30"] = st.session_state.get("overnight_outside", 0)
     ws["D31"] = st.session_state.get("overnight_inside", 0)
@@ -239,13 +233,11 @@ def generate_pricing_excel(uploaded_file):
     ws["E33"] = currency
     
     # ======================
-    # ✅ DISCOUNT
+    # DISCOUNT
     # ======================
     ws["D62"] = st.session_state.get("discount_pct", 0) / 100
     
     return wb
-
-
 
 def load_excel_into_session(uploaded_file):
 
@@ -265,10 +257,9 @@ def load_excel_into_session(uploaded_file):
     currency = ws["J5"].value or "GBP"
 
     # ==========================
-    # ✅ LABOUR ROWS
+    # LABOUR ROWS
     # ==========================
     labour_rows = []
-
     for row in range(15, 25):
         desc = ws[f"C{row}"].value
         if desc:
@@ -283,10 +274,9 @@ def load_excel_into_session(uploaded_file):
             })
 
     # ==========================
-    # ✅ OTHER COSTS
+    # OTHER COSTS
     # ==========================
     other_cost_rows = []
-
     for row in range(39, 45):
         desc = ws[f"C{row}"].value
         if desc:
@@ -298,7 +288,7 @@ def load_excel_into_session(uploaded_file):
             })
 
     # ==========================
-    # ✅ EXPENSES
+    # EXPENSES
     # ==========================
     expenses = {
         "overnight_outside": safe_num(ws["D30"].value),
@@ -327,12 +317,10 @@ def load_billing_milestones(uploaded_file, currency):
 
     wb = openpyxl.load_workbook(uploaded_file, data_only=True)
     sap_ws = wb["SAP INFO FORM"]
-
     milestone_count = int(sap_ws["D37"].value or 0)
 
     billing_values = []
     billing_dates = []
-
     for i in range(milestone_count):
 
         value_cell = f"D{38 + i * 2}"
@@ -341,7 +329,7 @@ def load_billing_milestones(uploaded_file, currency):
         
         value = safe_num(sap_ws[value_cell].value)
         
-        # ✅ Convert if EUR
+        # Convert if EUR
         if currency == "EUR":
             value = value * 1.16
 
@@ -352,11 +340,9 @@ def load_billing_milestones(uploaded_file, currency):
 
     return milestone_count, billing_values, billing_dates
     
-
 # ==========================
 # SESSION STATE
 # ==========================
-
 
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
@@ -473,27 +459,25 @@ if (
     and uploaded_file is not None
     and not st.session_state.get("excel_loaded", False)
 ):
-
-    
+  
     for i in range(10):
         st.session_state.pop(f"bm_value_{i}", None)
         st.session_state.pop(f"bm_date_{i}", None)
     
-    # ✅ RESET SELECTBOX
+    # RESET SELECTBOX
     st.session_state.pop("billing_count_selectbox", None)
     
-    # ✅ LOAD FROM EXCEL
+    # LOAD FROM EXCEL
     bm_count, bm_values, bm_dates = load_billing_milestones(uploaded_file, st.session_state.get("currency", "GBP"))
     
-    # ✅ STORE COUNT (THIS IS KEY)
+    # STORE COUNT (THIS IS KEY)
     st.session_state.billing_milestone_count_loaded = bm_count
-
 
     for i in range(bm_count):
         st.session_state[f"bm_value_{i}"] = bm_values[i]
         st.session_state[f"bm_date_{i}"] = bm_dates[i]
 
-    # ✅ LOAD MAIN EXCEL DATA
+    # LOAD MAIN EXCEL DATA
     labour_rows, other_cost_rows, expenses, discount_pct, excel_currency = load_excel_into_session(uploaded_file)
     
     if excel_currency in ["GBP", "EUR"]:
@@ -501,7 +485,6 @@ if (
 
     st.session_state.labour_rows = labour_rows
     st.session_state.other_cost_rows = other_cost_rows
-
     st.session_state.overnight_outside = expenses["overnight_outside"]
     st.session_state.overnight_inside = expenses["overnight_inside"]
     st.session_state.miles = expenses["miles"]
@@ -510,7 +493,6 @@ if (
     st.session_state.excel_loaded = True
     st.success("✅ Excel data including billing milestones loaded into calculator")
     st.rerun()
-
 
 st.markdown("---")
 
@@ -531,7 +513,7 @@ with st.expander("Quotation Type", expanded=False):
         - The structure of the quotation document  
         - The template used when generating the final Word output  
     
-        ✅ Ensure the correct discipline and quote type are selected before proceeding.
+        Ensure the correct discipline and quote type are selected before proceeding.
     
         ⚠️ Selecting the wrong option may result in the incorrect template being used.
         """)
@@ -556,11 +538,10 @@ with st.expander("Quotation Type", expanded=False):
             "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
         },
     
-        "Power": {},       # ✅ ready for future
-        "Microgrid": {},   # ✅ ready for future
-        "Data Centre": {}  # ✅ ready for future
+        "Power": {},
+        "Microgrid": {},
+        "Data Centre": {}
     }
-    
     
     quote_options = quote_options_by_discipline.get(discipline, {})
     
@@ -617,7 +598,7 @@ with st.expander("📄 Template Info", expanded=False):
         )
 
 # ==========================
-# 🏢 CUSTOMER DETAILS
+# CUSTOMER DETAILS
 # ==========================
 st.markdown("---")
 with st.expander("🏢 Customer Details", expanded=False):
@@ -635,9 +616,7 @@ with st.expander("🏢 Customer Details", expanded=False):
         ⚠️ Missing address details may result in incomplete customer information in the generated document.
         """)
 
-
     col1, col2 = st.columns(2)
-    
     with col1:
         address_line_1 = st.text_input("Address Line 1")
         address_line_2 = st.text_input("Address Line 2")
@@ -650,7 +629,7 @@ with st.expander("🏢 Customer Details", expanded=False):
     contact_name = st.text_input("Contact Name (leave blank for default)")
 st.markdown("---")
 # ==========================
-# 💰 LIVE COST CALCULATOR
+# LIVE COST CALCULATOR
 # ==========================
 if uploaded_file is not None:
     with st.expander("💰 Live Cost Calculator", expanded=True):
@@ -668,11 +647,11 @@ if uploaded_file is not None:
         
             - All labour rates, costs, and values are automatically pulled from the uploaded Excel file  
             - Your role is to:
-                - ✅ Review the imported data carefully  
-                - ✅ Check that all values match the original Excel file  
-                - ✅ Adjust only if necessary  
+                - Review the imported data carefully  
+                - Check that all values match the original Excel file  
+                - Adjust only if necessary  
         
-            👉 No manual data entry is required unless corrections are needed  
+            No manual data entry is required unless corrections are needed  
         
             ---
         
@@ -717,7 +696,7 @@ if uploaded_file is not None:
                 - Populate material pricing values automatically  
                 - Align pricing with the calculated project total  
         
-            ✅ This helps speed up completion of the Pricing Sheet Info section  
+            This helps speed up completion of the Pricing Sheet Info section  
         
             ---
         
@@ -732,7 +711,7 @@ if uploaded_file is not None:
         
             ---
         
-            ✅ The final total is used throughout the tool, including:
+            The final total is used throughout the tool, including:
             - Works & Pricing  
             - Billing Milestones  
             - Payment Terms  
@@ -745,7 +724,6 @@ if uploaded_file is not None:
 
         rates = extract_rates(uploaded_file)
         st.write("DEBUG RATES:", rates)
-    
         st.markdown("---")
         st.subheader("💰 Live Cost Calculator")
     
@@ -767,7 +745,7 @@ if uploaded_file is not None:
         # Inputs
         st.markdown("### Labour Hours (Detailed)")
     
-    # ✅ Add row button
+    # Add row button
         if st.button("➕ Add Labour Row"):
             st.session_state.labour_rows.append({
                 "description": "",
@@ -779,7 +757,7 @@ if uploaded_file is not None:
                 "site_weekend": 0.0
             })
         
-        # ✅ Display rows
+        # Display rows
         total_office_day = 0
         total_site_day = 0
         total_office_evening = 0
@@ -798,18 +776,12 @@ if uploaded_file is not None:
             )
         
             col1, col2, col3 = st.columns(3)
-        
-            
             with col1:
-                
-
                 row["office_day"] = st.number_input(
                     "Office Hours (Mon-Fri 0800 to 1700)",
                     value=float(row.get("office_day", 0.0)),
                     key=f"od_{i}"
                 )
-
-
                 
                 row["site_day"] = st.number_input(
                     "On Site Hours (Mon-Fri 0800 to 1700)",
@@ -817,7 +789,6 @@ if uploaded_file is not None:
                     key=f"sd_{i}"
                 )
 
-            
             with col2:
                 
                 row["office_evening"] = st.number_input(
@@ -833,7 +804,6 @@ if uploaded_file is not None:
                     key=f"se_{i}"
                 )
 
-            
             with col3:
                 
                 row["office_weekend"] = st.number_input(
