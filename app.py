@@ -305,6 +305,9 @@ def load_billing_milestones(uploaded_file, currency):
 if "works_list" not in st.session_state:
     st.session_state.works_list = []
 
+if "works_initialized" not in st.session_state:
+    st.session_state.works_init
+
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
 
@@ -1187,17 +1190,21 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
 
 # ✅ Populate works_list automatically (ONLY when empty OR size mismatch)
 
-    if len(st.session_state.works_list) != len(combined_items):
-        if uploaded_file is not None:
-            st.session_state.works_list = []
     
-            for item in combined_items:
-                st.session_state.works_list.append({
-                    "description": item["description"],
-                    "mode": "Auto",
-                    "manual_price": 0.0,
-                    "price": 0.0
-                })
+    if (not st.session_state.works_initialized) and uploaded_file is not None:
+        
+        st.session_state.works_list = []
+    
+        for item in combined_items:
+            st.session_state.works_list.append({
+                "description": item["description"],
+                "mode": "Auto",
+                "manual_price": 0.0,
+                "price": 0.0
+            })
+    
+        st.session_state.works_initialized = True
+
 
     
     total_works_price = 0
