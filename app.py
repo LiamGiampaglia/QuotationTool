@@ -1189,20 +1189,22 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "type": "expenses"
         })
 
-    if uploaded_file is not None and not st.session_state.works_init:
     
-        st.session_state.works_list = []
+    if uploaded_file is not None:
     
-        for item in combined_items:
-            st.session_state.works_list.append({
-                "description": item["description"],
-                "mode": "Auto",
-                "manual_price": 0.0,
-                "price": 0.0
-            })
+        # ✅ Only rebuild if NEW items appeared (not on delete)
+        if len(st.session_state.works_list) < len(combined_items):
     
-        # ✅ Mark as initialised so it doesn't overwrite deletes
-        st.session_state.works_init = True
+            st.session_state.works_list = [
+                {
+                    "description": item["description"],
+                    "mode": "Auto",
+                    "manual_price": 0.0,
+                    "price": 0.0
+                }
+                for item in combined_items
+            ]
+
     
     total_works_price = 0
     
