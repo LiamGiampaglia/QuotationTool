@@ -308,6 +308,8 @@ if "works_list" not in st.session_state:
 if "works_init" not in st.session_state:
     st.session_state.works_init = False
 
+if "deleted_auto_items" not in st.session_state:
+    st.session_state.deleted_auto_items = set()
 
 if "other_cost_rows" not in st.session_state:
     st.session_state.other_cost_rows = []
@@ -1189,14 +1191,18 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
             "type": "expenses"
         })
 
+    
     if uploaded_file is not None:
     
-        # ✅ Build list of current descriptions in works_list
         existing_descriptions = [w["description"] for w in st.session_state.works_list]
     
         for item in combined_items:
     
-            # ✅ Only add if NOT already present
+            # ✅ Skip anything user deleted
+            if item["description"] in st.session_state.deleted_auto_items:
+                continue
+    
+            # ✅ Only add if not already present
             if item["description"] not in existing_descriptions:
     
                 st.session_state.works_list.append({
@@ -1218,7 +1224,9 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         
         with col2:
             if st.button("❌", key=f"delete_{i}"):
-                st.session_state.works_list.pop(i)
+                deleted_desc = st.session_state.works_list[i]["description"
+                st.session_state.deleted_auto_items.add(deleted_desc)
+                del st.session_state.works_list[i]
                 st.rerun()
     
             if uploaded_file is None:
