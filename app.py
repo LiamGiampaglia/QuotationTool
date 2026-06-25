@@ -1224,7 +1224,7 @@ with st.expander("🛠️ Works & Pricing", expanded=False):
         
         with col2:
             if st.button("❌", key=f"delete_{i}"):
-                deleted_desc = st.session_state.works_list[i]["description"
+                deleted_desc = st.session_state.works_list[i]["description"]
                 st.session_state.deleted_auto_items.add(deleted_desc)
                 del st.session_state.works_list[i]
                 st.rerun()
