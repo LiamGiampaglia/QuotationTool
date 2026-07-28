@@ -527,21 +527,32 @@ with st.expander("Quotation Type", expanded=False):
     # ==========================
     
     quote_options_by_discipline = {
-    
-        "Energy": {
-            "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
-            "Metering Assessment": "templates/Metering Assessment Template.docx",
-            "EE and Metering": "templates/EE Audit and Metering Template.docx",
-            "ESOS P4": "templates/ESOS P4 Template.docx",
-            "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
-            "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx",
-            "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
-        },
-    
-        "Power": {},
-        "Microgrid": {},
-        "Data Centre": {}
+
+    "Energy": {
+        "Energy Efficiency Audit": "templates/Energy Efficiency Audit Template.docx",
+        "Metering Assessment": "templates/Metering Assessment Template.docx",
+        "EE and Metering": "templates/EE Audit and Metering Template.docx",
+        "ESOS P4": "templates/ESOS P4 Template.docx",
+        "ESOS P4 and Transport": "templates/ESOS P4 and Transport Template.docx",
+        "ESOS P4 Transport": "templates/ESOS P4 Transport Template.docx",
+        "Energy Performance Certificate": "templates/Energy Performance Certificate Template.docx"
+    },
+
+    "Power": {},
+
+    "Microgrid": {},
+
+    "Data Centre": {
+        "Data Centre Assessment":
+            "templates/Data Centre Assessment Template.docx",
+
+        "Data Centre Walk Through Audit":
+            "templates/Data Centre Walk Through Audit Template.docx",
+
+        "Data Centre Advanced Health Check Audit":
+            "templates/Data Centre Advanced Health Check Audit Template.docx"
     }
+}
     
     quote_options = quote_options_by_discipline.get(discipline, {})
     
